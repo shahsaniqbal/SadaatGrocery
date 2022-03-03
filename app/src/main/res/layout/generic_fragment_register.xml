@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.Fragments.Generic.RegisterFragment"
+    android:background="@mipmap/login_bg_widex">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.75" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:elevation="10dp"
+                    android:background="#08FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <EditText
+                            android:id="@+id/edx_register_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/main_fade_view_bg"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="4dp"
+                            android:inputType="textEmailAddress"
+
+                            android:hint="Email" />
+
+                        <EditText
+                            android:id="@+id/edx_register_mobile"
+                            android:layout_width="match_parent"
+                            android:background="@drawable/main_fade_view_bg"
+
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="4dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:hint="Mobile"
+                            android:inputType="phone"/>
+
+
+                        <EditText
+                            android:id="@+id/edx_register_full_name"
+                            android:layout_width="match_parent"
+                            android:background="@drawable/main_fade_view_bg"
+
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="4dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:hint="Full Name" />
+
+
+                        <EditText
+                            android:id="@+id/edx_register_pass"
+                            android:layout_width="match_parent"
+                            android:background="@drawable/main_fade_view_bg"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="4dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:hint="Password"
+                            android:inputType="textPassword"/>
+
+                        <EditText
+                            android:id="@+id/edx_register_confirm_pass"
+                            android:layout_width="match_parent"
+                            android:background="@drawable/main_fade_view_bg"
+                            android:inputType="textPassword"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="4dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:hint="Confirm Password" />
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_register_register"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Register"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/royal_blue_700"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="8dp"/>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_register_signIn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:padding="8dp"
+                            android:background="@drawable/view_main_alternative_outlined"
+                            app:cardElevation="8dp"
+                            android:clickable="true">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Already have an account - SignIn"
+                                android:layout_margin="10dp"/>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+       <!-- <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.75"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:background="@drawable/main_fade_view_bg"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Or Register Using"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:backgroundTint="@color/royal_blue_700"
+                    android:text="Facebook"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/royal_blue_700"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+
+                    android:text="Google"/>
+
+
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/btn_register_quick_guide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Quick Guide - How to Use"
+                android:padding="8dp"
+                android:background="@drawable/view_main_alternative_outlined"
+                android:layout_marginTop="8dp"
+
+                />
+
+
+            <TextView
+                android:id="@+id/btn_register_signIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Already have an account - SignIn"
+                android:padding="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/view_main_alternative_outlined"/>
+
+        </LinearLayout>-->
+
+
+    </LinearLayout>
+
+</FrameLayout>

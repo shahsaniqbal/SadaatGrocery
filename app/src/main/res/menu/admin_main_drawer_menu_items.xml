@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_app_credits_admin"
+            android:icon="@drawable/ic_credits"
+            android:title="App Credits" />
+        <item
+            android:id="@+id/nav_user_mgmt"
+            android:icon="@drawable/ic_users"
+            android:title="User Management" />
+
+        <item
+            android:id="@+id/nav_responses"
+            android:icon="@drawable/ic_responses"
+            android:title="Responses" />
+
+        <item
+            android:id="@+id/nav_returns_admin"
+            android:icon="@drawable/ic_return"
+            android:title="Returns" />
+
+        <item
+            android:id="@+id/nav_reports_admin"
+            android:icon="@drawable/ic_reports"
+            android:title="Reports" />
+
+    </group>
+</menu>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/nav_admin_response_feedback"
+        android:icon="@drawable/ic_feedback"
+        android:title="Feedbacks" />
+
+    <item android:id="@+id/nav_admin_response_queries"
+        android:icon="@drawable/ic_query"
+        android:title="Queries" />
+
+    <item android:id="@+id/nav_admin_response_suggestions"
+        android:icon="@drawable/ic_suggestion"
+        android:title="Suggestions" />
+
+
+</menu>

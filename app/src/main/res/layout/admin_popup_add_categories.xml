@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/listing_top_card_margin"
+    android:background="@color/white"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/cateTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Category Title"
+        android:layout_margin="@dimen/listing_top_card_margin"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        />
+
+
+    <EditText
+        android:id="@+id/cateDesc"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:hint="Category Description"
+        android:layout_margin="@dimen/listing_top_card_margin"
+        android:padding="12dp"
+        android:drawableLeft="@color/design_default_color_background"
+        android:gravity="start"
+        />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/listing_top_card_margin"
+        android:text="Add Category"/>
+
+</LinearLayout>

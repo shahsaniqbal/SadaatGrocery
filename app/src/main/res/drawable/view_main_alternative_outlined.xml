@@ -1,0 +1,21 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" android:padding="10dp">
+    <solid android:color="#33FFFFFF"/>
+    <corners
+        android:radius="8dp"/>
+    <stroke android:color="@color/scarlet_red_500" android:width="1dp" />
+
+    <resources xmlns:android="http://schemas.android.com/apk/res/android">
+        <style android:name="shadoweffect">
+            <item android:name="android:paddingLeft">4px</item>
+            <item android:name="android:paddingBottom">4px</item>
+            <item android:name="android:textColor">#FFFFFF</item>
+            <item android:name="android:textSize">25sp</item>
+            <item android:name="android:shadowColor">#000000</item>
+            <item android:name="android:shadowDx">0</item>
+            <item android:name="android:shadowDy">0</item>
+            <item android:name="android:shadowRadius">3</item>
+        </style>
+
+    </resources>
+</shape>

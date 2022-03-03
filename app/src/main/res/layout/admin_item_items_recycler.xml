@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardElevation="4dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/item_item_image_admin"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:src="@mipmap/grocery_items" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3.9"
+                    android:orientation="vertical"
+                    android:padding="@dimen/listing_top_card_margin">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/item_item_name_admin"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="National Biryani Masala"
+                        android:textColor="@color/scarlet_red_700"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.textview.MaterialTextView
+
+                        android:id="@+id/item_item_desc_admin"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cook your Biryani Wonderfully" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/item_item_button_options"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:backgroundTint="@color/white"
+                    android:src="@drawable/ic_baseline_more_vert_24" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/listing_top_card_margin"
+                android:orientation="vertical"
+                android:padding="@dimen/listing_top_card_margin">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/item_item_qty_admin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="0.5 kg" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/item_item_stock_admin"
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="50 Remaining" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/item_item_retail_admin"
+                        android:drawableLeft="@drawable/ic_outline_money"
+                        android:drawablePadding="8dp"
+                        android:paddingVertical="4dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Rs. 100.00"
+                        android:textColor="@color/scarlet_red_500"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/item_item_sale_admin"
+                        android:drawableLeft="@drawable/ic_baseline_point_of_sale_24"
+                        android:drawablePadding="8dp"
+                        android:paddingVertical="4dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Rs. 100.00"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/holo_green_dark"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/item_item_security_admin"
+                        android:drawableLeft="@drawable/ic_outline_lock_24"
+                        android:drawablePadding="8dp"
+                        android:paddingVertical="4dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Rs. 100.00"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:drawableLeft="@drawable/ic_baseline_credit_card_24"
+                        android:drawablePadding="8dp"
+                        android:paddingVertical="4dp"
+                        android:id="@+id/item_item_cardHolderDiscount_admin"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Rs. 100.00"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</LinearLayout>

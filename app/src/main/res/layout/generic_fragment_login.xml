@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@mipmap/login_bg_widex"
+    tools:context=".ui.Fragments.Generic.LoginFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.75" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="#08FFFFFF"
+                    android:elevation="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <EditText
+                            android:id="@+id/edx_login_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/main_fade_view_bg"
+                            android:hint="Email"
+                            android:paddingHorizontal="4dp"
+
+                            android:inputType="textEmailAddress"
+                            android:paddingVertical="8dp" />
+
+                        <EditText
+                            android:id="@+id/edx_login_pass"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+
+                            android:layout_marginTop="16dp"
+                            android:background="@drawable/main_fade_view_bg"
+                            android:hint="Password"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="8dp"
+                            android:inputType="textPassword"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_login_login"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:backgroundTint="@color/royal_blue_700"
+                            android:text="Login" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_login_forgot"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginVertical="4dp"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="Forgot Password ?"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="10dp"
+                            android:visibility="invisible"
+                            tools:ignore="RtlCompat" />
+
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_login_signUp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:padding="8dp"
+                            android:background="@drawable/view_main_alternative_outlined"
+                            app:cardElevation="8dp"
+                            android:clickable="true">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Don't have an account - SignUp"
+                                android:layout_margin="10dp"/>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <!--
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:orientation="vertical"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/main_fade_view_bg"
+                    android:padding="16dp"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Or SignIn Using"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+
+                            android:layout_weight="1"
+                            android:layout_marginRight="10dp"
+                            android:backgroundTint="@color/royal_blue_700"
+                            android:text="Facebook"/>
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/royal_blue_700"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+
+                            android:text="Google"/>
+
+
+
+
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:id="@+id/btn_login_quick_guide"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Quick Guide - How to Use"
+                        android:padding="8dp"
+                        android:background="@drawable/view_main_alternative_outlined"
+                        android:layout_marginTop="16dp"
+
+                        />
+
+
+                    <TextView
+                        android:id="@+id/btn_login_signUp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Don't have an account - SignUp"
+                        android:padding="8dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/view_main_alternative_outlined"/>
+
+                </LinearLayout>
+        -->
+
+    </LinearLayout>
+
+
+</FrameLayout>
