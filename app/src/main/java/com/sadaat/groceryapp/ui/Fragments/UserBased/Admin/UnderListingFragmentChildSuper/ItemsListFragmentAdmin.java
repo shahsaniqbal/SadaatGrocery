@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ItemsListFragmentAdmin extends Fragment {
+public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdapterAdmin.ItemClickListeners {
 
     FloatingActionButton addItemsButton;
     ItemsListFragmentAdmin.CustomPopupViewHolder viewHolder;
@@ -139,22 +139,7 @@ public class ItemsListFragmentAdmin extends Fragment {
 
         progressDialog = new LoadingDialogue(requireActivity());
 
-        adapterAdmin = new ItemsDisplayAdapterAdmin(allItems, new ItemsDisplayAdapterAdmin.ItemClickListeners() {
-            @Override
-            public void onShowFullDetailsButtonClick(View v, int position) {
-
-            }
-
-            @Override
-            public void onDeleteButtonClick(View v, int position, ItemModel modelToDelete) {
-
-            }
-
-            @Override
-            public void onAddStockButtonClick(View v, int position, ItemModel modelToUpdate) {
-
-            }
-        });
+        adapterAdmin = new ItemsDisplayAdapterAdmin(allItems, this, requireActivity());
 
         categoryIDSelected = "";
         subCategoryIDSelected = "";
@@ -321,6 +306,26 @@ public class ItemsListFragmentAdmin extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDeleteButtonClick(View v, int position, ItemModel modelToDelete) {
+
+    }
+
+    @Override
+    public void onAddStockButtonClick(View v, int position, ItemModel model) {
+
+    }
+
+    @Override
+    public void onUpdateDetailsButtonClick(View v, int position, ItemModel oldModelToUpdate) {
+
+    }
+
+    @Override
+    public void onShowFullDetailsButtonClick(ItemModel modelToShow) {
+
     }
 
     public static class CustomPopupViewHolder {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:icon="@android:drawable/ic_menu_upload"
+        android:id="@+id/action_update_item"
+        android:title="Update"/>
+
+    <item
+        android:icon="@android:drawable/ic_menu_add"
+        android:id="@+id/action_add_stock"
+        android:title="Add Stock" />
+
+    <item
+        android:icon="@android:drawable/ic_menu_delete"
+        android:id="@+id/action_delete_item"
+        android:title="Delete"/>
+
+
+    <item
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:id="@+id/action_show_full_modal_item"
+        android:title="Show Full Modal"/>
+
+</menu>
