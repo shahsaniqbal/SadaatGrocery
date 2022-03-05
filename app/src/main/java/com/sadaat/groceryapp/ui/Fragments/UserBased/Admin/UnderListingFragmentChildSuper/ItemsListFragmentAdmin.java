@@ -1,12 +1,16 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper;
 
 import android.app.AlertDialog;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -107,7 +111,6 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 handlePopup(view);
             }
         });
-
     }
 
     @Override
@@ -158,7 +161,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     private void backgroundExecutorForShowingData(View view) {
 
-        progressDialog.show("", "Loading Items");
+        progressDialog.show("Please Wait", "Loading Items");
 
         firebaseFirestore
                 .collection(new FirebaseDataKeys().getItemsRef())
@@ -306,6 +309,42 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 }
             }
         });
+    }
+
+    @Override
+    public PopupMenu setItemButtonPopupAtPosition(View v, int position, ItemModel itemModel) {
+
+        PopupMenu popupMenu = new PopupMenu(
+                requireActivity(),
+                manager.findViewByPosition(position).findViewById(v.getId())
+        );
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            popupMenu.setForceShowIcon(true);
+        }
+
+        popupMenu.getMenuInflater().inflate(R.menu.admin_option_menu_for_items_display, popupMenu.getMenu());
+
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.action_update_item) {
+                    onUpdateDetailsButtonClick(item.getActionView(), position, itemModel);
+                } else if (item.getItemId() == R.id.action_delete_item) {
+                    onDeleteButtonClick(item.getActionView(), position, itemModel);
+                } else if (item.getItemId() == R.id.action_add_stock) {
+                    onAddStockButtonClick(item.getActionView(), position, itemModel);
+                } else if (item.getItemId() == R.id.action_show_full_modal_item) {
+                    onShowFullDetailsButtonClick(itemModel);
+                }
+                return true;
+            }
+        });
+
+        return popupMenu;
+
     }
 
     @Override

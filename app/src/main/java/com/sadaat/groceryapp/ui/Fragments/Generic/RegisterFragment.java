@@ -148,6 +148,8 @@ public class RegisterFragment extends Fragment {
                                     }
                                     else {
                                         Toast.makeText(requireActivity(), "Error Signing UP \n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        loadingDialogue.dismiss();
+
                                     }
                                 }
                             });
@@ -155,6 +157,7 @@ public class RegisterFragment extends Fragment {
                 }
                 else{
                     Toast.makeText(requireActivity(), "Issue Analyzing Inputs", Toast.LENGTH_SHORT).show();
+                    loadingDialogue.dismiss();
                 }
             }
         });

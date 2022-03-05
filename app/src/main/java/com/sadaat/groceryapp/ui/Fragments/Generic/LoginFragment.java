@@ -115,8 +115,10 @@ public class LoginFragment extends Fragment {
                                                 }
                                             }
                                         });
-                            } else
+                            } else{
                                 Toast.makeText(requireActivity(), "Error Solving Task \n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                loadingDialogue.dismiss();
+                            }
                         }
                     });
                 } else

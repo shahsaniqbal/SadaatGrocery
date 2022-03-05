@@ -30,7 +30,6 @@ import java.util.List;
 
 public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayAdapterAdmin.ViewHolder> {
 
-    PopupMenu popupMenu;
     private final ArrayList<ItemModel> localDataSet;
     private final int LAYOUT_FILE = R.layout.admin_item_items_recycler;
     public ItemClickListeners customOnClickListener;
@@ -56,8 +55,6 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
         return new ViewHolder(view);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
-
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
@@ -74,34 +71,13 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
 
         viewHolder.getTxvQty().setText(localDataSet.get(position).getQty().toString());
 
-        popupMenu = new PopupMenu(mContext, viewHolder.getMainView(), Gravity.CENTER);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            popupMenu.setForceShowIcon(true);
-        }
-
-        popupMenu.getMenuInflater().inflate(R.menu.admin_option_menu_for_items_display, popupMenu.getMenu());
-
         viewHolder.getiButtonShowMenuForItemOptions().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popupMenu.show();
+                customOnClickListener.setItemButtonPopupAtPosition(v, viewHolder.getAdapterPosition(), localDataSet.get(viewHolder.getAdapterPosition())).show();
             }
         });
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_update_item) {
-                    customOnClickListener.onUpdateDetailsButtonClick(item.getActionView(), position, localDataSet.get(position));
-                } else if (item.getItemId() == R.id.action_delete_item) {
-                    customOnClickListener.onDeleteButtonClick(item.getActionView(), position, localDataSet.get(position));
-                } else if (item.getItemId() == R.id.action_add_stock) {
-                    customOnClickListener.onAddStockButtonClick(item.getActionView(), position, localDataSet.get(position));
-                } else if (item.getItemId() == R.id.action_show_full_modal_item) {
-                    customOnClickListener.onShowFullDetailsButtonClick(localDataSet.get(position));
-                }
-                return true;
-            }
-        });
+
 
     }
 
@@ -138,6 +114,8 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
 
 
     public interface ItemClickListeners {
+
+        PopupMenu setItemButtonPopupAtPosition(View v, int position, ItemModel itemModel);
 
         void onDeleteButtonClick(View v, int position, ItemModel modelToDelete);
 
@@ -234,5 +212,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
             return txvCardDiscount;
         }
     }
+
+
 
 }

@@ -31,6 +31,7 @@ import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.CategoriesItemAdapterAdmin;
 import com.sadaat.groceryapp.models.CategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
+import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
 
@@ -49,7 +50,7 @@ public class CategoriesListFragmentAdmin extends Fragment {
 
     ArrayList<CategoriesModel> list;
 
-    ProgressDialog progressDialog;
+    LoadingDialogue progressDialog;
 
     //   LayoutInflater layoutInflater;
 
@@ -91,10 +92,8 @@ public class CategoriesListFragmentAdmin extends Fragment {
         manager = new LinearLayoutManager(CategoriesListFragmentAdmin.this.requireActivity());
 
         list = new ArrayList<>();
-        progressDialog = new ProgressDialog(CategoriesListFragmentAdmin.this.requireActivity());
-        progressDialog.setMessage("Loading Categories Data");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        progressDialog = new LoadingDialogue(CategoriesListFragmentAdmin.this.requireActivity());
+        progressDialog.show("Please Wait", "While We Are Fetching Categories for you");
 
         adapterAdmin = new CategoriesItemAdapterAdmin(list, new CategoriesItemAdapterAdmin.CategoriesItemAdapterListener() {
             @Override
