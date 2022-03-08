@@ -1,15 +1,10 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper;
 
-import android.app.ProgressDialog;
-import android.os.Build;
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,29 +32,30 @@ import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CategoriesListFragmentAdmin extends Fragment {
+public class CategoriesListFragmentAdmin extends Fragment implements CategoriesItemAdapterAdmin.CategoriesItemAdapterListener {
 
-    FloatingActionButton addCategoriesButton;
+    FloatingActionButton addCategoriesButtonOnFragment;
 
-    PopupWindow popupWindow;
-    /*FrameLayout frameLayout;
-     */
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    AlertDialog.Builder dialogueBuilder;
+    AlertDialog itemPopupDialogueBox;
+    View popupView;
+
+    CollectionReference menuCollectionReference = FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef());
+
     RecyclerView recyclerView;
     RecyclerView.LayoutManager manager;
 
     CategoriesItemAdapterAdmin adapterAdmin;
-
     ArrayList<CategoriesModel> list;
 
     LoadingDialogue progressDialog;
 
-    //   LayoutInflater layoutInflater;
-
+    CustomPopupViewHolder customPopupViewHolder;
 
     public CategoriesListFragmentAdmin() {
-        // Required empty public constructor
     }
 
     public static CategoriesListFragmentAdmin newInstance() {
@@ -84,101 +83,66 @@ public class CategoriesListFragmentAdmin extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //     layoutInflater = (LayoutInflater) getActivity().getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
-        addCategoriesButton = view.findViewById(R.id.fab);
+        addCategoriesButtonOnFragment = view.findViewById(R.id.fab);
         recyclerView = view.findViewById(R.id.recycler_categories);
         manager = new LinearLayoutManager(CategoriesListFragmentAdmin.this.requireActivity());
 
         list = new ArrayList<>();
         progressDialog = new LoadingDialogue(CategoriesListFragmentAdmin.this.requireActivity());
+
+        popupView = this.getLayoutInflater().inflate(R.layout.admin_popup_add_categories, null, false);
+
+        customPopupViewHolder = new CustomPopupViewHolder(popupView);
+
+        dialogueBuilder = new AlertDialog.Builder(requireActivity());
+
+        dialogueBuilder.setView(popupView);
+        itemPopupDialogueBox = dialogueBuilder.create();
+
         progressDialog.show("Please Wait", "While We Are Fetching Categories for you");
 
-        adapterAdmin = new CategoriesItemAdapterAdmin(list, new CategoriesItemAdapterAdmin.CategoriesItemAdapterListener() {
-            @Override
-            public void onAddSubCategoryItemClick(View v, int position) {
 
-            }
-
-            @Override
-            public void onUpdateSubCategoryItemClick(View v, int position) {
-
-            }
-
-            @Override
-            public void onDeleteSubCategoryItemClick(View v, int position, String docID, String title) {
-
-                firebaseFirestore
-                        .collection(new FirebaseDataKeys().getMenuRef())
-                        .document(docID)
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                adapterAdmin.deleteCategory(position);
-                            }
-                        });
+        adapterAdmin = new CategoriesItemAdapterAdmin(list, this);
 
 
-            }
-        });
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapterAdmin);
-
 
         backgroundExecutorForShowingData(view);
 
         //Popup Display
-        addCategoriesButton.setOnClickListener(new View.OnClickListener() {
+        addCategoriesButtonOnFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories -> Add");
 
-                view.setVisibility(View.INVISIBLE);
-                View customView = getLayoutInflater().inflate(R.layout.admin_popup_add_categories, null, false);
+                itemPopupDialogueBox.show();
 
-                popupWindow = new PopupWindow(customView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                popupWindow.setFocusable(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    popupWindow.setTouchModal(true);
-                }
-                popupWindow.setElevation(5.0f);
-                popupWindow.setAnimationStyle(R.anim.slide_in);
+                customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_ADD_MAIN_CATEGORY);
 
-                //display the popup window
-                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-
-                Button addCategory = popupWindow.getContentView().findViewById(R.id.addCategory);
-
-                EditText edxCate = popupWindow.getContentView().findViewById(R.id.cateTitle);
-                EditText edxCateDescription = popupWindow.getContentView().findViewById(R.id.cateDesc);
-                addCategory.setOnClickListener(new View.OnClickListener() {
+                customPopupViewHolder.getAddCategoryButton().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-                        if (edxCate.getText().toString().isEmpty()) {
-                            edxCate.setError("Category or SubCategory Title Cannot be Empty");
+                        if (customPopupViewHolder.getEdxCate().getText().toString().isEmpty()) {
+                            customPopupViewHolder.getEdxCate().setError("Category or SubCategory Title Cannot be Empty");
 
                         } else {
-                            String title = edxCate.getText().toString();
-                            String desc = edxCateDescription.getText().toString();
+                            String title = customPopupViewHolder.getEdxCate().getText().toString();
+                            String desc = customPopupViewHolder.getEdxCateDescription().getText().toString();
 
-                            firebaseFirestore
-                                    .collection(new FirebaseDataKeys().getMenuRef())
-                                    .add(new CategoriesModel(title, desc))
+                            menuCollectionReference
+                                    .add(new CategoriesModel(title, desc, true))
                                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+
                                         @Override
                                         public void onSuccess(DocumentReference documentReference) {
-
                                             ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories");
-
                                             backgroundExecutorForShowingData(view);
+                                            itemPopupDialogueBox.dismiss();
 
-                                            popupWindow.dismiss();
-                                            view.setVisibility(View.VISIBLE);
-
+                                            documentReference.update("docID", documentReference.getId());
                                         }
                                     });
                         }
@@ -186,13 +150,11 @@ public class CategoriesListFragmentAdmin extends Fragment {
                 });
             }
         });
-
     }
 
     private void backgroundExecutorForShowingData(View view) {
 
-        firebaseFirestore
-                .collection(new FirebaseDataKeys().getMenuRef())
+        menuCollectionReference
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -239,7 +201,148 @@ public class CategoriesListFragmentAdmin extends Fragment {
         super.onResume();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories");
     }
+
+    @Override
+    public void onAddSubCategoryItemClick(View v, int position) {
+        boolean isParent = false;
+        customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_ADD_SUB_CATEGORY);
+
+
+    }
+
+    @Override
+    public void onUpdateSubCategoryItemClick(View v, int position, CategoriesModel categoriesModel) {
+
+        itemPopupDialogueBox.show();
+        customPopupViewHolder.getEdxCate().setText(categoriesModel.getTitle());
+        customPopupViewHolder.getEdxCateDescription().setText(categoriesModel.getDescription());
+
+        if (categoriesModel.isParent()) {
+            customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY);
+
+            customPopupViewHolder.getAddCategoryButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (customPopupViewHolder.inputAnalyzer(true)) {
+
+                        categoriesModel.setTitle(customPopupViewHolder.getEdxCate().getText().toString());
+                        categoriesModel.setDescription(customPopupViewHolder.getEdxCateDescription().getText().toString());
+
+                        progressDialog.show("Please Wait", "While We Are Updating Data");
+
+                        menuCollectionReference
+                                .document(categoriesModel.getDocID())
+                                .set(categoriesModel)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            itemPopupDialogueBox.dismiss();
+                                            Toast.makeText(requireActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
+                                            customPopupViewHolder.setViewsEmpty();
+                                            backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
+
+                                        } else if (task.isCanceled()) {
+                                            itemPopupDialogueBox.dismiss();
+                                            Toast.makeText(requireActivity(), "Update Failed", Toast.LENGTH_SHORT).show();
+                                            customPopupViewHolder.setViewsEmpty();
+                                        }
+                                        progressDialog.dismiss();
+
+
+                                    }
+                                });
+                    }
+                }
+            });
+
+        } else {
+            customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY);
+        }
+
+
+
+    }
+
+    @Override
+    public void onDeleteSubCategoryItemClick(View v, int position, String docID, String title) {
+        menuCollectionReference
+                .document(docID)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        adapterAdmin.deleteCategory(position);
+                    }
+                });
+    }
+
+    public static class CustomPopupViewHolder {
+
+        public static final int ACTION_ADD_MAIN_CATEGORY = 0;
+        public static final int ACTION_ADD_SUB_CATEGORY = 1;
+        public static final int ACTION_UPDATE_MAIN_CATEGORY = 2;
+        public static final int ACTION_UPDATE_SUB_CATEGORY = 3;
+        private final TextInputEditText edxCate;
+        private final TextInputEditText edxCateDescription;
+        private final MaterialButton addCategory;
+
+        public CustomPopupViewHolder(View view) {
+            edxCate = view.findViewById(R.id.cateTitle);
+            edxCateDescription = view.findViewById(R.id.cateDesc);
+            addCategory = view.findViewById(R.id.addCategory);
+        }
+
+        public TextInputEditText getEdxCate() {
+            return edxCate;
+        }
+
+        public TextInputEditText getEdxCateDescription() {
+            return edxCateDescription;
+        }
+
+        public MaterialButton getAddCategoryButton() {
+            return addCategory;
+        }
+
+        void setViewsReadyForAction(int ACTION_CODE) {
+            if (ACTION_CODE == ACTION_ADD_MAIN_CATEGORY) {
+                edxCate.setHint("Enter Category Name");
+                edxCateDescription.setHint("Enter Category Description\n(Optional)");
+                addCategory.setText("Add Category");
+
+            } else if (ACTION_CODE == ACTION_ADD_SUB_CATEGORY) {
+                edxCate.setHint("Enter Subcategory Name");
+                edxCateDescription.setHint("Enter Subcategory Description\n(Optional)");
+                addCategory.setText("Add Subcategory");
+
+            } else if (ACTION_CODE == ACTION_UPDATE_MAIN_CATEGORY) {
+                edxCate.setHint("Enter New Name");
+                edxCateDescription.setHint("Enter New Description for Category\n(Optional)");
+                addCategory.setText("Update Category");
+            } else if (ACTION_CODE == ACTION_UPDATE_SUB_CATEGORY) {
+                edxCate.setHint("Enter New Name");
+                edxCateDescription.setHint("Enter New Description for Subcategory\n(Optional)");
+                addCategory.setText("Update Subcategory");
+
+            }
+        }
+
+        public boolean inputAnalyzer(boolean b) {
+            //TODO Modify this method
+            return true;
+        }
+
+        public void setViewsEmpty() {
+
+        }
+    }
+
+
 /*
+
+        NO NEED OF ASYNCTASK
+        AHSAN 08-03-2022
 
     class CustomSync extends AsyncTask<View, Object, Object>{
 

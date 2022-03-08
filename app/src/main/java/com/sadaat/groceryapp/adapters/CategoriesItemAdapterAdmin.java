@@ -52,7 +52,7 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
         viewHolder.getBtnUpdate().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                customOnClickListener.onUpdateSubCategoryItemClick(v, viewHolder.getAdapterPosition());
+                customOnClickListener.onUpdateSubCategoryItemClick(v, viewHolder.getAdapterPosition(), localDataSet.get(viewHolder.getAdapterPosition()));
             }
         });
 
@@ -92,7 +92,7 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
 
         void onAddSubCategoryItemClick(View v, int position);
 
-        void onUpdateSubCategoryItemClick(View v, int position);
+        void onUpdateSubCategoryItemClick(View v, int position, CategoriesModel categoriesModel);
 
         //Document ID that needs to be deleted
         void onDeleteSubCategoryItemClick(View v, int position, String docID, String title);

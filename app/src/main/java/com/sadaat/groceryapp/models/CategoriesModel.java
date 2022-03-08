@@ -7,15 +7,17 @@ public class CategoriesModel {
     private String docID;
     private String title;
     private String description;
+    private boolean isParent;
     private Boolean hasSubcategories;
     private ArrayList<CategoriesModel> subCategories;
 
     public CategoriesModel() {
     }
 
-    public CategoriesModel(String title, String description) {
+    public CategoriesModel(String title, String description, Boolean isParent) {
         this.title = title;
         this.description = description;
+        this.isParent = isParent;
         this.hasSubcategories = false;
         subCategories = new ArrayList<>();
 
@@ -26,12 +28,12 @@ public class CategoriesModel {
         this.description = modelWithoutID.getDescription();
         this.hasSubcategories = modelWithoutID.getHasSubcategories();
         this.subCategories = modelWithoutID.getSubCategories();
+        this.isParent = modelWithoutID.isParent();
 
     }
 
-    public CategoriesModel(String title, String description, Boolean hasSubcategories, ArrayList<CategoriesModel> subCategories) {
-        this.title = title;
-        this.description = description;
+    public CategoriesModel(String title, String description, Boolean isParent, Boolean hasSubcategories, ArrayList<CategoriesModel> subCategories) {
+        this(title,description, hasSubcategories);
         this.hasSubcategories = hasSubcategories;
         this.subCategories = subCategories;
     }
@@ -110,6 +112,13 @@ public class CategoriesModel {
     }
 
 
+    public boolean isParent() {
+        return isParent;
+    }
+
+    public void setParent(boolean parent) {
+        isParent = parent;
+    }
 
     @Override
     public String toString() {

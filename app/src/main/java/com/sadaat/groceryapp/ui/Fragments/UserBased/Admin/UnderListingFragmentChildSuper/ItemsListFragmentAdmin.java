@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,6 +91,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     }
 
     @Override
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.admin_fragment_items_list, container, false);
@@ -349,7 +351,21 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     @Override
     public void onDeleteButtonClick(View v, int position, ItemModel modelToDelete) {
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getItemsRef())
+                .document(modelToDelete.getID())
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            adapterAdmin.deleteItem(position);
+                            Toast.makeText(requireActivity(), modelToDelete.getName() + " has been deleted", Toast.LENGTH_LONG).show();
+                        }
+                    }
 
+                });
     }
 
     @Override
@@ -478,6 +494,4 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             return "null";
         }
     }
-
-
 }
