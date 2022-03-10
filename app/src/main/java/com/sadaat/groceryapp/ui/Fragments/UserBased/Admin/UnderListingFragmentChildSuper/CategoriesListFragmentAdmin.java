@@ -22,38 +22,41 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.CategoriesItemAdapterAdmin;
+import com.sadaat.groceryapp.adapters.SubcategoriesItemAdapterAdmin;
 import com.sadaat.groceryapp.models.CategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Objects;
 
-public class CategoriesListFragmentAdmin extends Fragment implements CategoriesItemAdapterAdmin.CategoriesItemAdapterListener {
+public class CategoriesListFragmentAdmin extends Fragment implements
+        CategoriesItemAdapterAdmin.CategoriesItemAdapterListener,
+        View.OnClickListener,
+        SubcategoriesItemAdapterAdmin.SubCategoriesItemAdapterListener {
 
+    final CollectionReference MENU_COLLECTION_REFERENCE = FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef());
     FloatingActionButton addCategoriesButtonOnFragment;
-
     AlertDialog.Builder dialogueBuilder;
     AlertDialog itemPopupDialogueBox;
     View popupView;
-
-    CollectionReference menuCollectionReference = FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef());
-
     RecyclerView recyclerView;
     RecyclerView.LayoutManager manager;
-
     CategoriesItemAdapterAdmin adapterAdmin;
     ArrayList<CategoriesModel> list;
-
     LoadingDialogue progressDialog;
-
     CustomPopupViewHolder customPopupViewHolder;
+
+    int actionAddMainCategory = 0;
+    String docID = "";
+    CategoriesModel categoriesModel = null;
 
     public CategoriesListFragmentAdmin() {
     }
@@ -102,13 +105,19 @@ public class CategoriesListFragmentAdmin extends Fragment implements CategoriesI
         progressDialog.show("Please Wait", "While We Are Fetching Categories for you");
 
 
-        adapterAdmin = new CategoriesItemAdapterAdmin(list, this);
+        adapterAdmin = new CategoriesItemAdapterAdmin(
+                CategoriesListFragmentAdmin.this.requireActivity(),
+                list,
+                this,
+                this
+        );
 
 
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapterAdmin);
 
         backgroundExecutorForShowingData(view);
+
 
         //Popup Display
         addCategoriesButtonOnFragment.setOnClickListener(new View.OnClickListener() {
@@ -117,44 +126,19 @@ public class CategoriesListFragmentAdmin extends Fragment implements CategoriesI
 
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories -> Add");
 
+                customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_ADD_MAIN_CATEGORY);
+                actionAddMainCategory = CustomPopupViewHolder.ACTION_ADD_MAIN_CATEGORY;
                 itemPopupDialogueBox.show();
 
-                customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_ADD_MAIN_CATEGORY);
-
-                customPopupViewHolder.getAddCategoryButton().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (customPopupViewHolder.getEdxCate().getText().toString().isEmpty()) {
-                            customPopupViewHolder.getEdxCate().setError("Category or SubCategory Title Cannot be Empty");
-
-                        } else {
-                            String title = customPopupViewHolder.getEdxCate().getText().toString();
-                            String desc = customPopupViewHolder.getEdxCateDescription().getText().toString();
-
-                            menuCollectionReference
-                                    .add(new CategoriesModel(title, desc, true))
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-
-                                        @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-                                            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories");
-                                            backgroundExecutorForShowingData(view);
-                                            itemPopupDialogueBox.dismiss();
-
-                                            documentReference.update("docID", documentReference.getId());
-                                        }
-                                    });
-                        }
-                    }
-                });
             }
         });
+
+        customPopupViewHolder.getAddCategoryButton().setOnClickListener(this);
     }
 
     private void backgroundExecutorForShowingData(View view) {
 
-        menuCollectionReference
+        MENU_COLLECTION_REFERENCE
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -163,22 +147,10 @@ public class CategoriesListFragmentAdmin extends Fragment implements CategoriesI
                             adapterAdmin.deleteAll();
                             list.clear();
                             list = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                adapterAdmin.addCategory(
-                                        new CategoriesModel(
-                                                document.getId(),
-                                                (String) document.get("title"),
-                                                (String) document.get("description"),
-                                                (Boolean) document.get("hasSubcategories"),
-                                                (ArrayList<CategoriesModel>) document.get("subCategories")
-                                        )
-
-                                );
-                            }
-
+                            list.addAll(task.getResult().toObjects(CategoriesModel.class));
+                            adapterAdmin.addAll(list);
                             view.setVisibility(View.VISIBLE);
 
-                            Toast.makeText(CategoriesListFragmentAdmin.this.requireActivity(), "" + list.size(), Toast.LENGTH_SHORT).show();
                             progressDialog.dismiss();
 
                         } else {
@@ -190,92 +162,6 @@ public class CategoriesListFragmentAdmin extends Fragment implements CategoriesI
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories");
-    }
-
-    @Override
-    public void onAddSubCategoryItemClick(View v, int position) {
-        boolean isParent = false;
-        customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_ADD_SUB_CATEGORY);
-
-
-    }
-
-    @Override
-    public void onUpdateSubCategoryItemClick(View v, int position, CategoriesModel categoriesModel) {
-
-        itemPopupDialogueBox.show();
-        customPopupViewHolder.getEdxCate().setText(categoriesModel.getTitle());
-        customPopupViewHolder.getEdxCateDescription().setText(categoriesModel.getDescription());
-
-        if (categoriesModel.isParent()) {
-            customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY);
-
-            customPopupViewHolder.getAddCategoryButton().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (customPopupViewHolder.inputAnalyzer(true)) {
-
-                        categoriesModel.setTitle(customPopupViewHolder.getEdxCate().getText().toString());
-                        categoriesModel.setDescription(customPopupViewHolder.getEdxCateDescription().getText().toString());
-
-                        progressDialog.show("Please Wait", "While We Are Updating Data");
-
-                        menuCollectionReference
-                                .document(categoriesModel.getDocID())
-                                .set(categoriesModel)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            itemPopupDialogueBox.dismiss();
-                                            Toast.makeText(requireActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
-                                            customPopupViewHolder.setViewsEmpty();
-                                            backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
-
-                                        } else if (task.isCanceled()) {
-                                            itemPopupDialogueBox.dismiss();
-                                            Toast.makeText(requireActivity(), "Update Failed", Toast.LENGTH_SHORT).show();
-                                            customPopupViewHolder.setViewsEmpty();
-                                        }
-                                        progressDialog.dismiss();
-
-
-                                    }
-                                });
-                    }
-                }
-            });
-
-        } else {
-            customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY);
-        }
-
-
-
-    }
-
-    @Override
-    public void onDeleteSubCategoryItemClick(View v, int position, String docID, String title) {
-        menuCollectionReference
-                .document(docID)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        adapterAdmin.deleteCategory(position);
-                    }
-                });
-    }
 
     public static class CustomPopupViewHolder {
 
@@ -334,48 +220,149 @@ public class CategoriesListFragmentAdmin extends Fragment implements CategoriesI
         }
 
         public void setViewsEmpty() {
+            edxCate.setText("");
+            edxCateDescription.setText("");
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories");
+    }
+
+    @Override
+    public void onAddSubCategoryItemClickOverCategory(View v, int position, String docID) {
+        this.docID = docID;
+        actionAddMainCategory = CustomPopupViewHolder.ACTION_ADD_SUB_CATEGORY;
+        customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_ADD_SUB_CATEGORY);
+        itemPopupDialogueBox.show();
+    }
+
+    @Override
+    public void onUpdateCategoryItemClick(View v, int position, CategoriesModel categoriesModel) {
+        this.categoriesModel = categoriesModel;
+        if (categoriesModel.isParent()) {
+            actionAddMainCategory = CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY;
+        } else {
+            actionAddMainCategory = CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY;
+        }
+        customPopupViewHolder.getEdxCate().setText(categoriesModel.getTitle());
+        customPopupViewHolder.getEdxCateDescription().setText(categoriesModel.getDescription());
+        customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY);
+        itemPopupDialogueBox.show();
+
+    }
+
+    @Override
+    public void onDeleteCategoryItemClick(View v, int position, String docID, String title) {
+        MENU_COLLECTION_REFERENCE
+                .document(docID)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        adapterAdmin.deleteCategory(position);
+                    }
+                });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == customPopupViewHolder.getAddCategoryButton().getId()) {
+            if (actionAddMainCategory == CustomPopupViewHolder.ACTION_ADD_MAIN_CATEGORY) {
+
+                if (customPopupViewHolder.getEdxCate().getText().toString().isEmpty()) {
+                    customPopupViewHolder.getEdxCate().setError("Category or SubCategory Title Cannot be Empty");
+                } else {
+                    String title = customPopupViewHolder.getEdxCate().getText().toString();
+                    String desc = customPopupViewHolder.getEdxCateDescription().getText().toString();
+                    MENU_COLLECTION_REFERENCE
+                            .add(new CategoriesModel(title, desc, true))
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories");
+                                    backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
+                                    itemPopupDialogueBox.dismiss();
+
+                                    documentReference.update("docID", documentReference.getId());
+                                }
+                            });
+                }
+
+
+            } else if (actionAddMainCategory == CustomPopupViewHolder.ACTION_ADD_SUB_CATEGORY) {
+
+                if (customPopupViewHolder.inputAnalyzer(true)) {
+                    CategoriesModel subCategory = new CategoriesModel(
+                            customPopupViewHolder.getEdxCate().getText().toString(),
+                            customPopupViewHolder.getEdxCateDescription().getText().toString(),
+                            false,
+                            false,
+                            null
+                    );
+                    MENU_COLLECTION_REFERENCE.document(docID).update("hasSubcategories", true).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            MENU_COLLECTION_REFERENCE.document(docID).update("subCategories", FieldValue.arrayUnion(subCategory));
+                            itemPopupDialogueBox.dismiss();
+                        }
+                    });
+                }
+
+            } else if (actionAddMainCategory == CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY || actionAddMainCategory == CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY) {
+                if (customPopupViewHolder.inputAnalyzer(true)) {
+
+                    categoriesModel.setTitle(customPopupViewHolder.getEdxCate().getText().toString());
+                    categoriesModel.setDescription(customPopupViewHolder.getEdxCateDescription().getText().toString());
+
+                    progressDialog.show("Please Wait", "While We Are Updating Data");
+
+                    MENU_COLLECTION_REFERENCE
+                            .document(categoriesModel.getDocID())
+                            .set(categoriesModel)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        itemPopupDialogueBox.dismiss();
+                                        Toast.makeText(requireActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
+                                        customPopupViewHolder.setViewsEmpty();
+                                        backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
+
+                                    } else if (task.isCanceled()) {
+                                        itemPopupDialogueBox.dismiss();
+                                        Toast.makeText(requireActivity(), "Update Failed", Toast.LENGTH_SHORT).show();
+                                        customPopupViewHolder.setViewsEmpty();
+                                    }
+                                    progressDialog.dismiss();
+
+
+                                }
+                            });
+                }
+
+            }
+
+            customPopupViewHolder.setViewsEmpty();
 
         }
     }
 
+    @Override
+    public void onUpdateSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel categoriesModel) {
 
-/*
-
-        NO NEED OF ASYNCTASK
-        AHSAN 08-03-2022
-
-    class CustomSync extends AsyncTask<View, Object, Object>{
-
-
-        View mainView;
-
-        @Override
-        protected Object doInBackground(View... views) {
-
-            mainView = (View) views[0];
-
-
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-
-            super.onPostExecute(o);
-
-            adapterAdmin.notifyDataSetChanged();
-
-
-        }
     }
-*/
 
+    @Override
+    public void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex) {
+
+    }
 }

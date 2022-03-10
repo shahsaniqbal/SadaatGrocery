@@ -230,6 +230,8 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 subcategories = categories.get(position).getSubCategories();
 
+                subcategorySpinnerAdapter.clear();
+
                 categoryIDSelected = categories.get(position).getDocID();
 
                 progressDialog.show("Please Wait", "Loading Subcategories of " + categories.get(position).getTitle());

@@ -1,27 +1,37 @@
 package com.sadaat.groceryapp.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.models.CategoriesModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesItemAdapterAdmin.ViewHolder> {
 
-    public CategoriesItemAdapterListener customOnClickListener;
+    private Context refContext;
     private final ArrayList<CategoriesModel> localDataSet;
+    public CategoriesItemAdapterListener customOnClickListener;
+    public SubcategoriesItemAdapterAdmin.SubCategoriesItemAdapterListener customListenerForSubCategories;
 
+    //private RecyclerView.LayoutManager layoutManager;
 
-    public CategoriesItemAdapterAdmin(ArrayList<CategoriesModel> localDataSet, CategoriesItemAdapterListener customOnClickListener) {
+    public CategoriesItemAdapterAdmin(Context refContext, ArrayList<CategoriesModel> localDataSet, CategoriesItemAdapterListener customOnClickListener, SubcategoriesItemAdapterAdmin.SubCategoriesItemAdapterListener customListenerForSubCategories) {
+        this.refContext = refContext;
         this.localDataSet = localDataSet;
         this.customOnClickListener = customOnClickListener;
+        this.customListenerForSubCategories = customListenerForSubCategories;
+        //this.layoutManager = new LinearLayoutManager(refContext);
     }
 
     @Override
@@ -39,27 +49,45 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
         viewHolder.getTxvTitle().setText(localDataSet.get(position).getTitle());
         viewHolder.getTxvDesc().setText(localDataSet.get(position).getDescription());
 
+
+        if (localDataSet.get(position).isParent() && localDataSet.get(position).getSubCategories().size() > 0) {
+
+            viewHolder.getRecyclerViewSubCategories().setVisibility(View.VISIBLE);
+            viewHolder.getRecyclerViewSubCategories().setLayoutManager(
+                    new LinearLayoutManager(refContext, LinearLayoutManager.VERTICAL, false)
+            );
+
+            viewHolder.getRecyclerViewSubCategories().setAdapter(
+                    new SubcategoriesItemAdapterAdmin(
+                            localDataSet.get(viewHolder.getAdapterPosition()).getDocID(),
+                            localDataSet.get(viewHolder.getAdapterPosition()).getSubCategories(),
+                            customListenerForSubCategories
+                    )
+            );
+        }
+        else{
+            viewHolder.getRecyclerViewSubCategories().setVisibility(View.GONE);
+        }
+
         viewHolder.getBtnDelete().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                customOnClickListener.onDeleteSubCategoryItemClick(v,
+                customOnClickListener.onDeleteCategoryItemClick(v,
                         viewHolder.getAdapterPosition(),
                         localDataSet.get(viewHolder.getAdapterPosition()).getDocID(),
                         localDataSet.get(viewHolder.getAdapterPosition()).getTitle());
             }
         });
-
         viewHolder.getBtnUpdate().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                customOnClickListener.onUpdateSubCategoryItemClick(v, viewHolder.getAdapterPosition(), localDataSet.get(viewHolder.getAdapterPosition()));
+                customOnClickListener.onUpdateCategoryItemClick(v, viewHolder.getAdapterPosition(), localDataSet.get(viewHolder.getAdapterPosition()));
             }
         });
-
         viewHolder.getAddSubCategoryButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                customOnClickListener.onAddSubCategoryItemClick(v, viewHolder.getAdapterPosition());
+                customOnClickListener.onAddSubCategoryItemClickOverCategory(v, viewHolder.getAdapterPosition(), localDataSet.get(viewHolder.getAdapterPosition()).getDocID());
             }
         });
 
@@ -71,12 +99,12 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
         notifyItemInserted(localDataSet.size() - 1);
     }
 
-    public void deleteCategory(int index){
+    public void deleteCategory(int index) {
         localDataSet.remove(index);
         notifyItemRemoved(index);
     }
 
-    public void deleteAll(){
+    public void deleteAll() {
         int size = localDataSet.size();
         localDataSet.clear();
         notifyItemRangeRemoved(0, size);
@@ -88,15 +116,22 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
         return localDataSet.size();
     }
 
+    public void addAll(List<CategoriesModel> categoriesModels) {
+        localDataSet.clear();
+        localDataSet.addAll(categoriesModels);
+        notifyDataSetChanged();
+    }
+
     public interface CategoriesItemAdapterListener {
 
-        void onAddSubCategoryItemClick(View v, int position);
+        void onAddSubCategoryItemClickOverCategory(View v, int position, String docID);
 
-        void onUpdateSubCategoryItemClick(View v, int position, CategoriesModel categoriesModel);
+        void onUpdateCategoryItemClick(View v, int position, CategoriesModel categoriesModel);
 
         //Document ID that needs to be deleted
-        void onDeleteSubCategoryItemClick(View v, int position, String docID, String title);
+        void onDeleteCategoryItemClick(View v, int position, String docID, String title);
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView txvTitle;
@@ -104,6 +139,7 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
         private final ImageButton btnUpdate;
         private final ImageButton btnDelete;
         private final ImageButton addSubCategoryButton;
+        private final RecyclerView recyclerViewSubCategories;
 
         public ViewHolder(View view) {
             super(view);
@@ -113,6 +149,7 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
             btnUpdate = (ImageButton) view.findViewById(R.id.modify);
             btnDelete = (ImageButton) view.findViewById(R.id.delete);
             addSubCategoryButton = (ImageButton) view.findViewById(R.id.add_subcate);
+            recyclerViewSubCategories = (RecyclerView) view.findViewById(R.id.recycler_subcategories);
         }
 
         public TextView getTxvTitle() {
@@ -135,5 +172,8 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
             return addSubCategoryButton;
         }
 
+        public RecyclerView getRecyclerViewSubCategories() {
+            return recyclerViewSubCategories;
+        }
     }
 }
