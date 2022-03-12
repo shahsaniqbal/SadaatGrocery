@@ -12,6 +12,7 @@ public class CategoriesModel {
     private ArrayList<CategoriesModel> subCategories;
 
     public CategoriesModel() {
+        this.docID = "";
     }
 
     public CategoriesModel(String title, String description, Boolean isParent) {

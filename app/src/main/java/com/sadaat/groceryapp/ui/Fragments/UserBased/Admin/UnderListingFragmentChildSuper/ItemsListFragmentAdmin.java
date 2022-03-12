@@ -1,9 +1,11 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper;
 
+import static android.view.View.GONE;
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +33,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.adapters.ItemsDisplayAdapterAdmin;
+import com.sadaat.groceryapp.adapters.admin.ItemsDisplayAdapterAdmin;
 import com.sadaat.groceryapp.models.CategoriesModel;
 import com.sadaat.groceryapp.models.ItemModel;
 import com.sadaat.groceryapp.models.Items.CategoryBindingModel;
@@ -110,7 +112,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         addItemsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handlePopup(view);
+                handlePopup(view, ActionConstants.ACTION_ADD, null);
             }
         });
     }
@@ -182,7 +184,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                             view.setVisibility(View.VISIBLE);
                             progressDialog.dismiss();
                         } else {
-
+                            Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Failed to Show Data", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -190,7 +192,8 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     }
 
-    private void handlePopup(View parent) {
+    private void handlePopup(View parent, int action, ItemModel oldModelToUpdate) {
+
 
         viewHolder = new CustomPopupViewHolder(popupView);
         itemPopupDialogueBox.show();
@@ -211,14 +214,11 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                     categoriesListRaw) {
 
                                 CategoriesModel category = new CategoriesModel(d.getId(), Objects.requireNonNull(d.toObject(CategoriesModel.class)));
-
                                 categories.add(category);
                                 categorySpinnerAdapter.add(category.toString());
                             }
 
-
                             viewHolder.getComboBoxCategory().setVisibility(View.VISIBLE);
-
                             progressDialog.dismiss();
 
                         }
@@ -265,54 +265,96 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             }
         });
 
-        viewHolder.getAddItemButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (viewHolder.analyzeInputs(true)) {
 
-                    ItemModel item = new ItemModel(
-                            viewHolder.getEdxName().getText().toString(),
-                            viewHolder.getEdxDesc().getText().toString(),
-                            new CategoryBindingModel(
-                                    categoryIDSelected,
-                                    subCategoryIDSelected
-                            ),
-                            new PriceGroup(
-                                    Double.parseDouble(viewHolder.getEdxRetailPrice().getText().toString()),
-                                    Double.parseDouble(viewHolder.getEdxSalePrice().getText().toString())
-                            ),
-                            new OtherDataForItem(
-                                    Double.parseDouble(viewHolder.getEdxSecurityCharges().getText().toString()),
-                                    Integer.parseInt(viewHolder.getEdxStock().getText().toString()),
-                                    Double.parseDouble(viewHolder.getEdxCardHolderDiscount().getText().toString()),
-                                    viewHolder.getImgLink()
-                            ),
-                            new QtyUnitModel(
-                                    Double.parseDouble(viewHolder.getEdxQty().getText().toString()),
-                                    viewHolder.getEdxUnit().getText().toString()
-                            )
-                    );
+        if (action == ActionConstants.ACTION_UPDATE){
 
-                    firebaseFirestore
-                            .collection(new FirebaseDataKeys().getItemsRef())
-                            .add(item)
-                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                    parent.setVisibility(View.VISIBLE);
-                                    if (task.isSuccessful()) {
-                                        adapterAdmin.addItem(item);
-                                        progressDialog.dismiss();
+            viewHolder.getAddItemButton().setText("Update Item");
 
-                                        itemPopupDialogueBox.setCancelable(true);
-                                        itemPopupDialogueBox.dismiss();
+            viewHolder.getEdxName().setText(oldModelToUpdate.getName());
+            viewHolder.getEdxDesc().setText(oldModelToUpdate.getDescription());
+            viewHolder.getEdxUnit().setText(oldModelToUpdate.getQty().getUnit());
+            viewHolder.getEdxQty().setText("" + oldModelToUpdate.getQty().getQty());
+            viewHolder.getEdxRetailPrice().setText("" + oldModelToUpdate.getPrices().getRetailPrice());
+            viewHolder.getEdxSalePrice().setText("" + oldModelToUpdate.getPrices().getSalePrice());
+            viewHolder.getEdxCardHolderDiscount().setText("" + oldModelToUpdate.getOtherDetails().getSpecialDiscountForCardHolder());
+            viewHolder.getEdxSecurityCharges().setText("" + oldModelToUpdate.getOtherDetails().getSecurityCharges());
+            viewHolder.getEdxStock().setVisibility(GONE);
 
-                                    }
-                                }
-                            });
+
+            viewHolder.getAddItemButton().setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onClick(View v) {
+                    if (viewHolder.analyzeInputs(true)) {
+
+
+                        oldModelToUpdate.setName(Objects.requireNonNull(viewHolder.getEdxName().getText()).toString());
+                        oldModelToUpdate.setDescription(Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString());
+                        oldModelToUpdate.setCategoryBinding(new CategoryBindingModel(
+                                categoryIDSelected,
+                                subCategoryIDSelected
+                        ));
+                        oldModelToUpdate.setPrices(new PriceGroup(
+                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxRetailPrice().getText()).toString()),
+                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSalePrice().getText()).toString())
+                        ));
+                        oldModelToUpdate.setOtherDetails(new OtherDataForItem(
+                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSecurityCharges().getText()).toString()),
+                                oldModelToUpdate.getOtherDetails().getStock(),
+                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxCardHolderDiscount().getText()).toString()),
+                                viewHolder.getImgLink()
+                        ));
+                        oldModelToUpdate.setQty(new QtyUnitModel(
+                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxQty().getText()).toString()),
+                                Objects.requireNonNull(viewHolder.getEdxUnit().getText()).toString()
+                        ));
+
+                        implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_UPDATE, oldModelToUpdate);
+
+                    }
                 }
-            }
-        });
+            });
+
+        }
+
+        else if (action == ActionConstants.ACTION_ADD){
+            viewHolder.getAddItemButton().setText(R.string.add_item);
+            viewHolder.getAddItemButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (viewHolder.analyzeInputs(true)) {
+
+                        viewHolder.getEdxStock().setVisibility(View.VISIBLE);
+
+                        implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_ADD, new ItemModel(
+                                Objects.requireNonNull(viewHolder.getEdxName().getText()).toString(),
+                                Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString(),
+                                new CategoryBindingModel(
+                                        categoryIDSelected,
+                                        subCategoryIDSelected
+                                ),
+                                new PriceGroup(
+                                        Double.parseDouble(viewHolder.getEdxRetailPrice().getText().toString()),
+                                        Double.parseDouble(viewHolder.getEdxSalePrice().getText().toString())
+                                ),
+                                new OtherDataForItem(
+                                        Double.parseDouble(viewHolder.getEdxSecurityCharges().getText().toString()),
+                                        Integer.parseInt(viewHolder.getEdxStock().getText().toString()),
+                                        Double.parseDouble(viewHolder.getEdxCardHolderDiscount().getText().toString()),
+                                        viewHolder.getImgLink()
+                                ),
+                                new QtyUnitModel(
+                                        Double.parseDouble(viewHolder.getEdxQty().getText().toString()),
+                                        viewHolder.getEdxUnit().getText().toString()
+                                )
+                        ));
+
+
+                    }
+                }
+            });
+
+        }
     }
 
     @Override
@@ -323,14 +365,10 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 manager.findViewByPosition(position).findViewById(v.getId())
         );
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             popupMenu.setForceShowIcon(true);
         }
-
         popupMenu.getMenuInflater().inflate(R.menu.admin_option_menu_for_items_display, popupMenu.getMenu());
-
-
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -361,7 +399,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             adapterAdmin.deleteItem(position);
                             Toast.makeText(requireActivity(), modelToDelete.getName() + " has been deleted", Toast.LENGTH_LONG).show();
                         }
@@ -378,6 +416,65 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     @Override
     public void onUpdateDetailsButtonClick(View v, int position, ItemModel oldModelToUpdate) {
 
+        handlePopup(ItemsListFragmentAdmin.this.getView(), ActionConstants.ACTION_UPDATE, oldModelToUpdate);
+
+    }
+
+    private void implementOnClickOnButtonClickOnPopup(final int CURRENT_ACTION, ItemModel model) {
+        if (CURRENT_ACTION == ActionConstants.ACTION_ADD) {
+            firebaseFirestore
+                    .collection(new FirebaseDataKeys().getItemsRef())
+                    .add(model)
+                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            if (task.isSuccessful()) {
+
+                                firebaseFirestore
+                                        .collection(new FirebaseDataKeys().getItemsRef())
+                                        .document(task.getResult().getId())
+                                        .update("id", task.getResult().getId())
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                adapterAdmin.addItem(model);
+                                                progressDialog.dismiss();
+
+                                                itemPopupDialogueBox.setCancelable(true);
+                                                itemPopupDialogueBox.dismiss();
+                                            }
+                                        });
+/*
+
+                                adapterAdmin.addItem(model);
+                                progressDialog.dismiss();
+
+                                itemPopupDialogueBox.setCancelable(true);
+                                itemPopupDialogueBox.dismiss();
+*/
+
+                            }
+                        }
+                    });
+        }
+        else if (CURRENT_ACTION == ActionConstants.ACTION_UPDATE) {
+            firebaseFirestore
+                    .collection(new FirebaseDataKeys().getItemsRef())
+                    .document(model.getID())
+                    .set(model)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.dismiss();
+                            backgroundExecutorForShowingData(ItemsListFragmentAdmin.this.getView());
+                            itemPopupDialogueBox.setCancelable(true);
+                            itemPopupDialogueBox.dismiss();
+
+                        }
+                    });
+        }
+        itemPopupDialogueBox.dismiss();
+        viewHolder.setViewsEmpty();
     }
 
     @Override
@@ -411,6 +508,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         private final View mainView;
 
 
+
         public CustomPopupViewHolder(View view) {
 
             this.mainView = view;
@@ -420,16 +518,13 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             edxRetailPrice = view.findViewById(R.id.edx_add_items_retail);
             edxSalePrice = view.findViewById(R.id.edx_add_items_sale);
             edxStock = view.findViewById(R.id.edx_add_items_stock);
-
             edxQty = view.findViewById(R.id.edx_add_items_qty);
             edxUnit = view.findViewById(R.id.edx_add_items_unit);
-
+            edxSecurityCharges = view.findViewById(R.id.edx_add_items_security);
+            edxCardHolderDiscount = view.findViewById(R.id.edx_add_items_extra_card);
 
             comboBoxCategory = view.findViewById(R.id.admin_items_category_spinner);
             comboBoxSubCategory = view.findViewById(R.id.admin_items_subcategory_spinner);
-
-            edxSecurityCharges = view.findViewById(R.id.edx_add_items_security);
-            edxCardHolderDiscount = view.findViewById(R.id.edx_add_items_extra_card);
 
             //imageDisplayItemImage = (ImageView) view.findViewById(R.id.item_item_image_admin);
 
@@ -495,5 +590,23 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         public String getImgLink() {
             return "null";
         }
+
+        public void setViewsEmpty() {
+            edxName.setText("");
+            edxQty.setText("");
+            edxUnit.setText("");
+            edxDesc.setText("");
+            edxStock.setText("");
+            edxRetailPrice.setText("");
+            edxSalePrice.setText("");
+            edxSecurityCharges.setText("");
+            edxCardHolderDiscount.setText("");
+            edxStock.setText(0);
+        }
+    }
+
+    private class ActionConstants {
+        public static final int ACTION_ADD = 0;
+        public static final int ACTION_UPDATE = 1;
     }
 }

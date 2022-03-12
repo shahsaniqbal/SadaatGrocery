@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.adapters;
+package com.sadaat.groceryapp.adapters.admin;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;

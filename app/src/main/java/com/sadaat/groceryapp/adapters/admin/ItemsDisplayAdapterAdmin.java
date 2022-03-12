@@ -1,12 +1,8 @@
-package com.sadaat.groceryapp.adapters;
+package com.sadaat.groceryapp.adapters.admin;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.os.Build;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,17 +12,12 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.formatter.Price;
 import com.sadaat.groceryapp.models.ItemModel;
-import com.sadaat.groceryapp.models.StockEntry;
-import com.sadaat.groceryapp.models.UserModel;
-import com.sadaat.groceryapp.temp.UserTypes;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayAdapterAdmin.ViewHolder> {
 

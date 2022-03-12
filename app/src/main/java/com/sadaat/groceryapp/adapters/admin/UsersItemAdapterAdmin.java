@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.adapters;
+package com.sadaat.groceryapp.adapters.admin;
 
 import android.view.LayoutInflater;
 import android.view.View;

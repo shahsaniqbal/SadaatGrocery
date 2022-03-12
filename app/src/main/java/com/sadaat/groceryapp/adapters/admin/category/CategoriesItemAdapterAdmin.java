@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.adapters;
+package com.sadaat.groceryapp.adapters.admin.category;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,8 +22,6 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
     private final ArrayList<CategoriesModel> localDataSet;
     public CategoriesItemAdapterListener customOnClickListener;
     public SubcategoriesItemAdapterAdmin.SubCategoriesItemAdapterListener customListenerForSubCategories;
-
-    //private RecyclerView.LayoutManager layoutManager;
 
     public CategoriesItemAdapterAdmin(Context refContext, ArrayList<CategoriesModel> localDataSet, CategoriesItemAdapterListener customOnClickListener, SubcategoriesItemAdapterAdmin.SubCategoriesItemAdapterListener customListenerForSubCategories) {
         this.refContext = refContext;

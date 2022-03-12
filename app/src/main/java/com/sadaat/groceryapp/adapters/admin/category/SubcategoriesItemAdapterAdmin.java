@@ -1,5 +1,6 @@
-package com.sadaat.groceryapp.adapters;
+package com.sadaat.groceryapp.adapters.admin.category;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, @SuppressLint("RecyclerView") int position) {
 
         viewHolder.getTxvTitle().setText(localDataSet.get(position).getTitle());
         viewHolder.getTxvDesc().setText(localDataSet.get(position).getDescription());
@@ -47,7 +48,8 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
                         v,
                         position,
                         mainDocID,
-                        viewHolder.getAdapterPosition());
+                        viewHolder.getAdapterPosition(),
+                        localDataSet.get(viewHolder.getAdapterPosition()));
             }
         });
         viewHolder.getBtnUpdate().setOnClickListener(new View.OnClickListener() {
@@ -90,7 +92,7 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
     public interface SubCategoriesItemAdapterListener {
         void onUpdateSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel categoriesModel);
 
-        void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex);
+        void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel subCategoryToDelete);
     }
 
 

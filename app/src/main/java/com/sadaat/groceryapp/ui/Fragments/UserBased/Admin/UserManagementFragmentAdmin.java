@@ -1,17 +1,13 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 
-import androidx.annotation.GravityInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -30,7 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.adapters.UsersItemAdapterAdmin;
+import com.sadaat.groceryapp.adapters.admin.UsersItemAdapterAdmin;
 import com.sadaat.groceryapp.models.UserModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserTypes;

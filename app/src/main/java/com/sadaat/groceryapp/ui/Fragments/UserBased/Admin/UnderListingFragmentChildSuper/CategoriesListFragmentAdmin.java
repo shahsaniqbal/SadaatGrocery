@@ -22,41 +22,49 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.adapters.CategoriesItemAdapterAdmin;
-import com.sadaat.groceryapp.adapters.SubcategoriesItemAdapterAdmin;
+import com.sadaat.groceryapp.adapters.admin.category.CategoriesItemAdapterAdmin;
+import com.sadaat.groceryapp.adapters.admin.category.SubcategoriesItemAdapterAdmin;
 import com.sadaat.groceryapp.models.CategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class CategoriesListFragmentAdmin extends Fragment implements
         CategoriesItemAdapterAdmin.CategoriesItemAdapterListener,
         View.OnClickListener,
         SubcategoriesItemAdapterAdmin.SubCategoriesItemAdapterListener {
 
+    //Menu | Categories & Subcategories Reference
     final CollectionReference MENU_COLLECTION_REFERENCE = FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef());
+
+    //Button for Adding Categories
     FloatingActionButton addCategoriesButtonOnFragment;
+
+    //Popup Form For Adding & Updating Categories & Subcategories
     AlertDialog.Builder dialogueBuilder;
     AlertDialog itemPopupDialogueBox;
     View popupView;
+    CustomPopupViewHolder customPopupViewHolder;
+
+    //For Listing Categories
     RecyclerView recyclerView;
     RecyclerView.LayoutManager manager;
     CategoriesItemAdapterAdmin adapterAdmin;
     ArrayList<CategoriesModel> list;
+
+
     LoadingDialogue progressDialog;
-    CustomPopupViewHolder customPopupViewHolder;
 
     int actionAddMainCategory = 0;
     String docID = "";
     CategoriesModel categoriesModel = null;
+    SubCategoryIndexDataHolder categoryIndexDataHolder;
 
     public CategoriesListFragmentAdmin() {
     }
@@ -91,6 +99,8 @@ public class CategoriesListFragmentAdmin extends Fragment implements
         manager = new LinearLayoutManager(CategoriesListFragmentAdmin.this.requireActivity());
 
         list = new ArrayList<>();
+        categoryIndexDataHolder = new SubCategoryIndexDataHolder();
+
         progressDialog = new LoadingDialogue(CategoriesListFragmentAdmin.this.requireActivity());
 
         popupView = this.getLayoutInflater().inflate(R.layout.admin_popup_add_categories, null, false);
@@ -160,69 +170,6 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                 });
 
 
-    }
-
-
-    public static class CustomPopupViewHolder {
-
-        public static final int ACTION_ADD_MAIN_CATEGORY = 0;
-        public static final int ACTION_ADD_SUB_CATEGORY = 1;
-        public static final int ACTION_UPDATE_MAIN_CATEGORY = 2;
-        public static final int ACTION_UPDATE_SUB_CATEGORY = 3;
-        private final TextInputEditText edxCate;
-        private final TextInputEditText edxCateDescription;
-        private final MaterialButton addCategory;
-
-        public CustomPopupViewHolder(View view) {
-            edxCate = view.findViewById(R.id.cateTitle);
-            edxCateDescription = view.findViewById(R.id.cateDesc);
-            addCategory = view.findViewById(R.id.addCategory);
-        }
-
-        public TextInputEditText getEdxCate() {
-            return edxCate;
-        }
-
-        public TextInputEditText getEdxCateDescription() {
-            return edxCateDescription;
-        }
-
-        public MaterialButton getAddCategoryButton() {
-            return addCategory;
-        }
-
-        void setViewsReadyForAction(int ACTION_CODE) {
-            if (ACTION_CODE == ACTION_ADD_MAIN_CATEGORY) {
-                edxCate.setHint("Enter Category Name");
-                edxCateDescription.setHint("Enter Category Description\n(Optional)");
-                addCategory.setText("Add Category");
-
-            } else if (ACTION_CODE == ACTION_ADD_SUB_CATEGORY) {
-                edxCate.setHint("Enter Subcategory Name");
-                edxCateDescription.setHint("Enter Subcategory Description\n(Optional)");
-                addCategory.setText("Add Subcategory");
-
-            } else if (ACTION_CODE == ACTION_UPDATE_MAIN_CATEGORY) {
-                edxCate.setHint("Enter New Name");
-                edxCateDescription.setHint("Enter New Description for Category\n(Optional)");
-                addCategory.setText("Update Category");
-            } else if (ACTION_CODE == ACTION_UPDATE_SUB_CATEGORY) {
-                edxCate.setHint("Enter New Name");
-                edxCateDescription.setHint("Enter New Description for Subcategory\n(Optional)");
-                addCategory.setText("Update Subcategory");
-
-            }
-        }
-
-        public boolean inputAnalyzer(boolean b) {
-            //TODO Modify this method
-            return true;
-        }
-
-        public void setViewsEmpty() {
-            edxCate.setText("");
-            edxCateDescription.setText("");
-        }
     }
 
     @Override
@@ -298,7 +245,8 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                 }
 
 
-            } else if (actionAddMainCategory == CustomPopupViewHolder.ACTION_ADD_SUB_CATEGORY) {
+            }
+            else if (actionAddMainCategory == CustomPopupViewHolder.ACTION_ADD_SUB_CATEGORY) {
 
                 if (customPopupViewHolder.inputAnalyzer(true)) {
                     CategoriesModel subCategory = new CategoriesModel(
@@ -312,12 +260,14 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             MENU_COLLECTION_REFERENCE.document(docID).update("subCategories", FieldValue.arrayUnion(subCategory));
+                            backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
                             itemPopupDialogueBox.dismiss();
                         }
                     });
                 }
 
-            } else if (actionAddMainCategory == CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY || actionAddMainCategory == CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY) {
+            }
+            else if (actionAddMainCategory == CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY) {
                 if (customPopupViewHolder.inputAnalyzer(true)) {
 
                     categoriesModel.setTitle(customPopupViewHolder.getEdxCate().getText().toString());
@@ -350,6 +300,51 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                 }
 
             }
+            else if (actionAddMainCategory == CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY) {
+                if (customPopupViewHolder.inputAnalyzer(true)) {
+
+                    categoryIndexDataHolder.getCategoriesModel().setTitle(customPopupViewHolder.getEdxCate().getText().toString());
+                    categoryIndexDataHolder.getCategoriesModel().setDescription(customPopupViewHolder.getEdxCateDescription().getText().toString());
+
+                    progressDialog.show("Please Wait", "While We Are Updating Subcategory Data");
+
+                    MENU_COLLECTION_REFERENCE
+                            .document(new SubCategoryIndexDataHolder().getMainDocID())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    categoriesModel = task.getResult().toObject(CategoriesModel.class);
+
+                                    categoriesModel.getSubCategories().remove(categoryIndexDataHolder.getSubDocIndex());
+                                    categoriesModel.getSubCategories().add(categoryIndexDataHolder.getSubDocIndex(), categoryIndexDataHolder.getCategoriesModel());
+
+                                    MENU_COLLECTION_REFERENCE
+                                            .document(categoryIndexDataHolder.getMainDocID())
+                                            .set(categoriesModel)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        itemPopupDialogueBox.dismiss();
+                                                        Toast.makeText(requireActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
+                                                        customPopupViewHolder.setViewsEmpty();
+                                                        backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
+
+                                                    } else if (task.isCanceled()) {
+                                                        itemPopupDialogueBox.dismiss();
+                                                        Toast.makeText(requireActivity(), "Update Failed", Toast.LENGTH_SHORT).show();
+                                                        customPopupViewHolder.setViewsEmpty();
+                                                    }
+                                                    progressDialog.dismiss();
+                                                }
+                                            });
+
+                                }
+                            });
+                }
+
+            }
 
             customPopupViewHolder.setViewsEmpty();
 
@@ -358,11 +353,133 @@ public class CategoriesListFragmentAdmin extends Fragment implements
 
     @Override
     public void onUpdateSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel categoriesModel) {
+        actionAddMainCategory = CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY;
+        customPopupViewHolder.setViewsReadyForAction(actionAddMainCategory);
+
+        categoryIndexDataHolder.setMainDocID(mainDocID);
+        categoryIndexDataHolder.setCategoriesModel(categoriesModel);
+        categoryIndexDataHolder.setSubDocIndex(subDocIndex);
+
+        customPopupViewHolder.getEdxCate().setText(categoriesModel.getTitle());
+        customPopupViewHolder.getEdxCateDescription().setText(categoriesModel.getDescription());
+
+        itemPopupDialogueBox.show();
 
     }
 
     @Override
-    public void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex) {
+    public void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel subCategoryToDelete) {
+        MENU_COLLECTION_REFERENCE
+                .document(mainDocID)
+                .update("subCategories", FieldValue.arrayRemove(subCategoryToDelete))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
+                        }
+                    }
+                });
 
+    }
+
+    public static class CustomPopupViewHolder {
+
+        public static final int ACTION_ADD_MAIN_CATEGORY = 0;
+        public static final int ACTION_ADD_SUB_CATEGORY = 1;
+        public static final int ACTION_UPDATE_MAIN_CATEGORY = 2;
+        public static final int ACTION_UPDATE_SUB_CATEGORY = 3;
+        private final TextInputEditText edxCate;
+        private final TextInputEditText edxCateDescription;
+        private final MaterialButton addCategory;
+
+        public CustomPopupViewHolder(View view) {
+            edxCate = view.findViewById(R.id.cateTitle);
+            edxCateDescription = view.findViewById(R.id.cateDesc);
+            addCategory = view.findViewById(R.id.addCategory);
+        }
+
+        public TextInputEditText getEdxCate() {
+            return edxCate;
+        }
+
+        public TextInputEditText getEdxCateDescription() {
+            return edxCateDescription;
+        }
+
+        public MaterialButton getAddCategoryButton() {
+            return addCategory;
+        }
+
+        void setViewsReadyForAction(int ACTION_CODE) {
+            if (ACTION_CODE == ACTION_ADD_MAIN_CATEGORY) {
+                edxCate.setHint("Enter Category Name");
+                edxCateDescription.setHint("Enter Category Description\n(Optional)");
+                addCategory.setText("Add Category");
+
+            } else if (ACTION_CODE == ACTION_ADD_SUB_CATEGORY) {
+                edxCate.setHint("Enter Subcategory Name");
+                edxCateDescription.setHint("Enter Subcategory Description\n(Optional)");
+                addCategory.setText("Add Subcategory");
+
+            } else if (ACTION_CODE == ACTION_UPDATE_MAIN_CATEGORY) {
+                edxCate.setHint("Enter New Name");
+                edxCateDescription.setHint("Enter New Description for Category\n(Optional)");
+                addCategory.setText("Update Category");
+            } else if (ACTION_CODE == ACTION_UPDATE_SUB_CATEGORY) {
+                edxCate.setHint("Enter New Name");
+                edxCateDescription.setHint("Enter New Description for Subcategory\n(Optional)");
+                addCategory.setText("Update Subcategory");
+
+            }
+        }
+
+        public boolean inputAnalyzer(boolean b) {
+            //TODO Modify this method
+            return true;
+        }
+
+        public void setViewsEmpty() {
+            edxCate.setText("");
+            edxCateDescription.setText("");
+        }
+    }
+
+    private class SubCategoryIndexDataHolder {
+        private String mainDocID;
+        private int subDocIndex;
+        private CategoriesModel categoriesModel;
+
+        public SubCategoryIndexDataHolder() {
+            this.mainDocID = "SX7JBR81GmqlHh6MD51M";
+            this.subDocIndex = 0;
+            this.categoriesModel = new CategoriesModel();
+            this.categoriesModel.setDocID(this.mainDocID);
+        }
+
+
+        public String getMainDocID() {
+            return mainDocID;
+        }
+
+        public void setMainDocID(String mainDocID) {
+            this.mainDocID = mainDocID;
+        }
+
+        public int getSubDocIndex() {
+            return subDocIndex;
+        }
+
+        public void setSubDocIndex(int subDocIndex) {
+            this.subDocIndex = subDocIndex;
+        }
+
+        public CategoriesModel getCategoriesModel() {
+            return categoriesModel;
+        }
+
+        public void setCategoriesModel(CategoriesModel categoriesModel) {
+            this.categoriesModel = categoriesModel;
+        }
     }
 }
