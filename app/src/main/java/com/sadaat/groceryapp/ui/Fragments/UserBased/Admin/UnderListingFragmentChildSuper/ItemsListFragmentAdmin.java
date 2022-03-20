@@ -64,7 +64,6 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     AlertDialog itemPopupDialogueBox;
     View popupView;
 
-    ArrayList<CategoriesModel> categories;
     ArrayList<CategoriesModel> subcategories;
 
     ArrayList<String> categoriesList;
@@ -115,6 +114,80 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 handlePopup(view, ActionConstants.ACTION_ADD, null);
             }
         });
+
+
+        progressDialog.show("Please Wait", "Loading Categories");
+
+
+        FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<DocumentSnapshot> categoriesListRaw = task.getResult().getDocuments();
+
+
+                            ArrayList<CategoriesModel> categories = new ArrayList<>();
+
+
+                            for (DocumentSnapshot d :
+                                    categoriesListRaw) {
+
+                                CategoriesModel category = new CategoriesModel(d.getId(), Objects.requireNonNull(d.toObject(CategoriesModel.class)));
+                                categories.add(category);
+                                categorySpinnerAdapter.add(category.toString());
+                            }
+
+                            viewHolder.getComboBoxCategory().setVisibility(View.VISIBLE);
+                            categoryIDSelected = Objects.requireNonNull(categoriesListRaw.get(0).toObject(CategoriesModel.class)).getDocID();
+
+                            progressDialog.dismiss();
+
+                            viewHolder.getComboBoxCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                                    categoryIDSelected = categories.get(position).getDocID();
+                                    subcategories = categories.get(position).getSubCategories();
+
+                                    subcategorySpinnerAdapter.clear();
+                                    progressDialog.show("Please Wait", "Loading Subcategories of " + categories.get(position).getTitle());
+
+                                    for (CategoriesModel subCategory :
+                                            subcategories) {
+                                        subcategorySpinnerAdapter.add(subCategory.toString());
+                                    }
+
+                                    progressDialog.dismiss();
+
+                                    viewHolder.getComboBoxSubCategory().setVisibility(View.VISIBLE);
+
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> parent) {
+
+                                }
+                            });
+                            viewHolder.getComboBoxSubCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                    subCategoryIDSelected = subcategories.get(position).getDocID();
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> parent) {
+
+                                }
+                            });
+
+
+                        }
+                    }
+                });
+
     }
 
     @Override
@@ -150,7 +223,6 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         categoryIDSelected = "";
         subCategoryIDSelected = "";
-        categories = new ArrayList<>();
 
         categoriesList = new ArrayList<>();
         subcategoriesList = new ArrayList<>();
@@ -198,75 +270,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         viewHolder = new CustomPopupViewHolder(popupView);
         itemPopupDialogueBox.show();
 
-        progressDialog.show("Please Wait", "Loading Categories");
-
-
-        FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<DocumentSnapshot> categoriesListRaw = task.getResult().getDocuments();
-
-                            for (DocumentSnapshot d :
-                                    categoriesListRaw) {
-
-                                CategoriesModel category = new CategoriesModel(d.getId(), Objects.requireNonNull(d.toObject(CategoriesModel.class)));
-                                categories.add(category);
-                                categorySpinnerAdapter.add(category.toString());
-                            }
-
-                            viewHolder.getComboBoxCategory().setVisibility(View.VISIBLE);
-                            progressDialog.dismiss();
-
-                        }
-                    }
-                });
-
-        viewHolder.getComboBoxCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                subcategories = categories.get(position).getSubCategories();
-
-                subcategorySpinnerAdapter.clear();
-
-                categoryIDSelected = categories.get(position).getDocID();
-
-                progressDialog.show("Please Wait", "Loading Subcategories of " + categories.get(position).getTitle());
-
-                for (CategoriesModel subCategory :
-                        subcategories) {
-                    subcategorySpinnerAdapter.add(subCategory.toString());
-                }
-
-                progressDialog.dismiss();
-
-                viewHolder.getComboBoxSubCategory().setVisibility(View.VISIBLE);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        viewHolder.getComboBoxSubCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                subCategoryIDSelected = subcategories.get(position).getDocID();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
-        if (action == ActionConstants.ACTION_UPDATE){
+        if (action == ActionConstants.ACTION_UPDATE) {
 
             viewHolder.getAddItemButton().setText("Update Item");
 
@@ -315,16 +319,14 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 }
             });
 
-        }
-
-        else if (action == ActionConstants.ACTION_ADD){
+        } else if (action == ActionConstants.ACTION_ADD) {
             viewHolder.getAddItemButton().setText(R.string.add_item);
+            viewHolder.getEdxStock().setVisibility(View.VISIBLE);
             viewHolder.getAddItemButton().setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     if (viewHolder.analyzeInputs(true)) {
-
-                        viewHolder.getEdxStock().setVisibility(View.VISIBLE);
 
                         implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_ADD, new ItemModel(
                                 Objects.requireNonNull(viewHolder.getEdxName().getText()).toString(),
@@ -456,8 +458,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                             }
                         }
                     });
-        }
-        else if (CURRENT_ACTION == ActionConstants.ACTION_UPDATE) {
+        } else if (CURRENT_ACTION == ActionConstants.ACTION_UPDATE) {
             firebaseFirestore
                     .collection(new FirebaseDataKeys().getItemsRef())
                     .document(model.getID())
@@ -506,7 +507,6 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         private final MaterialButton addItemButton;
         private final View mainView;
-
 
 
         public CustomPopupViewHolder(View view) {
@@ -601,7 +601,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             edxSalePrice.setText("");
             edxSecurityCharges.setText("");
             edxCardHolderDiscount.setText("");
-            edxStock.setText(0);
+            edxStock.setText("" + 0);
         }
     }
 

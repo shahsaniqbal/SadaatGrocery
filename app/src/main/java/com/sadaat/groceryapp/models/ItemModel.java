@@ -6,7 +6,7 @@ import com.sadaat.groceryapp.models.Items.PriceGroup;
 import com.sadaat.groceryapp.models.Items.QtyUnitModel;
 
 public class ItemModel {
-    private String ID;
+    private String ID = "";
     private String name;
     private String description;
 

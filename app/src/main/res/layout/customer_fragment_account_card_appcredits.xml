@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="16dp"
+    android:layout_gravity="center"
+    app:cardElevation="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#27000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="0.75"
+            android:layout_height="match_parent"
+            android:src="@color/scarlet_red_700"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="9"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:gravity="center">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="App Credits"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/scarlet_red_700"
+                android:shadowColor="@color/royal_blue_700"
+                android:textColorHighlight="@color/white"
+                android:fontFamily="serif-monospace"
+                android:layout_margin="10dp"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="10000 Points"
+                android:gravity="center"
+                android:fontFamily="serif-monospace"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@android:color/holo_green_light"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pending: 1000"
+                android:fontFamily="serif-monospace"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_margin="10dp"/>
+
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_baseline_keyboard_arrow_right_24"/>
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

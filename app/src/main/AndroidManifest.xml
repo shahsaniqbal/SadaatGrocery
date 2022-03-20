@@ -10,11 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SadaatGroceryStore">
         <activity
+            android:name=".ui.Activities.UsersBased.Customers.MainActivityCustomer"
+            android:exported="false" />
+        <activity
             android:name=".ui.Activities.UsersBased.Admin.MainActivityAdmin"
-            android:theme="@style/Theme.SadaatGroceryStore.NoActionBar"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"
+            android:theme="@style/Theme.SadaatGroceryStore.NoActionBar"></activity>
         <activity
             android:name=".ui.Activities.GenericForAll.LoginNavigatorActivity"
             android:exported="false" />
@@ -23,6 +24,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

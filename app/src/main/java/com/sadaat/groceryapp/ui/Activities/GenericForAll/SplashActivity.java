@@ -1,5 +1,6 @@
 package com.sadaat.groceryapp.ui.Activities.GenericForAll;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -22,7 +23,6 @@ import java.util.Objects;
 
 public class SplashActivity extends AppCompatActivity {
 
-    BackgroundExecutor backgroundExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,78 +33,52 @@ public class SplashActivity extends AppCompatActivity {
 
         String uid = FirebaseAuth.getInstance().getUid();
 
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+
         if (uid == null || uid.isEmpty()) {
             callToActionOnUserDataNotFound();
         } else {
             performSplashOnUserdataFound(uid);
         }
 
-        backgroundExecutor.startExecution();
-    }
+   }
 
     private void performSplashOnUserdataFound(String uid) {
 
-        backgroundExecutor = new BackgroundExecutor() {
-            @Override
-            protected Object backgroundTaskOnThread(Object... objects) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getUsersRef())
+                .document(uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @SuppressLint("StaticFieldLeak")
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            UserLive.currentLoggedInUser = task.getResult().toObject(UserModel.class);
+                            startActivity(new LoginIntentHandler(SplashActivity.this, UserLive.currentLoggedInUser.getUserType()));
+                            finish();
+                        }
+                    }
+                });
 
-            @Override
-            protected void beforeTask() {
 
-            }
-
-            @Override
-            protected void afterExecutionOnMainThread(Object o) {
-                FirebaseFirestore
-                        .getInstance()
-                        .collection(new FirebaseDataKeys().getUsersRef())
-                        .document(uid)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    UserLive.currentLoggedInUser = task.getResult().toObject(UserModel.class);
-                                    startActivity(new LoginIntentHandler(SplashActivity.this, UserLive.currentLoggedInUser.getUserType()));
-                                    finish();
-                                }
-                            }
-                        });
-
-            }
-        };
     }
 
     private void callToActionOnUserDataNotFound() {
-        backgroundExecutor = new BackgroundExecutor() {
-            @Override
-            protected Object backgroundTaskOnThread(Object... objects) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void beforeTask() {
-
-            }
-
-            @Override
-            protected void afterExecutionOnMainThread(Object o) {
-                startActivity(new Intent(SplashActivity.this, LoginNavigatorActivity.class));
-                finish();
-            }
-        };
+        startActivity(new Intent(SplashActivity.this, LoginNavigatorActivity.class));
+        finish();
     }
 
 }
