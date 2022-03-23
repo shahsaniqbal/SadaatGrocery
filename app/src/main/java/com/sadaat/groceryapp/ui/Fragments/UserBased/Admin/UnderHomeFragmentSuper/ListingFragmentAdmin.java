@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,16 +17,13 @@ import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentCh
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.ItemsListFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.LocationsListFragmentAdmin;
 
-import kotlin.reflect.KCallable;
-
 public class ListingFragmentAdmin extends Fragment implements View.OnClickListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    View root;
     private String mParam1;
     private String mParam2;
-
-    View root;
 
     public ListingFragmentAdmin() {
         // Required empty public constructor
@@ -94,7 +90,7 @@ public class ListingFragmentAdmin extends Fragment implements View.OnClickListen
     private void caller(Class c) {
 
 
-        if (getActivity()!=null){
+        if (getActivity() != null) {
             FrameLayout fl;
             fl = root.findViewById(R.id.admin_listing_frame);
             fl.removeAllViews();
@@ -124,8 +120,7 @@ public class ListingFragmentAdmin extends Fragment implements View.OnClickListen
 
 
     // This method is being used for Highlights and default behavior settings for FrameLayout
-    void setActionClicksBehavior(int viewID){
-
+    void setActionClicksBehavior(int viewID) {
 
 
         switch (viewID) {

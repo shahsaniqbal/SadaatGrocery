@@ -20,7 +20,7 @@ public class LoginIntentHandler extends Intent {
     //TODO 0006 To Change the Classes After Making User based Main Activities
 
     private final Class<?> CLASS_IF_ADMIN = MainActivityAdmin.class;
-    private final Class<?> CLASS_IF_CUSTOMER = MainActivityCustomer.class;
+    private final Class<?> CLASS_IF_CUSTOMER = MainActivityAdmin.class;
     private final Class<?> CLASS_IF_DELIVERY_BOY = MainActivityAdmin.class;
 
 

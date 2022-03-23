@@ -90,6 +90,13 @@
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/menu/admin_responses_menu_bottom.xml" value="0.2" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/menu/customer_home_menu_bottom.xml" value="0.198046875" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/menu/main_activity_admin.xml" value="0.26927083333333335" />
+        <entry key="app/src/main/res/layout/admin_app_bar_main_activity.xml" value="0.40729166666666666" />
+        <entry key="app/src/main/res/layout/admin_content_main_activity.xml" value="0.40729166666666666" />
+        <entry key="app/src/main/res/layout/admin_fragment_returns.xml" value="0.3591485507246377" />
+        <entry key="app/src/main/res/layout/admin_popup_add_categories.xml" value="0.40102564102564103" />
+        <entry key="app/src/main/res/layout/customer_activity_main.xml" value="0.40729166666666666" />
+        <entry key="app/src/main/res/layout/customer_content_main_activity.xml" value="0.40729166666666666" />
+        <entry key="app/src/main/res/layout/sadaat_waiting_progress_layout.xml" value="0.40729166666666666" />
       </map>
     </option>
   </component>

@@ -7,6 +7,14 @@
     android:background="@color/white"
     android:gravity="center">
 
+    <ImageView
+        android:id="@+id/add_category_image"
+        android:clickable="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/grocery_categories"
+        android:focusable="true" />
+
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/cateTitle"
         android:layout_width="match_parent"

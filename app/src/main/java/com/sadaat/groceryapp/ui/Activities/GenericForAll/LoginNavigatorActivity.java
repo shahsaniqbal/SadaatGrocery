@@ -9,6 +9,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.ui.Fragments.Generic.LoginFragment;
 
+import java.util.Objects;
+
 public class LoginNavigatorActivity extends AppCompatActivity {
 
     FragmentManager fragmentManager;
@@ -18,7 +20,7 @@ public class LoginNavigatorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generic_activity_login_navigator);
 
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -26,7 +28,5 @@ public class LoginNavigatorActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 .addToBackStack("login_frg") // name can be null
                 .commit();
-
-
     }
 }

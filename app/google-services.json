@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "1487961874",
-    "firebase_url": "https://sadaatonlicerystore-default-rtdb.firebaseio.com",
-    "project_id": "sadaatonlicerystore",
-    "storage_bucket": "sadaatonlicerystore.appspot.com"
+    "project_number": "247403376965",
+    "firebase_url": "https://sadaat-grocery-store-default-rtdb.firebaseio.com",
+    "project_id": "sadaat-grocery-store",
+    "storage_bucket": "sadaat-grocery-store.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1487961874:android:00d6be491f9ea5491d7dcb",
+        "mobilesdk_app_id": "1:247403376965:android:0e30d4b58b4a2b275dce2c",
         "android_client_info": {
           "package_name": "com.sadaat.groceryapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1487961874-o4428c47mn5e3u2a0asg6ut6bublmvto.apps.googleusercontent.com",
+          "client_id": "247403376965-icorggqkb01k9nesg4droj68cs6qqtr3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sadaat.groceryapp",
+            "certificate_hash": "14c2b00d9b8a9503ed702fd14eec0509aa40d5c9"
+          }
+        },
+        {
+          "client_id": "247403376965-iat3dvds09o7debt169mlrkpe1s7i7mn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyArD1Hpm4_A7EExrAoEP1FuQeLsSnYxn-g"
+          "current_key": "AIzaSyBoyJDOcnmcFgPvAgND7FUnes4xxU-2xzo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1487961874-o4428c47mn5e3u2a0asg6ut6bublmvto.apps.googleusercontent.com",
+              "client_id": "247403376965-iat3dvds09o7debt169mlrkpe1s7i7mn.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
