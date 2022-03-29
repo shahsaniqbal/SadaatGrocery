@@ -5,9 +5,11 @@ import static android.app.Activity.RESULT_OK;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,9 +47,11 @@ import com.sadaat.groceryapp.models.CategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 public class CategoriesListFragmentAdmin extends Fragment implements
@@ -75,11 +79,19 @@ public class CategoriesListFragmentAdmin extends Fragment implements
     String docID = "";
     CategoriesModel categoriesModel = null;
     SubCategoryIndexDataHolder categoryIndexDataHolder;
+    FirebaseStorage storage;
+    StorageReference storageRef;
+
+
+    //Uploaded Image path on Firebase Storage
+    String imageResource = "";
+    //Uri for Image (To be uploaded and setDrawable to ImageView)
     private Uri imageFetchUri;
-    private final StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
 
     public CategoriesListFragmentAdmin() {
     }
+
 
     public static CategoriesListFragmentAdmin newInstance() {
         CategoriesListFragmentAdmin fragment = new CategoriesListFragmentAdmin();
@@ -106,28 +118,27 @@ public class CategoriesListFragmentAdmin extends Fragment implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        addCategoriesButtonOnFragment = view.findViewById(R.id.fab);
-        recyclerView = view.findViewById(R.id.recycler_categories);
-        manager = new LinearLayoutManager(CategoriesListFragmentAdmin.this.requireActivity());
+        this.addCategoriesButtonOnFragment = view.findViewById(R.id.fab);
+        this.recyclerView = view.findViewById(R.id.recycler_categories);
+        this.manager = new LinearLayoutManager(CategoriesListFragmentAdmin.this.requireActivity());
 
-        list = new ArrayList<>();
-        categoryIndexDataHolder = new SubCategoryIndexDataHolder();
+        this.list = new ArrayList<>();
+        this.categoryIndexDataHolder = new SubCategoryIndexDataHolder();
 
-        progressDialog = new LoadingDialogue(CategoriesListFragmentAdmin.this.requireActivity());
+        this.progressDialog = new LoadingDialogue(CategoriesListFragmentAdmin.this.requireActivity());
 
-        popupView = this.getLayoutInflater().inflate(R.layout.admin_popup_add_categories, null, false);
+        this.popupView = this.getLayoutInflater().inflate(R.layout.admin_popup_add_categories, null, false);
 
-        customPopupViewHolder = new CustomPopupViewHolder(popupView);
+        this.customPopupViewHolder = new CustomPopupViewHolder(popupView);
 
-        dialogueBuilder = new AlertDialog.Builder(requireActivity());
+        this.dialogueBuilder = new AlertDialog.Builder(requireActivity());
 
-        dialogueBuilder.setView(popupView);
-        itemPopupDialogueBox = dialogueBuilder.create();
+        this.dialogueBuilder.setView(popupView);
+        this.itemPopupDialogueBox = dialogueBuilder.create();
 
-        progressDialog.show("Please Wait", "While We Are Fetching Categories for you");
+        this.progressDialog.show("Please Wait", "While We Are Fetching Categories for you");
 
-
-        adapterAdmin = new CategoriesItemAdapterAdmin(
+        this.adapterAdmin = new CategoriesItemAdapterAdmin(
                 CategoriesListFragmentAdmin.this.requireActivity(),
                 list,
                 this,
@@ -138,8 +149,10 @@ public class CategoriesListFragmentAdmin extends Fragment implements
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapterAdmin);
 
-        backgroundExecutorForShowingData(view);
+        storage = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS);
+        storageRef = storage.getReference();
 
+        backgroundExecutorForShowingData(view);
 
         //Popup Display
         addCategoriesButtonOnFragment.setOnClickListener(new View.OnClickListener() {
@@ -177,24 +190,24 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                             progressDialog.dismiss();
 
                         } else {
-
+                            Toast.makeText(CategoriesListFragmentAdmin.this.requireActivity(), "Error Fetching Activities Data", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
                         }
                     }
                 });
-
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle(null);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Categories");
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle("Listing -> Categories");
     }
 
     @Override
@@ -215,6 +228,24 @@ public class CategoriesListFragmentAdmin extends Fragment implements
         }
         customPopupViewHolder.getEdxCate().setText(categoriesModel.getTitle());
         customPopupViewHolder.getEdxCateDescription().setText(categoriesModel.getDescription());
+
+        if (!categoriesModel.getImageRef().equals("")) {
+
+            StorageReference imgRef = storageRef.child(categoriesModel.getImageRef().toString());
+            final long ONE_MEGABYTE = 1024 * 1024;
+            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    customPopupViewHolder.getImgViewAddImageToCategory().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(CategoriesListFragmentAdmin.this.requireActivity(), "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
         customPopupViewHolder.setViewsReadyForAction(CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY);
         itemPopupDialogueBox.show();
 
@@ -244,7 +275,15 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                     String title = customPopupViewHolder.getEdxCate().getText().toString();
                     String desc = customPopupViewHolder.getEdxCateDescription().getText().toString();
                     MENU_COLLECTION_REFERENCE
-                            .add(new CategoriesModel(title, desc, true))
+                            .add(new CategoriesModel(
+                                    "",
+                                    title,
+                                    desc,
+                                    true,
+                                    false,
+                                    new ArrayList<CategoriesModel>(),
+                                    imageResource
+                            ))
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
@@ -253,6 +292,8 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                                     itemPopupDialogueBox.dismiss();
 
                                     documentReference.update("docID", documentReference.getId());
+                                    imageResource = "";
+                                    customPopupViewHolder.getImgViewAddImageToCategory().setImageResource(R.mipmap.grocery_categories);
                                 }
                             });
                 }
@@ -262,11 +303,13 @@ public class CategoriesListFragmentAdmin extends Fragment implements
 
                 if (customPopupViewHolder.inputAnalyzer(true)) {
                     CategoriesModel subCategory = new CategoriesModel(
+                            "",
                             customPopupViewHolder.getEdxCate().getText().toString(),
                             customPopupViewHolder.getEdxCateDescription().getText().toString(),
                             false,
                             false,
-                            null
+                            null,
+                            imageResource
                     );
                     MENU_COLLECTION_REFERENCE.document(docID).update("hasSubcategories", true).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -277,11 +320,14 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            subCategory.setDocID(getRandomDocumentID(((String) task.getResult().get("title")).substring(0, 2)));
+                                            subCategory.setDocID(getRandomDocumentID(((String) Objects.requireNonNull(task.getResult().get("title"))).substring(0, 2)));
                                             MENU_COLLECTION_REFERENCE.document(docID).update("subCategories", FieldValue.arrayUnion(subCategory));
                                             MENU_COLLECTION_REFERENCE.document(docID).update("subCategoriesCount", FieldValue.increment(1));
                                             backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
                                             itemPopupDialogueBox.dismiss();
+                                            imageResource = "";
+                                            customPopupViewHolder.getImgViewAddImageToCategory().setImageResource(R.mipmap.grocery_categories);
+
                                         }
                                     });
                         }
@@ -293,6 +339,10 @@ public class CategoriesListFragmentAdmin extends Fragment implements
 
                     categoriesModel.setTitle(customPopupViewHolder.getEdxCate().getText().toString());
                     categoriesModel.setDescription(customPopupViewHolder.getEdxCateDescription().getText().toString());
+
+                    if (!imageResource.equals("")) {
+                        categoriesModel.setImageRef(imageResource);
+                    }
 
                     progressDialog.show("Please Wait", "While We Are Updating Data");
 
@@ -314,7 +364,8 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                                         customPopupViewHolder.setViewsEmpty();
                                     }
                                     progressDialog.dismiss();
-
+                                    imageResource = "";
+                                    customPopupViewHolder.getImgViewAddImageToCategory().setImageResource(R.mipmap.grocery_categories);
 
                                 }
                             });
@@ -325,41 +376,53 @@ public class CategoriesListFragmentAdmin extends Fragment implements
 
                     categoryIndexDataHolder.getCategoriesModel().setTitle(customPopupViewHolder.getEdxCate().getText().toString());
                     categoryIndexDataHolder.getCategoriesModel().setDescription(customPopupViewHolder.getEdxCateDescription().getText().toString());
-
+                    if (!imageResource.equals("")) {
+                        categoryIndexDataHolder.getCategoriesModel().setImageRef(imageResource);
+                    }
                     progressDialog.show("Please Wait", "While We Are Updating Subcategory Data");
 
                     MENU_COLLECTION_REFERENCE
-                            .document(new SubCategoryIndexDataHolder().getMainDocID())
+                            .document(categoryIndexDataHolder.getMainDocID())
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    categoriesModel = task.getResult().toObject(CategoriesModel.class);
 
-                                    categoriesModel.getSubCategories().remove(categoryIndexDataHolder.getSubDocIndex());
-                                    categoriesModel.getSubCategories().add(categoryIndexDataHolder.getSubDocIndex(), categoryIndexDataHolder.getCategoriesModel());
+                                    if (task.isSuccessful()) {
+                                        categoriesModel = task.getResult().toObject(CategoriesModel.class);
 
-                                    MENU_COLLECTION_REFERENCE
-                                            .document(categoryIndexDataHolder.getMainDocID())
-                                            .set(categoriesModel)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        itemPopupDialogueBox.dismiss();
-                                                        Toast.makeText(requireActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
-                                                        customPopupViewHolder.setViewsEmpty();
-                                                        backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
+                                        if (categoriesModel != null) {
 
-                                                    } else if (task.isCanceled()) {
-                                                        itemPopupDialogueBox.dismiss();
-                                                        Toast.makeText(requireActivity(), "Update Failed", Toast.LENGTH_SHORT).show();
-                                                        customPopupViewHolder.setViewsEmpty();
+                                            if (categoriesModel.getSubCategories() != null) {
+                                                categoriesModel.getSubCategories().remove(categoryIndexDataHolder.getSubDocIndex());
+                                                categoriesModel.getSubCategories().add(categoryIndexDataHolder.getSubDocIndex(), categoryIndexDataHolder.getCategoriesModel());
+                                            }
+
+                                        }
+                                        MENU_COLLECTION_REFERENCE
+                                                .document(categoryIndexDataHolder.getMainDocID())
+                                                .set(categoriesModel)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            itemPopupDialogueBox.dismiss();
+                                                            Toast.makeText(requireActivity(), "Updated Successfully", Toast.LENGTH_SHORT).show();
+                                                            customPopupViewHolder.setViewsEmpty();
+                                                            backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
+
+                                                        } else if (task.isCanceled()) {
+                                                            itemPopupDialogueBox.dismiss();
+                                                            Toast.makeText(requireActivity(), "Update Failed", Toast.LENGTH_SHORT).show();
+                                                            customPopupViewHolder.setViewsEmpty();
+                                                        }
+                                                        progressDialog.dismiss();
+                                                        imageResource = "";
+                                                        customPopupViewHolder.getImgViewAddImageToCategory().setImageResource(R.mipmap.grocery_categories);
+
                                                     }
-                                                    progressDialog.dismiss();
-                                                }
-                                            });
-
+                                                });
+                                    }
                                 }
                             });
                 }
@@ -440,68 +503,64 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                         .getBitmap(
                                 this.requireActivity().getContentResolver(),
                                 imageFetchUri);
+                //Setting Image Bitmap to my desired ImageView
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+
                 customPopupViewHolder.getImgViewAddImageToCategory().setImageBitmap(bitmap);
 
-                uploadImage();
+                uploadImage(baos.toByteArray());
+
             } catch (IOException e) {
-                // Log the exception
                 e.printStackTrace();
             }
         }
     }
 
-    private void uploadImage() {
+    private void uploadImage(byte[] bytes) {
         if (imageFetchUri != null) {
 
             // Code for showing progressDialog while uploading
             progressDialog.show("Uploading", "Image");
 
             // Defining the child of storageReference
-            StorageReference ref
-                    = storageRef
-                    .child(
-                            "images/"
-                                    + UUID.randomUUID().toString());
+            imageResource = "images/categories/" + UUID.randomUUID().toString();
 
-            // adding listeners on upload
-            // or failure of image
-            ref.putFile(imageFetchUri)
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            StorageReference ref = storageRef.child(imageResource);
+
+            ref.putBytes(bytes)
                     .addOnSuccessListener(
                             new OnSuccessListener<UploadTask.TaskSnapshot>() {
-
                                 @Override
                                 public void onSuccess(
                                         UploadTask.TaskSnapshot taskSnapshot) {
-
-                                    // Image uploaded successfully
-                                    // Dismiss dialog
                                     progressDialog.dismiss();
-                                    Toast
-                                            .makeText(CategoriesListFragmentAdmin.this.requireActivity(),
-                                                    "Image Uploaded!!",
-                                                    Toast.LENGTH_SHORT)
-                                            .show();
+                                    Toast.makeText(
+                                            CategoriesListFragmentAdmin.this.requireActivity(),
+                                            "Image Uploaded!!",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
                                 }
                             })
 
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-
-                            // Error, Image not uploaded
                             progressDialog.dismiss();
+                            Log.e(e.getCause() + "\n", e.getMessage());
                             Toast.makeText(CategoriesListFragmentAdmin.this.requireActivity(),
                                     "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(
                             new OnProgressListener<UploadTask.TaskSnapshot>() {
-
-                                // Progress Listener for loading
-                                // percentage on the dialog box
                                 @Override
                                 public void onProgress(
-                                        UploadTask.TaskSnapshot taskSnapshot) {
+                                        @NonNull UploadTask.TaskSnapshot taskSnapshot) {
                                     double progress
                                             = (100.0
                                             * taskSnapshot.getBytesTransferred()
@@ -511,7 +570,6 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                                                     + (int) progress + "%");
                                 }
                             });
-
         }
     }
 

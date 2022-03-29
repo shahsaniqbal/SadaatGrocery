@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sadaat.groceryapp">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -15,7 +18,7 @@
         <activity
             android:name=".ui.Activities.UsersBased.Admin.MainActivityAdmin"
             android:exported="true"
-            android:theme="@style/Theme.SadaatGroceryStore.NoActionBar"></activity>
+            android:theme="@style/Theme.SadaatGroceryStore.NoActionBar" />
         <activity
             android:name=".ui.Activities.GenericForAll.LoginNavigatorActivity"
             android:exported="false" />

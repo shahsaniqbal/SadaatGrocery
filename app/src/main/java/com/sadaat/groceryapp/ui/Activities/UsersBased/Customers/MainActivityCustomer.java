@@ -52,35 +52,35 @@ public class MainActivityCustomer extends AppCompatActivity {
                     case R.id.nav_customer_home:
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragment, HomeFragmentCustomer.class, null)
+                                .replace(R.id.flFragmentCustomer, HomeFragmentCustomer.class, null)
                                 .commit();
                         return true;
 
                     case R.id.nav_customer_categories:
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragment, CategoriesFragmentCustomer.class, null)
+                                .replace(R.id.flFragmentCustomer, CategoriesFragmentCustomer.class, null)
                                 .commit();
                         return true;
 
                     case R.id.nav_customer_cart:
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragment, CartFragmentCustomer.class, null)
+                                .replace(R.id.flFragmentCustomer, CartFragmentCustomer.class, null)
                                 .commit();
                         return true;
 
                     case R.id.nav_customer_search:
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragment, SearchFragmentCustomer.class, null)
+                                .replace(R.id.flFragmentCustomer, SearchFragmentCustomer.class, null)
                                 .commit();
                         return true;
 
                     case R.id.nav_customer_account:
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragment, AccountFragmentCustomer.class, null)
+                                .replace(R.id.flFragmentCustomer, AccountFragmentCustomer.class, null)
                                 .commit();
                         return true;
                 }
@@ -89,7 +89,7 @@ public class MainActivityCustomer extends AppCompatActivity {
                 return false;
             }
         });
-        bottomNavigationView.setSelectedItemId(R.id.nav_customer_home);
+        bottomNavigationView.setSelectedItemId(R.id.nav_customer_categories);
 
     }
 }

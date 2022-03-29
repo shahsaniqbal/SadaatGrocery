@@ -9,7 +9,7 @@
     tools:showIn="@layout/admin_app_bar_main_activity">
 
     <FrameLayout
-        android:id="@+id/flFragment"
+        android:id="@+id/flFragmentCustomer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

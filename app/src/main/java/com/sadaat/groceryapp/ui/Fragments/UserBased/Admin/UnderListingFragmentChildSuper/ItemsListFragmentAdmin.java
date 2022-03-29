@@ -1,17 +1,25 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper;
 
+import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -24,6 +32,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,6 +42,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.ItemsDisplayAdapterAdmin;
 import com.sadaat.groceryapp.models.CategoriesModel;
@@ -43,37 +57,41 @@ import com.sadaat.groceryapp.models.Items.QtyUnitModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdapterAdmin.ItemClickListeners {
 
+    private final int IMAGE_SEL_REQ = 234;
     FloatingActionButton addItemsButton;
     ItemsListFragmentAdmin.CustomPopupViewHolder viewHolder;
-
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     RecyclerView recyclerView;
     RecyclerView.LayoutManager manager;
-
     ItemsDisplayAdapterAdmin adapterAdmin;
     LoadingDialogue progressDialog;
     ArrayList<ItemModel> allItems;
-
     AlertDialog.Builder dialogueBuilder;
     AlertDialog itemPopupDialogueBox;
     View popupView;
-
     ArrayList<CategoriesModel> subcategories;
-
     ArrayList<String> categoriesList;
     ArrayList<String> subcategoriesList;
-
     String categoryIDSelected;
     String subCategoryIDSelected;
-
     ArrayAdapter<String> categorySpinnerAdapter;
     ArrayAdapter<String> subcategorySpinnerAdapter;
+    FirebaseStorage storage;
+    StorageReference storageRef;
+
+    //Uploaded Image path on Firebase Storage
+    String imageResource = "";
+    //Uri for Image (To be uploaded and setDrawable to ImageView)
+    private Uri imageFetchUri;
 
     public ItemsListFragmentAdmin() {
 
@@ -98,7 +116,6 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         return inflater.inflate(R.layout.admin_fragment_items_list, container, false);
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -115,6 +132,19 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             }
         });
 
+        viewHolder.getImgvAddImageToItem().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(
+                        Intent.createChooser(
+                                intent,
+                                "Select Image from here..."),
+                        IMAGE_SEL_REQ);
+            }
+        });
 
         progressDialog.show("Please Wait", "Loading Categories");
 
@@ -141,7 +171,12 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                             }
 
                             viewHolder.getComboBoxCategory().setVisibility(View.VISIBLE);
-                            categoryIDSelected = Objects.requireNonNull(categoriesListRaw.get(0).toObject(CategoriesModel.class)).getDocID();
+                            //categoryIDSelected = categoriesListRaw.get(0).toObject(CategoriesModel.class).getDocID();
+
+                            if (categories.size() > 0) {
+                                categoryIDSelected = categories.get(0).getDocID();
+                            }
+
 
                             progressDialog.dismiss();
 
@@ -149,20 +184,23 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                 @Override
                                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                                    categoryIDSelected = categories.get(position).getDocID();
-                                    subcategories = categories.get(position).getSubCategories();
+                                    if (categories.size() > 0) {
+                                        categoryIDSelected = categories.get(position).getDocID();
+                                        subcategories = categories.get(position).getSubCategories();
 
-                                    subcategorySpinnerAdapter.clear();
-                                    progressDialog.show("Please Wait", "Loading Subcategories of " + categories.get(position).getTitle());
+                                        subcategorySpinnerAdapter.clear();
+                                        progressDialog.show("Please Wait", "Loading Subcategories of " + categories.get(position).getTitle());
 
-                                    for (CategoriesModel subCategory :
-                                            subcategories) {
-                                        subcategorySpinnerAdapter.add(subCategory.toString());
+                                        for (CategoriesModel subCategory :
+                                                subcategories) {
+                                            subcategorySpinnerAdapter.add(subCategory.toString());
+                                        }
+
+                                        progressDialog.dismiss();
+
+                                        viewHolder.getComboBoxSubCategory().setVisibility(View.VISIBLE);
                                     }
 
-                                    progressDialog.dismiss();
-
-                                    viewHolder.getComboBoxSubCategory().setVisibility(View.VISIBLE);
 
                                 }
 
@@ -174,7 +212,11 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                             viewHolder.getComboBoxSubCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                    subCategoryIDSelected = subcategories.get(position).getDocID();
+                                    if (subcategories.size() > 0) {
+
+                                        subCategoryIDSelected = subcategories.get(position).getDocID();
+                                    }
+
                                 }
 
                                 @Override
@@ -233,6 +275,9 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         viewHolder.getComboBoxCategory().setAdapter(categorySpinnerAdapter);
         viewHolder.getComboBoxSubCategory().setAdapter(subcategorySpinnerAdapter);
 
+        storage = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS);
+        storageRef = storage.getReference();
+
     }
 
     private void backgroundExecutorForShowingData(View view) {
@@ -264,11 +309,16 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void handlePopup(View parent, int action, ItemModel oldModelToUpdate) {
 
 
         viewHolder = new CustomPopupViewHolder(popupView);
         itemPopupDialogueBox.show();
+
+        Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(),
+                "For the better performance on Customer Side\n Click on Image Icon & Upload 1:1 Size Imagge",
+                Toast.LENGTH_LONG).show();
 
         if (action == ActionConstants.ACTION_UPDATE) {
 
@@ -284,6 +334,22 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             viewHolder.getEdxSecurityCharges().setText("" + oldModelToUpdate.getOtherDetails().getSecurityCharges());
             viewHolder.getEdxStock().setVisibility(GONE);
 
+            if (!oldModelToUpdate.getOtherDetails().getImageLink().equals("")) {
+                StorageReference imgRef = storageRef.child(oldModelToUpdate.getOtherDetails().getImageLink());
+                final long ONE_MEGABYTE = 1024 * 1024;
+                imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        viewHolder.getImgvAddImageToItem().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
 
             viewHolder.getAddItemButton().setOnClickListener(new View.OnClickListener() {
                 @SuppressLint("SetTextI18n")
@@ -306,7 +372,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                 Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSecurityCharges().getText()).toString()),
                                 oldModelToUpdate.getOtherDetails().getStock(),
                                 Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxCardHolderDiscount().getText()).toString()),
-                                viewHolder.getImgLink()
+                                imageResource
                         ));
                         oldModelToUpdate.setQty(new QtyUnitModel(
                                 Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxQty().getText()).toString()),
@@ -343,7 +409,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                         Double.parseDouble(viewHolder.getEdxSecurityCharges().getText().toString()),
                                         Integer.parseInt(viewHolder.getEdxStock().getText().toString()),
                                         Double.parseDouble(viewHolder.getEdxCardHolderDiscount().getText().toString()),
-                                        viewHolder.getImgLink()
+                                        imageResource
                                 ),
                                 new QtyUnitModel(
                                         Double.parseDouble(viewHolder.getEdxQty().getText().toString()),
@@ -417,9 +483,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     @Override
     public void onUpdateDetailsButtonClick(View v, int position, ItemModel oldModelToUpdate) {
-
         handlePopup(ItemsListFragmentAdmin.this.getView(), ActionConstants.ACTION_UPDATE, oldModelToUpdate);
-
     }
 
     private void implementOnClickOnButtonClickOnPopup(final int CURRENT_ACTION, ItemModel model) {
@@ -476,11 +540,101 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         }
         itemPopupDialogueBox.dismiss();
         viewHolder.setViewsEmpty();
+
+        imageResource = "";
+        viewHolder.getImgvAddImageToItem().setImageResource(R.mipmap.grocery_items);
     }
 
     @Override
     public void onShowFullDetailsButtonClick(ItemModel modelToShow) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_SEL_REQ
+                && resultCode == RESULT_OK
+                && data != null
+                && data.getData() != null) {
+
+            // Get the Uri of data
+            imageFetchUri = data.getData();
+            try {
+
+                // Setting image on image view using Bitmap
+                Bitmap bitmap = MediaStore
+                        .Images
+                        .Media
+                        .getBitmap(
+                                this.requireActivity().getContentResolver(),
+                                imageFetchUri);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+
+                //Setting Image Bitmap to my desired ImageView
+                viewHolder.getImgvAddImageToItem().setImageBitmap(bitmap);
+
+                uploadImage(baos.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private void uploadImage(byte[] fileInBytes) {
+        if (imageFetchUri != null) {
+
+            // Code for showing progressDialog while uploading
+            progressDialog.show("Uploading", "Image");
+
+            // Defining the child of storageReference
+            imageResource = "images/items/" + UUID.randomUUID().toString();
+
+            StorageReference ref = storageRef.child(imageResource);
+
+            ref.putBytes(fileInBytes)
+                    .addOnSuccessListener(
+                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(
+                                        UploadTask.TaskSnapshot taskSnapshot) {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(
+                                            ItemsListFragmentAdmin.this.requireActivity(),
+                                            "Image Uploaded!!",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+                            })
+
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Log.e(e.getCause() + "\n", e.getMessage());
+                            Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(),
+                                    "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(
+                            new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(
+                                        @NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                                    double progress
+                                            = (100.0
+                                            * taskSnapshot.getBytesTransferred()
+                                            / taskSnapshot.getTotalByteCount());
+                                    progressDialog.show(
+                                            "Uploaded ", ""
+                                                    + (int) progress + "%");
+                                }
+                            });
+        }
     }
 
     public static class CustomPopupViewHolder {
@@ -503,7 +657,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         private final TextInputEditText edxSecurityCharges;
         private final TextInputEditText edxCardHolderDiscount;
 
-        //private final ImageView imageDisplayItemImage;
+        private final ImageView imgvAddImageToItem;
 
         private final MaterialButton addItemButton;
         private final View mainView;
@@ -525,6 +679,8 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
             comboBoxCategory = view.findViewById(R.id.admin_items_category_spinner);
             comboBoxSubCategory = view.findViewById(R.id.admin_items_subcategory_spinner);
+
+            imgvAddImageToItem = view.findViewById(R.id.add_item_image);
 
             //imageDisplayItemImage = (ImageView) view.findViewById(R.id.item_item_image_admin);
 
@@ -579,6 +735,10 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             return addItemButton;
         }
 
+        public ImageView getImgvAddImageToItem() {
+            return imgvAddImageToItem;
+        }
+
         public View getMainView() {
             return mainView;
         }
@@ -587,10 +747,11 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             return b;
         }
 
+        /*
         public String getImgLink() {
             return "null";
         }
-
+        */
         public void setViewsEmpty() {
             edxName.setText("");
             edxQty.setText("");
@@ -609,4 +770,5 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         public static final int ACTION_ADD = 0;
         public static final int ACTION_UPDATE = 1;
     }
+
 }

@@ -3,6 +3,7 @@ package com.sadaat.groceryapp.handler;
 import android.content.Context;
 import android.content.Intent;
 
+import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.ui.Activities.UsersBased.Admin.MainActivityAdmin;
 import com.sadaat.groceryapp.ui.Activities.UsersBased.Customers.MainActivityCustomer;
@@ -20,14 +21,17 @@ public class LoginIntentHandler extends Intent {
     //TODO 0006 To Change the Classes After Making User based Main Activities
 
     private final Class<?> CLASS_IF_ADMIN = MainActivityAdmin.class;
-    private final Class<?> CLASS_IF_CUSTOMER = MainActivityAdmin.class;
+    private final Class<?> CLASS_IF_CUSTOMER = MainActivityCustomer.class;
     private final Class<?> CLASS_IF_DELIVERY_BOY = MainActivityAdmin.class;
 
 
     public LoginIntentHandler(Context context, String UserType) {
         Class<?> toNavigateTo = null;
 
-        if (UserType.equalsIgnoreCase(UserTypes.Customer)) toNavigateTo = CLASS_IF_CUSTOMER;
+        if (UserType.equalsIgnoreCase(UserTypes.Customer)) {
+            toNavigateTo = CLASS_IF_CUSTOMER;
+            UserLive.currentLoggedInUser.getCart().eliminateCartByLatestStock();
+        }
         else if (UserType.equalsIgnoreCase(UserTypes.DeliveryBoy)) toNavigateTo = CLASS_IF_ADMIN;
         else if (UserType.equalsIgnoreCase(UserTypes.Admin)) toNavigateTo = CLASS_IF_DELIVERY_BOY;
 

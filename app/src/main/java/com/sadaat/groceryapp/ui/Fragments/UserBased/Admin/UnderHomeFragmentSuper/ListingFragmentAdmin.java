@@ -25,9 +25,9 @@ public class ListingFragmentAdmin extends Fragment implements View.OnClickListen
     private String mParam1;
     private String mParam2;
 
-    public ListingFragmentAdmin() {
+    /*public ListingFragmentAdmin() {
         // Required empty public constructor
-    }
+    }*/
 
     public static ListingFragmentAdmin newInstance(String param1, String param2) {
         ListingFragmentAdmin fragment = new ListingFragmentAdmin();

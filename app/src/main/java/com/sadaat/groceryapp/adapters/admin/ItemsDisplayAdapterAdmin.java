@@ -1,6 +1,8 @@
 package com.sadaat.groceryapp.adapters.admin;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +10,22 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.formatter.Price;
 import com.sadaat.groceryapp.models.ItemModel;
+import com.sadaat.groceryapp.temp.FirebaseDataKeys;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.CategoriesListFragmentAdmin;
+import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
 
@@ -25,6 +35,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
     private final int LAYOUT_FILE = R.layout.admin_item_items_recycler;
     public ItemClickListeners customOnClickListener;
     private Context mContext;
+    private LoadingDialogue progressDialogue;
 
 
     public ItemsDisplayAdapterAdmin(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener) {
@@ -36,6 +47,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
         this.localDataSet = localDataSet;
         this.customOnClickListener = customOnClickListener;
         this.mContext = mContext;
+        this.progressDialogue = new LoadingDialogue(mContext);
     }
 
     @Override
@@ -47,6 +59,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         viewHolder.getTxvName().setText(localDataSet.get(position).getName());
@@ -69,6 +82,40 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
             }
         });
 
+        progressDialogue.show("Please Wait","Loading Item Images.");
+
+        if (!localDataSet
+                .get(position)
+                .getOtherDetails()
+                .getImageLink().equals("")) {
+
+            StorageReference imgRef = FirebaseStorage
+                    .getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS)
+                    .getReference()
+                    .child(localDataSet
+                            .get(position)
+                            .getOtherDetails()
+                            .getImageLink());
+
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    viewHolder.getImageDisplayItemImage().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                    progressDialogue.dismiss();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        else{
+            progressDialogue.dismiss();
+        }
 
     }
 

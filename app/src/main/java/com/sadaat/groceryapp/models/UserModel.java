@@ -1,6 +1,7 @@
 package com.sadaat.groceryapp.models;
 
 import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
+import com.sadaat.groceryapp.models.cart.CartModel;
 
 public class UserModel {
 
@@ -10,8 +11,11 @@ public class UserModel {
     private String emailAddress;
     private String mobileNumber;
     private UserOtherDetailsModel details;
+    private CartModel cart;
 
     public UserModel() {
+
+        this.cart = new CartModel();
     }
 
 /*
@@ -25,8 +29,9 @@ public class UserModel {
 */
 
     public UserModel(String UID, String userType, String fullName, String emailAddress, String mobileNumber, UserOtherDetailsModel details) {
+        this();
         this.UID = UID;
-        UserType = userType;
+        this.UserType = userType;
         this.fullName = fullName;
         this.emailAddress = emailAddress;
         this.mobileNumber = mobileNumber;
@@ -81,6 +86,14 @@ public class UserModel {
         this.mobileNumber = mobileNumber;
     }
 
+    public CartModel getCart() {
+        return cart;
+    }
+
+    public void setCart(CartModel cart) {
+        this.cart = cart;
+    }
+
     @Override
     public String toString() {
         return "UserModel{" +
@@ -89,4 +102,5 @@ public class UserModel {
                 ", emailAddress='" + emailAddress + '\'' +
                 '}';
     }
+
 }

@@ -25,14 +25,14 @@
         android:layout_margin="8dp"
         app:cardElevation="4dp">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <include layout="@layout/customer_fragment_account_body" />
 
-        </LinearLayout>
+        </ScrollView>
 
     </com.google.android.material.card.MaterialCardView>
 

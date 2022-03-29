@@ -1,6 +1,7 @@
 package com.sadaat.groceryapp.models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CategoriesModel {
 
@@ -10,21 +11,22 @@ public class CategoriesModel {
     private boolean isParent;
     private Boolean hasSubcategories;
     private ArrayList<CategoriesModel> subCategories;
+    private String imageRef;
 
     public CategoriesModel() {
-        this.docID = "";
+
     }
 
-    public CategoriesModel(String title, String description, Boolean isParent) {
+/*    public CategoriesModel(String title, String description, Boolean isParent) {
         this.title = title;
         this.description = description;
         this.isParent = isParent;
         this.hasSubcategories = false;
         subCategories = new ArrayList<>();
-
     }
 
     public CategoriesModel(String docID, CategoriesModel modelWithoutID) {
+        this.docID = docID;
         this.title = modelWithoutID.getTitle();
         this.description = modelWithoutID.getDescription();
         this.hasSubcategories = modelWithoutID.getHasSubcategories();
@@ -39,30 +41,40 @@ public class CategoriesModel {
         this.subCategories = subCategories;
     }
 
-    public CategoriesModel(String docID, String title, String description) {
-        this.docID = docID;
-        this.title = title;
-
-        if (description==null){
-            this.description = "";
-
-        }
-        else{
-            this.description = description;
-
-        }
-
-        this.hasSubcategories = false;
-        this.subCategories = new ArrayList<>();
-    }
-
-    public CategoriesModel(String docID, String title, String description, Boolean hasSubcategories, ArrayList<CategoriesModel> subCategories) {
+    private CategoriesModel(String docID, String title, String description, Boolean hasSubcategories, ArrayList<CategoriesModel> subCategories) {
         this.docID = docID;
         this.title = title;
         this.description = description;
         this.hasSubcategories = hasSubcategories;
         this.subCategories = subCategories;
+    }*/
+
+    public CategoriesModel(String docID, String title, String description, boolean isParent, Boolean hasSubcategories, ArrayList<CategoriesModel> subCategories, String imageRef) {
+        this.docID = docID;
+        this.title = title;
+        this.description = description;
+        this.hasSubcategories = hasSubcategories;
+        this.subCategories = new ArrayList<CategoriesModel>();
+        if (subCategories != null){
+            this.subCategories = subCategories;
+        }
+        else{
+            this.subCategories = new ArrayList<CategoriesModel>();
+        }
+        this.isParent = isParent;
+        this.imageRef = imageRef;
     }
+
+    public CategoriesModel(String docID, CategoriesModel categoriesModel) {
+        this(docID,
+                categoriesModel.getTitle(),
+                categoriesModel.getDescription(),
+                categoriesModel.isParent(),
+                categoriesModel.getHasSubcategories(),
+                categoriesModel.getSubCategories(),
+                categoriesModel.imageRef);
+    }
+
 
     public String getTitle() {
         return title;
@@ -82,11 +94,6 @@ public class CategoriesModel {
 
     public ArrayList<CategoriesModel> getSubCategories() {
         return subCategories;
-    }
-
-    public void setSubCategories(Boolean ifHasSubcategories, ArrayList<CategoriesModel> subCategories) {
-        this.subCategories = subCategories;
-        hasSubcategories = ifHasSubcategories;
     }
 
     public Boolean getHasSubcategories() {
@@ -127,4 +134,15 @@ public class CategoriesModel {
     }
 
 
+    public String getImageRef() {
+        return imageRef;
+    }
+
+    public void setImageRef(String imageRef) {
+        this.imageRef = imageRef;
+    }
+
+    public void setSubCategories(ArrayList<CategoriesModel> subCategories) {
+        this.subCategories = (subCategories);
+    }
 }

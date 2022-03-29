@@ -91,4 +91,17 @@ public class ItemModel {
     public void setQty(QtyUnitModel qty) {
         this.qty = qty;
     }
+
+    @Override
+    public String toString() {
+        return "ItemModel{" +
+                "ID='" + ID + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", categoryBinding=" + categoryBinding +
+                ", prices=" + prices +
+                ", otherDetails=" + otherDetails +
+                ", qty=" + qty +
+                '}';
+    }
 }

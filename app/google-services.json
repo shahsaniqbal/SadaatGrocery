@@ -3,7 +3,7 @@
     "project_number": "247403376965",
     "firebase_url": "https://sadaat-grocery-store-default-rtdb.firebaseio.com",
     "project_id": "sadaat-grocery-store",
-    "storage_bucket": "sadaat-grocery-store.appspot.com"
+    "storage_bucket": "gs://sadaat-grocery-store.appspot.com"
   },
   "client": [
     {
@@ -44,5 +44,5 @@
       }
     }
   ],
-  "configuration_version": "1"
+  "configuration_version": "2"
 }

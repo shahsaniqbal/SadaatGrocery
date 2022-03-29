@@ -2,20 +2,27 @@ package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sadaat.groceryapp.R;
+import com.sadaat.groceryapp.adapters.customer.CartItemDisplayAdapterCustomer;
+import com.sadaat.groceryapp.models.ItemModel;
+import com.sadaat.groceryapp.models.cart.CartItemModel;
+import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
+import com.sadaat.groceryapp.temp.UserLive;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CartFragmentCustomer#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class CartFragmentCustomer extends Fragment {
+import java.util.HashMap;
+
+public class CartFragmentCustomer extends Fragment implements CartItemDisplayAdapterCustomer.ItemClickListeners {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +32,10 @@ public class CartFragmentCustomer extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private RecyclerView recyclerView;
+    private CartItemDisplayAdapterCustomer cartAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     public CartFragmentCustomer() {
         // Required empty public constructor
@@ -62,5 +73,42 @@ public class CartFragmentCustomer extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.customer_fragment_cart, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init_(view);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(cartAdapter);
+    }
+
+    private void init_(View v){
+        recyclerView = v.findViewById(R.id.recycler_cart_items);
+        cartAdapter = new CartItemDisplayAdapterCustomer(CartFragmentCustomer.this.requireActivity(),this);
+        layoutManager = new LinearLayoutManager(CartFragmentCustomer.this.requireActivity());
+
+    }
+
+    @Override
+    public CartItemModel indicateItemCountChange(ItemModel item, int quantity) {
+        return new CartItemModel(item,quantity);
+    }
+
+    @Override
+    public void prepareCart(CartItemModel cartItemModel) {
+        UserLive.currentLoggedInUser.getCart().modifyCartItem(cartItemModel);
+
+        CustomerCartSynchronizer.synchronize(UserLive.currentLoggedInUser.getUID(),
+                UserLive.currentLoggedInUser.getCart());
+
+        cartAdapter.notifyDataSetChanged();
+        updateFragment();
+
+        Log.e("CART", UserLive.currentLoggedInUser.getCart().toString());
+    }
+
+    private void updateFragment() {
+
     }
 }
