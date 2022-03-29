@@ -155,6 +155,13 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
             progressDialogue.dismiss();
         }
 
+        viewHolder.getMainView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                customOnClickListener.onClick(localDataSet.get(viewHolder.getAdapterPosition()));
+            }
+        });
+
     }
 
     private void handleCount(ItemModel itemModel, int count) {
@@ -194,6 +201,8 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
         public CartItemModel indicateItemCountChange(ItemModel item, int quantity);
 
         public void prepareCart(CartItemModel cartItemModel);
+
+        public void onClick(ItemModel model);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -212,7 +221,7 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
         public ViewHolder(View view) {
             super(view);
 
-            this.mainView = view;
+            this.mainView = view.findViewById(R.id.customer_subcategory_parent_card);
 
             txvName = (MaterialTextView) view.findViewById(R.id.txv_item_title_customer_items);
             txvQty = (MaterialTextView) view.findViewById(R.id.txv_item_qty_customer_items);

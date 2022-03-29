@@ -91,7 +91,7 @@ public class CategoriesFragmentCustomer extends Fragment implements SubcategoryH
     @Override
     public void onClickItemSubcategory(String mainCategoryID, String subcategoryID, String categoryTitle, String categoryDescription) {
 
-        Toast.makeText(this.requireActivity(), "Click Event is happening", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this.requireActivity(), "Click Event is happening", Toast.LENGTH_SHORT).show();
 
         getParentFragmentManager()
                 .beginTransaction()

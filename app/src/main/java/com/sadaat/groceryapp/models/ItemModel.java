@@ -14,6 +14,7 @@ public class ItemModel {
     private PriceGroup prices;
     private OtherDataForItem otherDetails;
     private QtyUnitModel qty;
+    private int maxQtyPerOrder = -1;
 
     public ItemModel() {
     }
@@ -34,6 +35,17 @@ public class ItemModel {
         this.categoryBinding = categoryBinding;
         this.prices = prices;
         this.otherDetails = otherDetails;
+    }
+
+    public ItemModel(String ID, String name, String description, CategoryBindingModel categoryBinding, PriceGroup prices, OtherDataForItem otherDetails, QtyUnitModel qty, int maxQtyPerOrder) {
+        this.ID = ID;
+        this.name = name;
+        this.description = description;
+        this.categoryBinding = categoryBinding;
+        this.prices = prices;
+        this.otherDetails = otherDetails;
+        this.qty = qty;
+        this.maxQtyPerOrder = maxQtyPerOrder;
     }
 
     public String getName() {
@@ -90,6 +102,14 @@ public class ItemModel {
 
     public void setQty(QtyUnitModel qty) {
         this.qty = qty;
+    }
+
+    public int getMaxQtyPerOrder() {
+        return maxQtyPerOrder;
+    }
+
+    public void setMaxQtyPerOrder(int maxQtyPerOrder) {
+        this.maxQtyPerOrder = maxQtyPerOrder;
     }
 
     @Override

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:id="@+id/customer_cart_layout_nonempty">
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@mipmap/logo" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingHorizontal="4dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_cart_item_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Syed Ahmed Hussain Kazmi"
+            android:textColor="@color/black"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Last Updated"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingHorizontal="4dp"
+
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/txv_cart_item_last_update_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="dd-mm-yyyy | xx:xx:xx"
+            android:textColor="@color/black"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Email"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingHorizontal="4dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/txv_cart_item_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="tt@yy.com"
+            android:textColor="@color/black"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Contact"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingHorizontal="4dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/txv_cart_item_mobile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="03xx96xxxxx"
+            android:textColor="@color/black"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Location"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingHorizontal="4dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/txv_cart_item_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="xxxxxxxxxxxx"
+            android:textColor="@color/black"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Order ID"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingHorizontal="4dp"
+            android:textSize="16sp"
+            android:gravity="center_vertical|left"
+            android:visibility="gone"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/txv_cart_item_order_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="xxxxxxxxxxxx"
+            android:textColor="@color/black"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

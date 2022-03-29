@@ -16,4 +16,9 @@ public class UserOtherDetailsModel {
     public void setAddress(AddressModel address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return address.toString();
+    }
 }

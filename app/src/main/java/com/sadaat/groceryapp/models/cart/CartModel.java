@@ -44,9 +44,14 @@ public class CartModel {
     public void modifyCartItem(CartItemModel cartItem) {
         cartItems.put(cartItem.getModel().getID(), cartItem);
 
-        for (String k: cartItems.keySet()){
-            if (cartItems.get(k).getQty()==0){
-                cartItems.remove(k);
+        String[] ks = new String[cartItems.keySet().size()];
+        ks = cartItems.keySet().toArray(ks);
+
+        for (String k : ks) {
+            if (cartItems.get(k) != null) {
+                if (cartItems.get(k).getQty()==0){
+                    cartItems.remove(k);
+                }
             }
         }
 
@@ -54,12 +59,12 @@ public class CartModel {
         handleOverallSum();
     }
 
-    public void eliminateCartByLatestStock(){
-        for(String k : UserLive
+    public void eliminateCartByLatestStock() {
+        for (String k : UserLive
                 .currentLoggedInUser
                 .getCart()
                 .getCartItems()
-                .keySet()){
+                .keySet()) {
 
             FirebaseFirestore
                     .getInstance()
@@ -69,17 +74,17 @@ public class CartModel {
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 int stock = task.getResult().toObject(ItemModel.class).getOtherDetails().getStock();
-                                if (stock == 0){
+                                if (stock == 0) {
                                     UserLive.currentLoggedInUser.getCart().getCartItems().get(k).setQty(0);
                                 }
-                                if (stock < UserLive.currentLoggedInUser.getCart().getCartItems().get(k).getQty()){
+                                if (stock < UserLive.currentLoggedInUser.getCart().getCartItems().get(k).getQty()) {
                                     UserLive.currentLoggedInUser.getCart().getCartItems().get(k).setQty(stock);
                                 }
+                                UserLive.currentLoggedInUser.getCart().getCartItems().get(k).getModel().getOtherDetails().setStock(stock);
 
-                            }
-                            else {
+                            } else {
                                 UserLive.currentLoggedInUser.getCart().getCartItems().get(k).setQty(0);
                             }
 
@@ -88,6 +93,8 @@ public class CartModel {
                     });
 
         }
+        handleTimeStamp(null);
+        handleOverallSum();
     }
 
     private void handleOverallSum() {

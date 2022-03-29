@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:text="NetTotal (Retail Price)"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:fontFamily="monospace"
+            android:text="Rs."
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_cart_item_total_net_retail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="monospace"
+            android:text="10000.00"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:weightSum="2"
+        android:padding="4dp"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1.1"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="NetTotal (After Discount)"
+                android:paddingHorizontal="4dp"
+                android:gravity="center_vertical|left"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Will be credited to AppCredits"
+                android:textSize="11sp"
+                android:paddingHorizontal="4dp"
+                android:gravity="center_vertical|left"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:fontFamily="monospace"
+            android:text="Rs."
+            android:paddingHorizontal="4dp"
+            android:textColor="@color/black"
+            android:gravity="center_vertical|right"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_cart_item_total_net_sale"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="monospace"
+            android:text="10000.00"
+            android:paddingHorizontal="4dp"
+            android:textColor="@color/black"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:text="COD Security Charges\nWill be credited to AppCredits"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:fontFamily="monospace"
+            android:text="Rs."
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_cart_item_total_net_COD_SC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="monospace"
+            android:text="10000.00"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:weightSum="2"
+        android:padding="4dp"
+        android:gravity="center">
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1.1"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Additional Discount"
+                android:paddingHorizontal="4dp"
+                android:gravity="center_vertical|left"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="If you pay through card"
+                android:textSize="11sp"
+                android:paddingHorizontal="4dp"
+                android:gravity="center_vertical|left"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:fontFamily="monospace"
+            android:text="Rs."
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_cart_item_total_net_CD"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="monospace"
+            android:text="10000.00"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/you_are_saving"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_baseline_done_outline_24"
+            android:drawablePadding="8dp"
+            android:text="You are saving Rs. 100.00"
+            android:textColor="@android:color/holo_green_dark"
+            android:fontFamily="monospace"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/by_paying_through_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/ic_baseline_credit_card_24"
+            android:drawablePadding="8dp"
+            android:textSize="11sp"
+            android:text="By Paying through card, you will save extra Rs. 100.00"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+    </LinearLayout>
+
+
+</LinearLayout>

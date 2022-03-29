@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.9"
+            android:text="SKU"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_detailed_item_sku"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.1"
+            android:fontFamily="monospace"
+            android:text="ABC-EFGH-IJKL-MN"
+            android:textColor="@color/scarlet_red_700"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:text="Retail Price"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:fontFamily="monospace"
+            android:text="Rs."
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/txv_detailed_item_retail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="monospace"
+            android:text="10000.00"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:text="Discounted Price"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:fontFamily="monospace"
+            android:text="Rs."
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_detailed_item_sale"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="monospace"
+            android:text="10000.00"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:text="COD Security Charges"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:fontFamily="monospace"
+            android:text="Rs."
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/txv_detailed_item_cod"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="monospace"
+            android:text="10000.00"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:text="Extra Discount with Card"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:fontFamily="monospace"
+            android:text="Rs."
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/txv_detailed_item_card_ed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:fontFamily="monospace"
+            android:text="10000.00"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:padding="4dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.1"
+            android:text="Max Qty Per Order"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|left"/>
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:textColor="@color/scarlet_red_700"
+            android:id="@+id/txv_detailed_item_max_qty_per_order"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:fontFamily="monospace"
+            android:text="25"
+            android:paddingHorizontal="4dp"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+</LinearLayout>

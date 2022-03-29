@@ -89,7 +89,7 @@ public class MainActivityCustomer extends AppCompatActivity {
                 return false;
             }
         });
-        bottomNavigationView.setSelectedItemId(R.id.nav_customer_categories);
+        bottomNavigationView.setSelectedItemId(R.id.nav_customer_home);
 
     }
 }

@@ -29,6 +29,7 @@ import com.sadaat.groceryapp.models.cart.CartModel;
 import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
+import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
@@ -167,5 +168,14 @@ public class ItemsFragmentCustomer extends Fragment implements ItemsDisplayAdapt
 
 
         Log.e("CART", UserLive.currentLoggedInUser.getCart().toString());
+    }
+
+    @Override
+    public void onClick(ItemModel model) {
+        getParentFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flFragmentCustomer, ItemFullModalFragmentGeneric.newInstance(model))
+                .addToBackStack("items")
+                .commit();
     }
 }

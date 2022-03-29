@@ -9,25 +9,29 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.models.ItemModel;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
+import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
-import java.sql.Array;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartItemDisplayAdapterCustomer.ViewHolder> {
 
+    final String ITEM_REF = new FirebaseDataKeys().getItemsRef();
     private final int LAYOUT_FILE = R.layout.customer_item_cartitem_recycler_v3;
     public ItemClickListeners customOnClickListener;
     int maxQtyPerOrder = 25;
-    private HashMap<String, CartItemModel> localDataSet = UserLive.currentLoggedInUser.getCart().getCartItems();
-    private String[] keys;
+    private ArrayList<CartItemModel> localDataSet;
     private Context mContext;
     private LoadingDialogue progressDialogue;
 
@@ -35,9 +39,10 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
     public CartItemDisplayAdapterCustomer(Context mContext, ItemClickListeners customOnClickListener) {
         this.customOnClickListener = customOnClickListener;
         this.mContext = mContext;
-        keys = new String[localDataSet.size()];
+        //keys = new ArrayList<>(localDataSet.size());
         this.progressDialogue = new LoadingDialogue(mContext);
-        keys = localDataSet.keySet().toArray(keys);
+        this.localDataSet = new ArrayList<>();
+        notifyChange();
     }
 
     @Override
@@ -50,20 +55,20 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull CartItemDisplayAdapterCustomer.ViewHolder viewHolder, int position) {
-        viewHolder.getTxvName().setText(localDataSet.get(keys[position]).getModel().getName());
-        viewHolder.getTxvUnit().setText(localDataSet.get(keys[position]).getModel().getQty().toString());
-        viewHolder.getUnitPriceTxv().setText("Rs. " + localDataSet.get(keys[position]).getModel().getPrices().getSalePrice());
-        viewHolder.getTotalPriceTxv().setText("Rs. " + localDataSet.get(keys[position]).getTotalSalePrice());
-        viewHolder.getTxvQty().setText("" + localDataSet.get(keys[position]).getQty());
+    public void onBindViewHolder(@NonNull CartItemDisplayAdapterCustomer.ViewHolder viewHolder, @SuppressLint("RecyclerView") int position) {
+        viewHolder.getTxvName().setText(localDataSet.get(viewHolder.getAdapterPosition()).getModel().getName());
+        viewHolder.getTxvUnit().setText(localDataSet.get(viewHolder.getAdapterPosition()).getModel().getQty().toString());
+        viewHolder.getUnitPriceTxv().setText("Rs. " + localDataSet.get(viewHolder.getAdapterPosition()).getModel().getPrices().getSalePrice());
+        viewHolder.getTotalPriceTxv().setText("Rs. " + localDataSet.get(viewHolder.getAdapterPosition()).getTotalSalePrice());
+        viewHolder.getTxvQty().setText("" + localDataSet.get(viewHolder.getAdapterPosition()).getQty());
 
         //viewHolder.getUnitPriceTxv().setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
         if (UserLive.currentLoggedInUser.getCart().getCartItems().containsKey(
-                localDataSet.get(keys[viewHolder.getAdapterPosition()]).getModel().getID())
+                localDataSet.get(viewHolder.getAdapterPosition()).getModel().getID())
         ) {
             viewHolder.getTxvQty().setText("" + Objects.requireNonNull(UserLive.currentLoggedInUser.getCart().getCartItems().get(
-                    localDataSet.get(keys[viewHolder.getAdapterPosition()]).getModel().getID()
+                    localDataSet.get(viewHolder.getAdapterPosition()).getModel().getID()
             )).getQty());
         }
 
@@ -74,61 +79,103 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
         }
 
         viewHolder.getiButtonPlus().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            @Override
+            public void onClick(View view) {
 
-                    int currentCount = Integer.parseInt(viewHolder.getTxvQty().getText().toString());
+                progressDialogue.show("Processing", "Cart");
 
-                    viewHolder.getiButtonPlus().setClickable(true);
-                    viewHolder.getiButtonPlus().setFocusable(true);
-                    if (currentCount == maxQtyPerOrder || currentCount >= localDataSet.get(keys[viewHolder.getAdapterPosition()]).getModel().getOtherDetails().getStock()) {
-                        viewHolder.getiButtonPlus().setClickable(false);
-                        viewHolder.getiButtonPlus().setFocusable(false);
-                    } else {
-                        viewHolder.getiButtonMinus().setClickable(true);
-                        viewHolder.getiButtonMinus().setFocusable(true);
-                        viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) + 1));
-                        handleCount(localDataSet.get(keys[viewHolder.getAdapterPosition()]).getModel(), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
-                    }
+                int currentCount = Integer.parseInt(viewHolder.getTxvQty().getText().toString());
+                /*
+                final int[] latestStock = {0};
+                FirebaseFirestore.getInstance()
+                        .collection(ITEM_REF)
+                        .document(localDataSet.get(viewHolder.getAdapterPosition()).getModel().getID())
+                        .collection("otherDetails")
+                        .document("stock")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                latestStock[0] = task.getResult().toObject(Integer.class);
+                            }
+                        });
+                        */
+
+                viewHolder.getiButtonPlus().setClickable(true);
+                viewHolder.getiButtonPlus().setFocusable(true);
+
+
+                if (currentCount == maxQtyPerOrder || currentCount >= localDataSet.get(viewHolder.getAdapterPosition()).getModel().getOtherDetails().getStock()) {
+                    viewHolder.getiButtonPlus().setClickable(false);
+                    viewHolder.getiButtonPlus().setFocusable(false);
+                    progressDialogue.dismiss();
+                } else {
+                    viewHolder.getiButtonMinus().setClickable(true);
+                    viewHolder.getiButtonMinus().setFocusable(true);
+                    viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) + 1));
+                    handleCount(localDataSet.get(viewHolder.getAdapterPosition()).getModel(), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
                 }
-            });
-            viewHolder.getiButtonMinus().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewHolder.getiButtonPlus().setClickable(true);
-                    viewHolder.getiButtonPlus().setFocusable(true);
 
-                    int currentCount = Integer.parseInt(viewHolder.getTxvQty().getText().toString());
-                    if (currentCount == 0) {
-                        viewHolder.getiButtonMinus().setClickable(false);
-                        viewHolder.getiButtonMinus().setFocusable(false);
-                    } else if (currentCount > 0) {
-                        viewHolder.getiButtonMinus().setClickable(true);
-                        viewHolder.getiButtonMinus().setFocusable(true);
-                        viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) - 1));
-                        handleCount(localDataSet.get(keys[viewHolder.getAdapterPosition()]).getModel(), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
-                    }
+
+            }
+        });
+        viewHolder.getiButtonMinus().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressDialogue.show("Processing", "Cart");
+                viewHolder.getiButtonPlus().setClickable(true);
+                viewHolder.getiButtonPlus().setFocusable(true);
+
+
+                int currentCount = Integer.parseInt(viewHolder.getTxvQty().getText().toString());
+                if (currentCount == 0) {
+                    viewHolder.getiButtonMinus().setClickable(false);
+                    viewHolder.getiButtonMinus().setFocusable(false);
+
+                    progressDialogue.dismiss();
+                } else if (currentCount > 0) {
+                    viewHolder.getiButtonMinus().setClickable(true);
+                    viewHolder.getiButtonMinus().setFocusable(true);
+                    viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) - 1));
+                    handleCount(localDataSet.get(viewHolder.getAdapterPosition()).getModel(), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
                 }
-            });
-
-
+            }
+        });
     }
 
     private void handleCount(ItemModel itemModel, int count) {
-        customOnClickListener.prepareCart(customOnClickListener.indicateItemCountChange(itemModel, count));
-
+        customOnClickListener.prepareCart(customOnClickListener.indicateItemCountChange(itemModel, count), progressDialogue);
     }
 
     @Override
     public int getItemCount() {
-        return keys.length;
+        return localDataSet.size();
     }
 
+    public void addItem(CartItemModel model) {
+        localDataSet.add(model);
+        notifyItemInserted(localDataSet.size() - 1);
+    }
+
+    public void deleteAll() {
+        int size = localDataSet.size();
+        localDataSet.clear();
+        notifyItemRangeRemoved(0, size);
+    }
+
+    public void notifyChange() {
+
+        deleteAll();
+
+        for (String k : UserLive.currentLoggedInUser.getCart().getCartItems().keySet()) {
+            addItem(UserLive.currentLoggedInUser.getCart().getCartItems().get(k));
+        }
+    }
 
     public interface ItemClickListeners {
         public CartItemModel indicateItemCountChange(ItemModel item, int quantity);
 
-        public void prepareCart(CartItemModel cartItemModel);
+        public void prepareCart(CartItemModel cartItemModel, LoadingDialogue progressDialogue);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -193,5 +240,4 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
             return totalPriceTxv;
         }
     }
-
 }

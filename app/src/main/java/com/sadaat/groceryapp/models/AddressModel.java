@@ -54,8 +54,8 @@ public class AddressModel {
 
     @Override
     public String toString() {
-        return addressLine1 + "\n" +
-                addressLine2 + "\n" +
+        return addressLine1 + ", " +
+                addressLine2 + ", " +
                 area + ", " + city + ", Pakistan";
     }
 }
