@@ -44,8 +44,15 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
 
         viewHolder.getTxvTitle().setText(localDataSet.get(position).getTitle());
-        viewHolder.getTxvDesc().setText(localDataSet.get(position).getDescription());
 
+        if (localDataSet.get(position).getDescription().isEmpty()){
+            viewHolder.getTxvDesc().setText("");
+            viewHolder.getTxvDesc().setVisibility(View.GONE);
+        }
+        else{
+            viewHolder.getTxvDesc().setText(localDataSet.get(position).getDescription());
+            viewHolder.getTxvDesc().setVisibility(View.VISIBLE);
+        }
 
         if (localDataSet.get(position).isParent() && localDataSet.get(position).getSubCategories().size() > 0) {
 

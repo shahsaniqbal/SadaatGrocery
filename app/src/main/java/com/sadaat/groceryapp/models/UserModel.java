@@ -18,16 +18,6 @@ public class UserModel {
         this.cart = new CartModel();
     }
 
-/*
-    public UserModel(String UID, String userType, String fullName, String emailAddress, UserOtherDetailsModel details) {
-        this.UID = UID;
-        this.UserType = userType;
-        this.fullName = fullName;
-        this.emailAddress = emailAddress;
-        this.details = details;
-    }
-*/
-
     public UserModel(String UID, String userType, String fullName, String emailAddress, String mobileNumber, UserOtherDetailsModel details) {
         this();
         this.UID = UID;

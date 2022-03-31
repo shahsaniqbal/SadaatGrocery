@@ -119,7 +119,7 @@ public class CategoriesListFragmentAdmin extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
 
         this.addCategoriesButtonOnFragment = view.findViewById(R.id.fab);
-        this.recyclerView = view.findViewById(R.id.recycler_categories);
+        this.recyclerView = view.findViewById(R.id.recycler_locations);
         this.manager = new LinearLayoutManager(CategoriesListFragmentAdmin.this.requireActivity());
 
         this.list = new ArrayList<>();
@@ -525,7 +525,7 @@ public class CategoriesListFragmentAdmin extends Fragment implements
             progressDialog.show("Uploading", "Image");
 
             // Defining the child of storageReference
-            imageResource = "images/categories/" + UUID.randomUUID().toString();
+            imageResource = "f/images/categories/" + UUID.randomUUID().toString();
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

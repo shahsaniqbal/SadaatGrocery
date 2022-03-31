@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.storage.FirebaseStorage;
@@ -32,23 +30,20 @@ import java.util.Objects;
 public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDisplayAdapterCustomer.ViewHolder> {
 
     private final ArrayList<ItemModel> localDataSet;
-    private final int LAYOUT_FILE = R.layout.customer_item_items_recycler;
+    private final LoadingDialogue progressDialogue;
     public ItemClickListeners customOnClickListener;
-    //TODO
-    int maxQtyPerOrder;
-    private Context mContext;
-    private LoadingDialogue progressDialogue;
 
 
     public ItemsDisplayAdapterCustomer(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener, Context mContext) {
         this.localDataSet = localDataSet;
         this.customOnClickListener = customOnClickListener;
-        this.mContext = mContext;
         this.progressDialogue = new LoadingDialogue(mContext);
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        int LAYOUT_FILE = R.layout.customer_item_items_recycler;
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(LAYOUT_FILE, viewGroup, false);
 
@@ -59,7 +54,6 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        maxQtyPerOrder = 25;
         viewHolder.getTxvName().setText(localDataSet.get(position).getName());
         viewHolder.getTxvQtyUnit().setText(localDataSet.get(position).getQty().toString());
         viewHolder.getRetailPriceTxv().setText("Rs. " + localDataSet.get(position).getPrices().getRetailPrice());
@@ -69,7 +63,7 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
         if (UserLive.currentLoggedInUser.getCart().getCartItems().containsKey(
                 localDataSet.get(position).getID()
         )) {
-            viewHolder.getTxvQty().setText(""+Objects.requireNonNull(UserLive.currentLoggedInUser.getCart().getCartItems().get(
+            viewHolder.getTxvQty().setText("" + Objects.requireNonNull(UserLive.currentLoggedInUser.getCart().getCartItems().get(
                     localDataSet.get(position).getID()
             )).getQty());
         }
@@ -84,41 +78,35 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
             viewHolder.setViewStockAvailablability(false);
         } else {
             viewHolder.setViewStockAvailablability(true);
-            viewHolder.getiButtonPlus().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            viewHolder.getiButtonPlus().setOnClickListener(view -> {
 
-                    int currentCount = Integer.parseInt(viewHolder.getTxvQty().getText().toString());
+                int currentCount1 = Integer.parseInt(viewHolder.getTxvQty().getText().toString());
 
-                    viewHolder.getiButtonPlus().setClickable(true);
-                    viewHolder.getiButtonPlus().setFocusable(true);
-                    if (currentCount == maxQtyPerOrder || currentCount >= localDataSet.get(viewHolder.getAdapterPosition()).getOtherDetails().getStock()) {
-                        viewHolder.getiButtonPlus().setClickable(false);
-                        viewHolder.getiButtonPlus().setFocusable(false);
-                    } else {
-                        viewHolder.getiButtonMinus().setClickable(true);
-                        viewHolder.getiButtonMinus().setFocusable(true);
-                        viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) + 1));
-                        handleCount(localDataSet.get(viewHolder.getAdapterPosition()), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
-                    }
+                viewHolder.getiButtonPlus().setClickable(true);
+                viewHolder.getiButtonPlus().setFocusable(true);
+                if (currentCount1 == localDataSet.get(viewHolder.getAdapterPosition()).getMaxQtyPerOrder() || currentCount1 >= localDataSet.get(viewHolder.getAdapterPosition()).getOtherDetails().getStock()) {
+                    viewHolder.getiButtonPlus().setClickable(false);
+                    viewHolder.getiButtonPlus().setFocusable(false);
+                } else {
+                    viewHolder.getiButtonMinus().setClickable(true);
+                    viewHolder.getiButtonMinus().setFocusable(true);
+                    viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) + 1));
+                    handleCount(localDataSet.get(viewHolder.getAdapterPosition()), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
                 }
             });
-            viewHolder.getiButtonMinus().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewHolder.getiButtonPlus().setClickable(true);
-                    viewHolder.getiButtonPlus().setFocusable(true);
+            viewHolder.getiButtonMinus().setOnClickListener(view -> {
+                viewHolder.getiButtonPlus().setClickable(true);
+                viewHolder.getiButtonPlus().setFocusable(true);
 
-                    int currentCount = Integer.parseInt(viewHolder.getTxvQty().getText().toString());
-                    if (currentCount == 0) {
-                        viewHolder.getiButtonMinus().setClickable(false);
-                        viewHolder.getiButtonMinus().setFocusable(false);
-                    } else if (currentCount > 0) {
-                        viewHolder.getiButtonMinus().setClickable(true);
-                        viewHolder.getiButtonMinus().setFocusable(true);
-                        viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) - 1));
-                        handleCount(localDataSet.get(viewHolder.getAdapterPosition()), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
-                    }
+                int currentCount12 = Integer.parseInt(viewHolder.getTxvQty().getText().toString());
+                if (currentCount12 == 0) {
+                    viewHolder.getiButtonMinus().setClickable(false);
+                    viewHolder.getiButtonMinus().setFocusable(false);
+                } else if (currentCount12 > 0) {
+                    viewHolder.getiButtonMinus().setClickable(true);
+                    viewHolder.getiButtonMinus().setFocusable(true);
+                    viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) - 1));
+                    handleCount(localDataSet.get(viewHolder.getAdapterPosition()), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
                 }
             });
         }
@@ -139,28 +127,17 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
 
             final long ONE_MEGABYTE = 1024 * 1024;
 
-            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    viewHolder.getImageDisplayItemImage().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                    progressDialogue.dismiss();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
-                }
+            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                viewHolder.getImageDisplayItemImage().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                progressDialogue.dismiss();
+            }).addOnFailureListener(exception -> {
+                //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
             });
         } else {
             progressDialogue.dismiss();
         }
 
-        viewHolder.getMainView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                customOnClickListener.onClick(localDataSet.get(viewHolder.getAdapterPosition()));
-            }
-        });
+        viewHolder.getMainView().setOnClickListener(view -> customOnClickListener.onClick(localDataSet.get(viewHolder.getAdapterPosition())));
 
     }
 
@@ -198,11 +175,11 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
 
 
     public interface ItemClickListeners {
-        public CartItemModel indicateItemCountChange(ItemModel item, int quantity);
+        CartItemModel indicateItemCountChange(ItemModel item, int quantity);
 
-        public void prepareCart(CartItemModel cartItemModel);
+        void prepareCart(CartItemModel cartItemModel);
 
-        public void onClick(ItemModel model);
+        void onClick(ItemModel model);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -215,7 +192,7 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
         private final View mainView;
         private final MaterialTextView retailPriceTxv;
         private final MaterialTextView salePriceTxv;
-        private MaterialTextView txvQtyUnit;
+        private final MaterialTextView txvQtyUnit;
 
 
         public ViewHolder(View view) {
@@ -223,18 +200,18 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
 
             this.mainView = view.findViewById(R.id.customer_subcategory_parent_card);
 
-            txvName = (MaterialTextView) view.findViewById(R.id.txv_item_title_customer_items);
-            txvQty = (MaterialTextView) view.findViewById(R.id.txv_item_qty_customer_items);
+            txvName = view.findViewById(R.id.txv_item_title_customer_items);
+            txvQty = view.findViewById(R.id.txv_item_qty_customer_items);
 
-            txvQtyUnit = (MaterialTextView) view.findViewById(R.id.txv_item_qtyunit_customer_items);
+            txvQtyUnit = view.findViewById(R.id.txv_item_qtyunit_customer_items);
 
-            imageDisplayItemImage = (ImageView) view.findViewById(R.id.imgv_item_customer_items);
+            imageDisplayItemImage = view.findViewById(R.id.imgv_item_customer_items);
 
-            iButtonPlus = (MaterialCardView) view.findViewById(R.id.mcard_item_plus_customer_items);
-            iButtonMinus = (MaterialCardView) view.findViewById(R.id.mcard_item_minus_customer_items);
+            iButtonPlus = view.findViewById(R.id.mcard_item_plus_customer_items);
+            iButtonMinus = view.findViewById(R.id.mcard_item_minus_customer_items);
 
-            retailPriceTxv = (MaterialTextView) view.findViewById(R.id.customer_item_retail_price);
-            salePriceTxv = (MaterialTextView) view.findViewById(R.id.customer_item_sale_price);
+            retailPriceTxv = view.findViewById(R.id.customer_item_retail_price);
+            salePriceTxv = view.findViewById(R.id.customer_item_sale_price);
 
 
         }

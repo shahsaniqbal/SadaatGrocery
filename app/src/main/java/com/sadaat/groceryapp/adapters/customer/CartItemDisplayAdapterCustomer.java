@@ -9,12 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.models.ItemModel;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
@@ -30,10 +26,10 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
     final String ITEM_REF = new FirebaseDataKeys().getItemsRef();
     private final int LAYOUT_FILE = R.layout.customer_item_cartitem_recycler_v3;
     public ItemClickListeners customOnClickListener;
-    int maxQtyPerOrder = 25;
-    private ArrayList<CartItemModel> localDataSet;
-    private Context mContext;
-    private LoadingDialogue progressDialogue;
+    //int maxQtyPerOrder = 25;
+    private final ArrayList<CartItemModel> localDataSet;
+    private final Context mContext;
+    private final LoadingDialogue progressDialogue;
 
 
     public CartItemDisplayAdapterCustomer(Context mContext, ItemClickListeners customOnClickListener) {
@@ -105,7 +101,7 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
                 viewHolder.getiButtonPlus().setFocusable(true);
 
 
-                if (currentCount == maxQtyPerOrder || currentCount >= localDataSet.get(viewHolder.getAdapterPosition()).getModel().getOtherDetails().getStock()) {
+                if (currentCount == localDataSet.get(viewHolder.getAdapterPosition()).getModel().getMaxQtyPerOrder() || currentCount >= localDataSet.get(viewHolder.getAdapterPosition()).getModel().getOtherDetails().getStock()) {
                     viewHolder.getiButtonPlus().setClickable(false);
                     viewHolder.getiButtonPlus().setFocusable(false);
                     progressDialogue.dismiss();
@@ -173,9 +169,9 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
     }
 
     public interface ItemClickListeners {
-        public CartItemModel indicateItemCountChange(ItemModel item, int quantity);
+        CartItemModel indicateItemCountChange(ItemModel item, int quantity);
 
-        public void prepareCart(CartItemModel cartItemModel, LoadingDialogue progressDialogue);
+        void prepareCart(CartItemModel cartItemModel, LoadingDialogue progressDialogue);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -187,7 +183,7 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
         private final View mainView;
         private final MaterialTextView unitPriceTxv;
         private final MaterialTextView totalPriceTxv;
-        private MaterialTextView txvUnit;
+        private final MaterialTextView txvUnit;
 
 
         public ViewHolder(View view) {
@@ -195,16 +191,16 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
 
             this.mainView = view;
 
-            txvName = (MaterialTextView) view.findViewById(R.id.customer_item_cart_name);
-            txvQty = (MaterialTextView) view.findViewById(R.id.txv_item_qty_customer_items);
+            txvName = view.findViewById(R.id.customer_item_cart_name);
+            txvQty = view.findViewById(R.id.txv_item_qty_customer_items);
 
-            txvUnit = (MaterialTextView) view.findViewById(R.id.customer_item_cart_unit);
+            txvUnit = view.findViewById(R.id.customer_item_cart_unit);
 
-            iButtonPlus = (MaterialCardView) view.findViewById(R.id.mcard_item_plus_customer_items);
-            iButtonMinus = (MaterialCardView) view.findViewById(R.id.mcard_item_minus_customer_items);
+            iButtonPlus = view.findViewById(R.id.mcard_item_plus_customer_items);
+            iButtonMinus = view.findViewById(R.id.mcard_item_minus_customer_items);
 
-            unitPriceTxv = (MaterialTextView) view.findViewById(R.id.customer_item_cart_unit_price);
-            totalPriceTxv = (MaterialTextView) view.findViewById(R.id.customer_item_cart_total);
+            unitPriceTxv = view.findViewById(R.id.customer_item_cart_unit_price);
+            totalPriceTxv = view.findViewById(R.id.customer_item_cart_total);
 
         }
 

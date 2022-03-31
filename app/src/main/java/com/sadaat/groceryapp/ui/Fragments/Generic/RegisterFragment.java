@@ -21,11 +21,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.handler.LoginIntentHandler;
+import com.sadaat.groceryapp.models.locations.AddressModel;
 import com.sadaat.groceryapp.models.UserModel;
+import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.UserTypes;
-import com.sadaat.groceryapp.ui.Activities.UsersBased.Admin.MainActivityAdmin;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 /**
@@ -77,6 +78,9 @@ public class RegisterFragment extends Fragment {
 
         initializers(view);
 
+        onlyForTesting();
+
+
         openSignInFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,59 +104,34 @@ public class RegisterFragment extends Fragment {
 
                 if (analyzeInputsIfEmpty(true)) {
 
-                    loadingDialogue.show("Loading", "Creating New User");
+                    loadingDialogue.show("Please Wait", "Analyzing your inputs");
 
                     // TODO 0001 Update User details Object instead of Null
                     // Code by AHSAN 08-02-2022 TUESDAY 14:12:00
+                    // DONE this task in process PostRegisterFragment 31-03-2022 (Solved)
 
-                    FirebaseAuth
-                            .getInstance()
-                            .createUserWithEmailAndPassword(edxEmail.getText().toString(), edxPass.getText().toString())
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        UserModel user = new UserModel(
-                                                task.getResult().getUser().getUid(),
-                                                UserTypes.Customer,
-                                                edxName.getText().toString(),
-                                                task.getResult().getUser().getEmail(),
-                                                edxMobile.getText().toString(),
-                                                null
-                                        );
+                    UserModel user = new UserModel(
+                            "",
+                            UserTypes.Customer,
+                            edxName.getText().toString(),
+                            edxEmail.getText().toString(),
+                            edxMobile.getText().toString(),
+                            null
+                    );
 
-                                        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-                                        firebaseFirestore
-                                                .collection(new FirebaseDataKeys().getUsersRef())
-                                                .document(user.getUID())
-                                                .set(user)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Toast.makeText(requireActivity(), "User Registration Successful", Toast.LENGTH_SHORT).show();
-                                                            UserLive.currentLoggedInUser = user;
-
-                                                            Intent i = new LoginIntentHandler(getActivity(), user.getUserType());
-
-                                                            loadingDialogue.dismiss();
-
-                                                            startActivity(i);
-                                                            requireActivity().finish();
-
-                                                        } else {
-                                                            Toast.makeText(requireActivity(), "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                });
-                                    }
-                                    else {
-                                        Toast.makeText(requireActivity(), "Error Signing UP \n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                        loadingDialogue.dismiss();
-
-                                    }
-                                }
-                            });
+                    getActivity()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(
+                                    R.anim.slide_in,  // enter
+                                    R.anim.slide_out,  // exit
+                                    R.anim.slide_in,   // popEnter
+                                    R.anim.slide_out  // popExit
+                            )
+                            .addToBackStack("register")
+                            .replace(R.id.fragment_manager_at_login, PostRegisterFragment.newInstance(user, edxPass.getText().toString()))
+                            .commit();
+                    loadingDialogue.dismiss();
 
                 }
                 else{
@@ -162,6 +141,14 @@ public class RegisterFragment extends Fragment {
             }
         });
 
+    }
+
+    private void onlyForTesting() {
+        edxEmail.setText("test@testifyc.com");
+        edxMobile.setText("03049523237");
+        edxName.setText("Ahsan Iqbal");
+        edxPass.setText("testtest");
+        edxConfirmPass.setText("testtest");
     }
 
     private boolean analyzeInputsIfEmpty(Boolean shouldAnalyze) {

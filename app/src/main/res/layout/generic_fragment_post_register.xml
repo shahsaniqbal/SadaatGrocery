@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/listing_top_card_margin">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_add_users_dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:contextClickable="true"
+            android:focusableInTouchMode="true"
+            android:layout_gravity="center"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="80dp"
+            android:layout_margin="8dp"
+            >
+
+            <ImageView
+                android:id="@+id/card_add_users_dp_imgv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_users"
+                android:layout_gravity="center"
+                />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="9sp"
+        android:text="Click on Icon and Select 1:1 Size Image"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:gravity="center_vertical"
+            android:id="@+id/edx_add_users_full_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_account_name"
+            android:drawablePadding="8dp"
+            android:hint="Full Name"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:gravity="center_vertical"
+            android:id="@+id/edx_add_users_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@android:drawable/stat_sys_phone_call_on_hold"
+            android:drawablePadding="8dp"
+            android:hint="Mobile Number"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <!--
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edx_add_users_cnic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/listing_top_card_margin"
+            android:drawableLeft="@android:drawable/ic_menu_info_details"
+            android:drawablePadding="8dp"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+-->
+
+        <com.google.android.material.textview.MaterialTextView
+            android:gravity="center_vertical"
+            android:id="@+id/edx_add_users_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@android:drawable/sym_action_email"
+            android:drawablePadding="8dp"
+            android:hint="Email"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|center_vertical"
+            android:weightSum="3"
+            android:paddingHorizontal="8dp"
+            android:paddingTop="8dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Select your city"/>
+
+            <Spinner
+                android:id="@+id/city_spinner"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|center_vertical"
+            android:weightSum="3"
+            android:paddingHorizontal="8dp"
+            android:paddingBottom="8dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Select your area"/>
+
+            <Spinner
+                android:id="@+id/area_spinner"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"/>
+
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:gravity="center_vertical"
+            android:id="@+id/address_line_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Address Line 1"
+            android:paddingHorizontal="8dp"
+            android:textColor="@color/black"
+            android:inputType="textLongMessage"/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:gravity="center_vertical"
+            android:id="@+id/address_line_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Address Line 2"
+            android:paddingHorizontal="8dp"
+            android:textColor="@color/black"
+            android:inputType="textLongMessage"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/buyer_symbol_actor"
+            android:layout_gravity="center"
+            android:layout_margin="8sp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:text="Register As Customer"
+            app:cornerRadius="10dp"
+            android:padding="16dp"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.adapters.admin.category;
+package com.sadaat.groceryapp.adapters.admin.locations;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -9,18 +9,20 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.models.CategoriesModel;
+import com.sadaat.groceryapp.models.locations.AreaModel;
 
 import java.util.ArrayList;
 
-public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<SubcategoriesItemAdapterAdmin.ViewHolder> {
+public class AreasItemAdapterAdmin extends RecyclerView.Adapter<AreasItemAdapterAdmin.ViewHolder> {
 
     String mainDocID;
-    private final ArrayList<CategoriesModel> localDataSet;
-    public SubCategoriesItemAdapterListener customListenerForSubCategories;
+    private final ArrayList<AreaModel> localDataSet;
+    public AreasItemAdapterListener customListenerForSubCategories;
 
-    public SubcategoriesItemAdapterAdmin(String mainDocID, ArrayList<CategoriesModel> localDataSet, SubCategoriesItemAdapterListener customListenerForSubCategories) {
+    public AreasItemAdapterAdmin(String mainDocID, ArrayList<AreaModel> localDataSet, AreasItemAdapterListener customListenerForSubCategories) {
         this.mainDocID = mainDocID;
         this.localDataSet = localDataSet;
         this.customListenerForSubCategories = customListenerForSubCategories;
@@ -29,7 +31,7 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.admin_item_category_recycler, viewGroup, false);
+                .inflate(R.layout.admin_item_location_recycler, viewGroup, false);
 
         return new ViewHolder(view);
     }
@@ -38,19 +40,12 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, @SuppressLint("RecyclerView") int position) {
 
-        viewHolder.getTxvTitle().setText(localDataSet.get(position).getTitle());
-        if (localDataSet.get(position).getDescription().isEmpty()){
-            viewHolder.getTxvDesc().setText("");
-            viewHolder.getTxvDesc().setVisibility(View.GONE);
-        }
-        else{
-            viewHolder.getTxvDesc().setText(localDataSet.get(position).getDescription());
-            viewHolder.getTxvDesc().setVisibility(View.VISIBLE);
-        }
+        viewHolder.getTxvTitle().setText(localDataSet.get(position).getName());
+
         viewHolder.getBtnDelete().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                customListenerForSubCategories.onDeleteSubCategoryItemClick(
+                customListenerForSubCategories.onDeleteAreaItemClick(
                         v,
                         position,
                         mainDocID,
@@ -61,7 +56,7 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
         viewHolder.getBtnUpdate().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                customListenerForSubCategories.onUpdateSubCategoryItemClick(
+                customListenerForSubCategories.onUpdateAreaItemClick(
                         v,
                         position,
                         mainDocID,
@@ -72,12 +67,12 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
 
     }
 
-    public void addSubCategory(CategoriesModel model) {
+    public void addArea(AreaModel model) {
         localDataSet.add(model);
         notifyItemInserted(localDataSet.size() - 1);
     }
 
-    public void deleteSubcategory(int index) {
+    public void deleteArea(int index) {
         localDataSet.remove(index);
         notifyItemRemoved(index);
     }
@@ -95,38 +90,32 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
     }
 
 
-    public interface SubCategoriesItemAdapterListener {
-        void onUpdateSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel categoriesModel);
+    public interface AreasItemAdapterListener {
+        void onUpdateAreaItemClick(View v, int position, String mainDocID, int subDocIndex, AreaModel areaModel);
 
-        void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel subCategoryToDelete);
+        void onDeleteAreaItemClick(View v, int position, String mainDocID, int subDocIndex, AreaModel areaToDelete);
     }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView txvTitle;
-        private final TextView txvDesc;
+        private final MaterialTextView txvTitle;
         private final ImageButton btnUpdate;
         private final ImageButton btnDelete;
-        private final ImageButton addSubCategoryButton;
+        private final MaterialButton addAreaButton;
 
         public ViewHolder(View view) {
             super(view);
-            txvTitle = (TextView) view.findViewById(R.id.category_list_title);
-            txvDesc = (TextView) view.findViewById(R.id.category_list_desc);
+            txvTitle = (MaterialTextView) view.findViewById(R.id.category_list_title);
 
             btnUpdate = (ImageButton) view.findViewById(R.id.modify);
             btnDelete = (ImageButton) view.findViewById(R.id.delete);
-            addSubCategoryButton = (ImageButton) view.findViewById(R.id.add_subcate);
+            addAreaButton = (MaterialButton) view.findViewById(R.id.add_subcate);
 
-            addSubCategoryButton.setVisibility(View.GONE);
+            addAreaButton.setVisibility(View.GONE);
         }
 
-        public TextView getTxvTitle() {
+        public MaterialTextView getTxvTitle() {
             return txvTitle;
-        }
-
-        public TextView getTxvDesc() {
-            return txvDesc;
         }
 
         public ImageButton getBtnUpdate() {

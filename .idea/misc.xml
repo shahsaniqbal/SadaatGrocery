@@ -107,9 +107,15 @@
         <entry key="app/src/main/res/layout/admin_fragment_categories_list.xml" value="0.34717948717948716" />
         <entry key="app/src/main/res/layout/admin_fragment_listing.xml" value="0.2703125" />
         <entry key="app/src/main/res/layout/admin_fragment_listing_v2.xml" value="0.2703125" />
+        <entry key="app/src/main/res/layout/admin_fragment_locations_list.xml" value="0.29270833333333335" />
         <entry key="app/src/main/res/layout/admin_fragment_returns.xml" value="0.3591485507246377" />
+        <entry key="app/src/main/res/layout/admin_item_category_recycler.xml" value="0.2518518518518518" />
+        <entry key="app/src/main/res/layout/admin_item_location_recycler.xml" value="0.29270833333333335" />
+        <entry key="app/src/main/res/layout/admin_item_usermgmt_users.xml" value="0.22083333333333333" />
         <entry key="app/src/main/res/layout/admin_popup_add_categories.xml" value="0.40102564102564103" />
         <entry key="app/src/main/res/layout/admin_popup_add_items.xml" value="0.40729166666666666" />
+        <entry key="app/src/main/res/layout/admin_popup_add_locations.xml" value="0.29270833333333335" />
+        <entry key="app/src/main/res/layout/admin_popup_add_users.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/customer_activity_main.xml" value="0.3826879271070615" />
         <entry key="app/src/main/res/layout/customer_category_recycler.xml" value="0.3851851851851852" />
         <entry key="app/src/main/res/layout/customer_content_cart_footer.xml" value="0.36094385391626604" />
@@ -131,7 +137,10 @@
         <entry key="app/src/main/res/layout/customer_item_category_recycler.xml" value="0.335" />
         <entry key="app/src/main/res/layout/customer_item_items_recycler.xml" value="0.55" />
         <entry key="app/src/main/res/layout/customer_item_subcategory_recycler.xml" value="0.3851851851851852" />
+        <entry key="app/src/main/res/layout/customer_popup_dp_at_register.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/generic_fragment_item_full_modal.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/generic_fragment_post_register.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/generic_fragment_register.xml" value="0.3338541666666667" />
         <entry key="app/src/main/res/layout/sadaat_waiting_progress_layout.xml" value="0.40729166666666666" />
       </map>
     </option>

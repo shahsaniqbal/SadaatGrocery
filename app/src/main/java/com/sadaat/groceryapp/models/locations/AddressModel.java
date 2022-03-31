@@ -1,38 +1,45 @@
-package com.sadaat.groceryapp.models;
+package com.sadaat.groceryapp.models.locations;
 
 public class AddressModel {
-    private String city;
-    private String area;
+    private CityModel city;
+    private AreaModel area;
     private String addressLine1;
     private String addressLine2;
 
-    public AddressModel(String city, String area, String addressLine1) {
+    public AddressModel() {
+        this.city = null;
+        this.area = null;
+        this.addressLine1 = "";
+        this.addressLine2 = "";
+    }
+
+    public AddressModel(CityModel city, AreaModel area, String addressLine1) {
         this.city = city;
         this.area = area;
         this.addressLine1 = addressLine1;
         this.addressLine2 = "";
     }
 
-    public AddressModel(String city, String area, String addressLine1, String addressLine2) {
+    public AddressModel(CityModel city, AreaModel area, String addressLine1, String addressLine2) {
         this.city = city;
         this.area = area;
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
     }
 
-    public String getCity() {
+    public CityModel getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(CityModel city) {
         this.city = city;
     }
 
-    public String getArea() {
+    public AreaModel getArea() {
         return area;
     }
 
-    public void setArea(String area) {
+    public void setArea(AreaModel area) {
         this.area = area;
     }
 

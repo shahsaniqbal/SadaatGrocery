@@ -37,6 +37,17 @@ public class ItemModel {
         this.otherDetails = otherDetails;
     }
 
+    public ItemModel(String name, String description, CategoryBindingModel categoryBinding, PriceGroup prices, OtherDataForItem otherDetails, QtyUnitModel qty, int maxQtyPerOrder) {
+        this.ID = ID;
+        this.name = name;
+        this.description = description;
+        this.categoryBinding = categoryBinding;
+        this.prices = prices;
+        this.otherDetails = otherDetails;
+        this.qty = qty;
+        this.maxQtyPerOrder = maxQtyPerOrder;
+    }
+
     public ItemModel(String ID, String name, String description, CategoryBindingModel categoryBinding, PriceGroup prices, OtherDataForItem otherDetails, QtyUnitModel qty, int maxQtyPerOrder) {
         this.ID = ID;
         this.name = name;

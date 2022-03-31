@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,21 +30,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.ItemsDisplayAdapterAdmin;
 import com.sadaat.groceryapp.models.CategoriesModel;
@@ -55,6 +46,7 @@ import com.sadaat.groceryapp.models.Items.OtherDataForItem;
 import com.sadaat.groceryapp.models.Items.PriceGroup;
 import com.sadaat.groceryapp.models.Items.QtyUnitModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
+import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.io.ByteArrayOutputStream;
@@ -125,25 +117,17 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapterAdmin);
         backgroundExecutorForShowingData(view);
-        addItemsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handlePopup(view, ActionConstants.ACTION_ADD, null);
-            }
-        });
+        addItemsButton.setOnClickListener(v -> handlePopup(view, ActionConstants.ACTION_ADD, null));
 
-        viewHolder.getImgvAddImageToItem().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(
-                        Intent.createChooser(
-                                intent,
-                                "Select Image from here..."),
-                        IMAGE_SEL_REQ);
-            }
+        viewHolder.getImgvAddImageToItem().setOnClickListener(view12 -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(
+                    Intent.createChooser(
+                            intent,
+                            "Select Image from here..."),
+                    IMAGE_SEL_REQ);
         });
 
         progressDialog.show("Please Wait", "Loading Categories");
@@ -151,82 +135,78 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<DocumentSnapshot> categoriesListRaw = task.getResult().getDocuments();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<DocumentSnapshot> categoriesListRaw = task.getResult().getDocuments();
 
 
-                            ArrayList<CategoriesModel> categories = new ArrayList<>();
+                        ArrayList<CategoriesModel> categories = new ArrayList<>();
 
 
-                            for (DocumentSnapshot d :
-                                    categoriesListRaw) {
+                        for (DocumentSnapshot d :
+                                categoriesListRaw) {
 
-                                CategoriesModel category = new CategoriesModel(d.getId(), Objects.requireNonNull(d.toObject(CategoriesModel.class)));
-                                categories.add(category);
-                                categorySpinnerAdapter.add(category.toString());
-                            }
-
-                            viewHolder.getComboBoxCategory().setVisibility(View.VISIBLE);
-                            //categoryIDSelected = categoriesListRaw.get(0).toObject(CategoriesModel.class).getDocID();
-
-                            if (categories.size() > 0) {
-                                categoryIDSelected = categories.get(0).getDocID();
-                            }
-
-
-                            progressDialog.dismiss();
-
-                            viewHolder.getComboBoxCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                @Override
-                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                                    if (categories.size() > 0) {
-                                        categoryIDSelected = categories.get(position).getDocID();
-                                        subcategories = categories.get(position).getSubCategories();
-
-                                        subcategorySpinnerAdapter.clear();
-                                        progressDialog.show("Please Wait", "Loading Subcategories of " + categories.get(position).getTitle());
-
-                                        for (CategoriesModel subCategory :
-                                                subcategories) {
-                                            subcategorySpinnerAdapter.add(subCategory.toString());
-                                        }
-
-                                        progressDialog.dismiss();
-
-                                        viewHolder.getComboBoxSubCategory().setVisibility(View.VISIBLE);
-                                    }
-
-
-                                }
-
-                                @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-
-                                }
-                            });
-                            viewHolder.getComboBoxSubCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                @Override
-                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                    if (subcategories.size() > 0) {
-
-                                        subCategoryIDSelected = subcategories.get(position).getDocID();
-                                    }
-
-                                }
-
-                                @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-
-                                }
-                            });
-
-
+                            CategoriesModel category = new CategoriesModel(d.getId(), Objects.requireNonNull(d.toObject(CategoriesModel.class)));
+                            categories.add(category);
+                            categorySpinnerAdapter.add(category.toString());
                         }
+
+                        viewHolder.getComboBoxCategory().setVisibility(View.VISIBLE);
+                        //categoryIDSelected = categoriesListRaw.get(0).toObject(CategoriesModel.class).getDocID();
+
+                        if (categories.size() > 0) {
+                            categoryIDSelected = categories.get(0).getDocID();
+                        }
+
+
+                        progressDialog.dismiss();
+
+                        viewHolder.getComboBoxCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
+
+                                if (categories.size() > 0) {
+                                    categoryIDSelected = categories.get(position).getDocID();
+                                    subcategories = categories.get(position).getSubCategories();
+
+                                    subcategorySpinnerAdapter.clear();
+                                    progressDialog.show("Please Wait", "Loading Subcategories of " + categories.get(position).getTitle());
+
+                                    for (CategoriesModel subCategory :
+                                            subcategories) {
+                                        subcategorySpinnerAdapter.add(subCategory.toString());
+                                    }
+
+                                    progressDialog.dismiss();
+
+                                    viewHolder.getComboBoxSubCategory().setVisibility(View.VISIBLE);
+                                }
+
+
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+                        viewHolder.getComboBoxSubCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
+                                if (subcategories.size() > 0) {
+
+                                    subCategoryIDSelected = subcategories.get(position).getDocID();
+                                }
+
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+
+
                     }
                 });
 
@@ -235,7 +215,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     @Override
     public void onPause() {
         super.onPause();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(requireActivity())).getSupportActionBar()).setSubtitle(null);
     }
 
     @Override
@@ -269,7 +249,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         categoriesList = new ArrayList<>();
         subcategoriesList = new ArrayList<>();
 
-        categorySpinnerAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_spinner_item, categoriesList);
+        categorySpinnerAdapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_item, categoriesList);
         subcategorySpinnerAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_spinner_item, subcategoriesList);
 
         viewHolder.getComboBoxCategory().setAdapter(categorySpinnerAdapter);
@@ -287,22 +267,19 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         firebaseFirestore
                 .collection(new FirebaseDataKeys().getItemsRef())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                .addOnCompleteListener(task -> {
 
-                        if (task.isSuccessful()) {
+                    if (task.isSuccessful()) {
 
-                            allItems.clear();
-                            for (DocumentSnapshot d : task.getResult().getDocuments()) {
-                                adapterAdmin.addItem(d.toObject(ItemModel.class));
-                            }
-
-                            view.setVisibility(View.VISIBLE);
-                            progressDialog.dismiss();
-                        } else {
-                            Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Failed to Show Data", Toast.LENGTH_SHORT).show();
+                        allItems.clear();
+                        for (DocumentSnapshot d : task.getResult().getDocuments()) {
+                            adapterAdmin.addItem(d.toObject(ItemModel.class));
                         }
+
+                        view.setVisibility(View.VISIBLE);
+                        progressDialog.dismiss();
+                    } else {
+                        Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Failed to Show Data", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -333,92 +310,86 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             viewHolder.getEdxCardHolderDiscount().setText("" + oldModelToUpdate.getOtherDetails().getSpecialDiscountForCardHolder());
             viewHolder.getEdxSecurityCharges().setText("" + oldModelToUpdate.getOtherDetails().getSecurityCharges());
             viewHolder.getEdxStock().setVisibility(GONE);
+            viewHolder.getEdxMaxQtyPerOrder().setText("" + oldModelToUpdate.getMaxQtyPerOrder());
 
             if (!oldModelToUpdate.getOtherDetails().getImageLink().equals("")) {
+                viewHolder.edxDirectLink.setText(oldModelToUpdate.getOtherDetails().getImageLink());
                 StorageReference imgRef = storageRef.child(oldModelToUpdate.getOtherDetails().getImageLink());
                 final long ONE_MEGABYTE = 1024 * 1024;
-                imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        viewHolder.getImgvAddImageToItem().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> viewHolder.getImgvAddImageToItem().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length))).addOnFailureListener(exception -> Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show());
 
             }
 
-            viewHolder.getAddItemButton().setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onClick(View v) {
-                    if (viewHolder.analyzeInputs(true)) {
+            viewHolder.getAddItemButton().setOnClickListener(v -> {
+                if (viewHolder.analyzeInputs(true)) {
+                    int max = 25;
+
+                    if (!viewHolder.getEdxMaxQtyPerOrder().getText().toString().isEmpty())
+                        max = Integer.parseInt(viewHolder.getEdxMaxQtyPerOrder().getText().toString());
 
 
-                        oldModelToUpdate.setName(Objects.requireNonNull(viewHolder.getEdxName().getText()).toString());
-                        oldModelToUpdate.setDescription(Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString());
-                        oldModelToUpdate.setCategoryBinding(new CategoryBindingModel(
-                                categoryIDSelected,
-                                subCategoryIDSelected
-                        ));
-                        oldModelToUpdate.setPrices(new PriceGroup(
-                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxRetailPrice().getText()).toString()),
-                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSalePrice().getText()).toString())
-                        ));
-                        oldModelToUpdate.setOtherDetails(new OtherDataForItem(
-                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSecurityCharges().getText()).toString()),
-                                oldModelToUpdate.getOtherDetails().getStock(),
-                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxCardHolderDiscount().getText()).toString()),
-                                imageResource
-                        ));
-                        oldModelToUpdate.setQty(new QtyUnitModel(
-                                Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxQty().getText()).toString()),
-                                Objects.requireNonNull(viewHolder.getEdxUnit().getText()).toString()
-                        ));
+                    oldModelToUpdate.setName(Objects.requireNonNull(viewHolder.getEdxName().getText()).toString());
+                    oldModelToUpdate.setDescription(Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString());
+                    oldModelToUpdate.setCategoryBinding(new CategoryBindingModel(
+                            categoryIDSelected,
+                            subCategoryIDSelected
+                    ));
+                    oldModelToUpdate.setPrices(new PriceGroup(
+                            Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxRetailPrice().getText()).toString()),
+                            Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSalePrice().getText()).toString())
+                    ));
+                    oldModelToUpdate.setOtherDetails(new OtherDataForItem(
+                            Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSecurityCharges().getText()).toString()),
+                            oldModelToUpdate.getOtherDetails().getStock(),
+                            Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxCardHolderDiscount().getText()).toString()),
+                            imageResource
+                    ));
+                    oldModelToUpdate.setQty(new QtyUnitModel(
+                            Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxQty().getText()).toString()),
+                            Objects.requireNonNull(viewHolder.getEdxUnit().getText()).toString()
+                    ));
+                    oldModelToUpdate.setMaxQtyPerOrder(max);
 
-                        implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_UPDATE, oldModelToUpdate);
+                    implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_UPDATE, oldModelToUpdate);
 
-                    }
                 }
             });
 
         } else if (action == ActionConstants.ACTION_ADD) {
             viewHolder.getAddItemButton().setText(R.string.add_item);
             viewHolder.getEdxStock().setVisibility(View.VISIBLE);
-            viewHolder.getAddItemButton().setOnClickListener(new View.OnClickListener() {
+            viewHolder.getAddItemButton().setOnClickListener(v -> {
+                if (viewHolder.analyzeInputs(true)) {
+                    int max = 25;
 
-                @Override
-                public void onClick(View v) {
-                    if (viewHolder.analyzeInputs(true)) {
+                    if (!viewHolder.getEdxMaxQtyPerOrder().getText().toString().isEmpty())
+                        max = Integer.parseInt(viewHolder.getEdxMaxQtyPerOrder().getText().toString());
 
-                        implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_ADD, new ItemModel(
-                                Objects.requireNonNull(viewHolder.getEdxName().getText()).toString(),
-                                Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString(),
-                                new CategoryBindingModel(
-                                        categoryIDSelected,
-                                        subCategoryIDSelected
-                                ),
-                                new PriceGroup(
-                                        Double.parseDouble(viewHolder.getEdxRetailPrice().getText().toString()),
-                                        Double.parseDouble(viewHolder.getEdxSalePrice().getText().toString())
-                                ),
-                                new OtherDataForItem(
-                                        Double.parseDouble(viewHolder.getEdxSecurityCharges().getText().toString()),
-                                        Integer.parseInt(viewHolder.getEdxStock().getText().toString()),
-                                        Double.parseDouble(viewHolder.getEdxCardHolderDiscount().getText().toString()),
-                                        imageResource
-                                ),
-                                new QtyUnitModel(
-                                        Double.parseDouble(viewHolder.getEdxQty().getText().toString()),
-                                        viewHolder.getEdxUnit().getText().toString()
-                                )
-                        ));
+                    implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_ADD, new ItemModel(
+                            Objects.requireNonNull(viewHolder.getEdxName().getText()).toString(),
+                            Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString(),
+                            new CategoryBindingModel(
+                                    categoryIDSelected,
+                                    subCategoryIDSelected
+                            ),
+                            new PriceGroup(
+                                    Double.parseDouble(viewHolder.getEdxRetailPrice().getText().toString()),
+                                    Double.parseDouble(viewHolder.getEdxSalePrice().getText().toString())
+                            ),
+                            new OtherDataForItem(
+                                    Double.parseDouble(viewHolder.getEdxSecurityCharges().getText().toString()),
+                                    Integer.parseInt(viewHolder.getEdxStock().getText().toString()),
+                                    Double.parseDouble(viewHolder.getEdxCardHolderDiscount().getText().toString()),
+                                    imageResource
+                            ),
+                            new QtyUnitModel(
+                                    Double.parseDouble(viewHolder.getEdxQty().getText().toString()),
+                                    viewHolder.getEdxUnit().getText().toString()
+                            ),
+                            max
+                    ));
 
 
-                    }
                 }
             });
 
@@ -430,27 +401,24 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         PopupMenu popupMenu = new PopupMenu(
                 requireActivity(),
-                manager.findViewByPosition(position).findViewById(v.getId())
+                Objects.requireNonNull(manager.findViewByPosition(position)).findViewById(v.getId())
         );
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             popupMenu.setForceShowIcon(true);
         }
         popupMenu.getMenuInflater().inflate(R.menu.admin_option_menu_for_items_display, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.action_update_item) {
-                    onUpdateDetailsButtonClick(item.getActionView(), position, itemModel);
-                } else if (item.getItemId() == R.id.action_delete_item) {
-                    onDeleteButtonClick(item.getActionView(), position, itemModel);
-                } else if (item.getItemId() == R.id.action_add_stock) {
-                    onAddStockButtonClick(item.getActionView(), position, itemModel);
-                } else if (item.getItemId() == R.id.action_show_full_modal_item) {
-                    onShowFullDetailsButtonClick(itemModel);
-                }
-                return true;
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_update_item) {
+                onUpdateDetailsButtonClick(item.getActionView(), position, itemModel);
+            } else if (item.getItemId() == R.id.action_delete_item) {
+                onDeleteButtonClick(item.getActionView(), position, itemModel);
+            } else if (item.getItemId() == R.id.action_add_stock) {
+                onAddStockButtonClick(item.getActionView(), position, itemModel);
+            } else if (item.getItemId() == R.id.action_show_full_modal_item) {
+                onShowFullDetailsButtonClick(itemModel);
             }
+            return true;
         });
 
         return popupMenu;
@@ -464,15 +432,11 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 .collection(new FirebaseDataKeys().getItemsRef())
                 .document(modelToDelete.getID())
                 .delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            adapterAdmin.deleteItem(position);
-                            Toast.makeText(requireActivity(), modelToDelete.getName() + " has been deleted", Toast.LENGTH_LONG).show();
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        adapterAdmin.deleteItem(position);
+                        Toast.makeText(requireActivity(), modelToDelete.getName() + " has been deleted", Toast.LENGTH_LONG).show();
                     }
-
                 });
     }
 
@@ -491,51 +455,34 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             firebaseFirestore
                     .collection(new FirebaseDataKeys().getItemsRef())
                     .add(model)
-                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentReference> task) {
-                            if (task.isSuccessful()) {
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
 
-                                firebaseFirestore
-                                        .collection(new FirebaseDataKeys().getItemsRef())
-                                        .document(task.getResult().getId())
-                                        .update("id", task.getResult().getId())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                adapterAdmin.addItem(model);
-                                                progressDialog.dismiss();
+                            firebaseFirestore
+                                    .collection(new FirebaseDataKeys().getItemsRef())
+                                    .document(task.getResult().getId())
+                                    .update("id", task.getResult().getId())
+                                    .addOnCompleteListener(task1 -> {
+                                        adapterAdmin.addItem(model);
+                                        progressDialog.dismiss();
 
-                                                itemPopupDialogueBox.setCancelable(true);
-                                                itemPopupDialogueBox.dismiss();
-                                            }
-                                        });
-/*
-
-                                adapterAdmin.addItem(model);
-                                progressDialog.dismiss();
-
-                                itemPopupDialogueBox.setCancelable(true);
-                                itemPopupDialogueBox.dismiss();
-*/
-
-                            }
+                                        itemPopupDialogueBox.setCancelable(true);
+                                        itemPopupDialogueBox.dismiss();
+                                    });
                         }
                     });
-        } else if (CURRENT_ACTION == ActionConstants.ACTION_UPDATE) {
+        }
+        else if (CURRENT_ACTION == ActionConstants.ACTION_UPDATE) {
             firebaseFirestore
                     .collection(new FirebaseDataKeys().getItemsRef())
                     .document(model.getID())
                     .set(model)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            progressDialog.dismiss();
-                            backgroundExecutorForShowingData(ItemsListFragmentAdmin.this.getView());
-                            itemPopupDialogueBox.setCancelable(true);
-                            itemPopupDialogueBox.dismiss();
+                    .addOnCompleteListener(task -> {
+                        progressDialog.dismiss();
+                        backgroundExecutorForShowingData(ItemsListFragmentAdmin.this.getView());
+                        itemPopupDialogueBox.setCancelable(true);
+                        itemPopupDialogueBox.dismiss();
 
-                        }
                     });
         }
         itemPopupDialogueBox.dismiss();
@@ -547,7 +494,12 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     @Override
     public void onShowFullDetailsButtonClick(ItemModel modelToShow) {
-
+        requireActivity().
+                getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment_content_main_activity_admin, ItemFullModalFragmentGeneric.newInstance(modelToShow))
+                .addToBackStack("item_list")
+                .commit();
     }
 
     @Override
@@ -592,47 +544,37 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             progressDialog.show("Uploading", "Image");
 
             // Defining the child of storageReference
-            imageResource = "images/items/" + UUID.randomUUID().toString();
+            imageResource = "f/images/items/" + UUID.randomUUID().toString();
 
             StorageReference ref = storageRef.child(imageResource);
 
             ref.putBytes(fileInBytes)
                     .addOnSuccessListener(
-                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(
-                                        UploadTask.TaskSnapshot taskSnapshot) {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(
-                                            ItemsListFragmentAdmin.this.requireActivity(),
-                                            "Image Uploaded!!",
-                                            Toast.LENGTH_SHORT
-                                    ).show();
-                                }
+                            taskSnapshot -> {
+                                progressDialog.dismiss();
+                                viewHolder.getEdxDirectLink().setText(imageResource);
+                                Toast.makeText(
+                                        ItemsListFragmentAdmin.this.requireActivity(),
+                                        "Image Uploaded!!",
+                                        Toast.LENGTH_SHORT
+                                ).show();
                             })
 
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Log.e(e.getCause() + "\n", e.getMessage());
-                            Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(),
-                                    "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                    .addOnFailureListener(e -> {
+                        progressDialog.dismiss();
+                        Log.e(e.getCause() + "\n", e.getMessage());
+                        Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(),
+                                "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     })
                     .addOnProgressListener(
-                            new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(
-                                        @NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                                    double progress
-                                            = (100.0
-                                            * taskSnapshot.getBytesTransferred()
-                                            / taskSnapshot.getTotalByteCount());
-                                    progressDialog.show(
-                                            "Uploaded ", ""
-                                                    + (int) progress + "%");
-                                }
+                            taskSnapshot -> {
+                                double progress
+                                        = (100.0
+                                        * taskSnapshot.getBytesTransferred()
+                                        / taskSnapshot.getTotalByteCount());
+                                progressDialog.show(
+                                        "Uploaded ", ""
+                                                + (int) progress + "%");
                             });
         }
     }
@@ -656,6 +598,9 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         private final TextInputEditText edxSecurityCharges;
         private final TextInputEditText edxCardHolderDiscount;
+
+        private final TextInputEditText edxMaxQtyPerOrder;
+        private final TextInputEditText edxDirectLink;
 
         private final ImageView imgvAddImageToItem;
 
@@ -682,7 +627,8 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
             imgvAddImageToItem = view.findViewById(R.id.add_item_image);
 
-            //imageDisplayItemImage = (ImageView) view.findViewById(R.id.item_item_image_admin);
+            edxMaxQtyPerOrder = view.findViewById(R.id.edx_add_items_max_qty_per_order);
+            edxDirectLink = view.findViewById(R.id.edx_add_items_direct_link);
 
             addItemButton = view.findViewById(R.id.addItem);
         }
@@ -739,6 +685,14 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             return imgvAddImageToItem;
         }
 
+        public TextInputEditText getEdxMaxQtyPerOrder() {
+            return edxMaxQtyPerOrder;
+        }
+
+        public TextInputEditText getEdxDirectLink() {
+            return edxDirectLink;
+        }
+
         public View getMainView() {
             return mainView;
         }
@@ -763,10 +717,14 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             edxSecurityCharges.setText("");
             edxCardHolderDiscount.setText("");
             edxStock.setText("" + 0);
+            edxDirectLink.setText("");
+            edxMaxQtyPerOrder.setText("");
         }
+
+
     }
 
-    private class ActionConstants {
+    private static class ActionConstants {
         public static final int ACTION_ADD = 0;
         public static final int ACTION_UPDATE = 1;
     }

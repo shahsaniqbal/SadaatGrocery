@@ -1,33 +1,42 @@
 package com.sadaat.groceryapp.adapters.admin;
 
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
+import com.sadaat.groceryapp.handler.ParentImageHandler;
 import com.sadaat.groceryapp.models.UserModel;
+import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserTypes;
+import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
 
 public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapterAdmin.ViewHolder> {
 
     private final ArrayList<UserModel> localDataSet;
-    private final int LAYOUT_FILE = R.layout.admin_item_usermgmt_users;
     public UserItemClickListeners customOnClickListener;
     private Boolean putListenerEventOnFullUserView;
+    private LoadingDialogue dialogue;
 
     private UsersItemAdapterAdmin(ArrayList<UserModel> localDataSet) {
         this.localDataSet = localDataSet;
     }
 
-    public UsersItemAdapterAdmin(ArrayList<UserModel> localDataSet, Boolean putListenerEventOnFullUserView, UserItemClickListeners customOnClickListener) {
+    public UsersItemAdapterAdmin(FragmentActivity activity, ArrayList<UserModel> localDataSet, Boolean putListenerEventOnFullUserView, UserItemClickListeners customOnClickListener) {
         this(localDataSet);
 
         this.putListenerEventOnFullUserView = putListenerEventOnFullUserView;
@@ -37,10 +46,14 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
         } else {
             this.customOnClickListener = (UserItemClickListenersOnlyChild) customOnClickListener;
         }
+
+        dialogue = new LoadingDialogue(activity);
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        int LAYOUT_FILE = R.layout.admin_item_usermgmt_users;
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(LAYOUT_FILE, viewGroup, false);
 
@@ -55,43 +68,41 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
         viewHolder.getTxvEmail().setText(localDataSet.get(position).getEmailAddress());
         viewHolder.getTxvMobile().setText(formatMobilePhoneNumber(localDataSet.get(position).getMobileNumber()));
 
-        //TODO Set User DP
+        Log.e(localDataSet.get(viewHolder.getAdapterPosition()).getEmailAddress(), localDataSet.get(viewHolder.getAdapterPosition()).getDetails().getImageReference());
 
-        // TODO Change this viewHolder.getImgvDisplayPicture().setImageResource(R.drawable.ic_users);
+        if (localDataSet.get(viewHolder.getAdapterPosition()).getDetails() != null) {
+            if (!localDataSet.get(viewHolder.getAdapterPosition()).getDetails().getImageReference().isEmpty()) {
+
+                dialogue.show("Showing", "User Display Image");
+
+                FirebaseStorage
+                        .getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS)
+                        .getReference()
+                        .child(localDataSet.get(viewHolder.getAdapterPosition()).getDetails().getImageReference())
+                        .getBytes(10*1024*1024).addOnSuccessListener(bytes -> {
+                    viewHolder.getImgvDisplayPicture().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                }).addOnFailureListener(Throwable::printStackTrace);
+
+                dialogue.dismiss();
+
+            }
+        }
+
+        // TODO Change this viewHolder.getImageDisplayPicture().setImageResource(R.drawable.ic_users);
 
         viewHolder.getImgvUserTypeAvatar().setImageResource(UserTypes.getRelevantUserAvatar(localDataSet.get(position).getUserType()));
 
-        viewHolder.getBtnProfileAndCredits().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                customOnClickListener.onUserProfileAndCreditsButtonClick(v, viewHolder.getAdapterPosition());
-            }
-        });
+        viewHolder.getBtnProfileAndCredits().setOnClickListener(v -> customOnClickListener.onUserProfileAndCreditsButtonClick(v, viewHolder.getAdapterPosition()));
 
-        viewHolder.getBtnShowFullDetailsDialogue().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                customOnClickListener.onShowFullDetailsButtonClick(v, viewHolder.getAdapterPosition());
-            }
-        });
+        viewHolder.getBtnShowFullDetailsDialogue().setOnClickListener(v -> customOnClickListener.onShowFullDetailsButtonClick(v, viewHolder.getAdapterPosition()));
 
-        viewHolder.getImgbCallToPhoneNumber().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                customOnClickListener.onCallToPhoneNumberViaSimButtonClick(
-                        v,
-                        viewHolder.getAdapterPosition(),
-                        deformityMobilePhoneNumber(localDataSet.get(viewHolder.getAdapterPosition()).getMobileNumber()));
-            }
-        });
+        viewHolder.getImgbCallToPhoneNumber().setOnClickListener(v -> customOnClickListener.onCallToPhoneNumberViaSimButtonClick(
+                v,
+                viewHolder.getAdapterPosition(),
+                deformityMobilePhoneNumber(localDataSet.get(viewHolder.getAdapterPosition()).getMobileNumber())));
 
-        if (putListenerEventOnFullUserView){
-            viewHolder.getMainView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((UserItemClickListenersFull) customOnClickListener).onFullUserClicked(v, viewHolder.getAdapterPosition());
-                }
-            });
+        if (putListenerEventOnFullUserView) {
+            viewHolder.getMainView().setOnClickListener(v -> ((UserItemClickListenersFull) customOnClickListener).onFullUserClicked(v, viewHolder.getAdapterPosition()));
         }
     }
 
@@ -115,14 +126,6 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
         localDataSet.clear();
         notifyItemRangeRemoved(0, size);
     }
-
-    /*public void replaceAllData(ArrayList<UserModel> allUsers) {
-        deleteAll();
-        // TODO Modify this method
-        for(UserModel m: allUsers){
-            addUser(m);
-        }
-    }*/
 
 
     private String formatMobilePhoneNumber(String rawMobileNumber) {
@@ -155,6 +158,8 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
          */
         void onFullUserClicked(View v, int position);
     }
+
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 

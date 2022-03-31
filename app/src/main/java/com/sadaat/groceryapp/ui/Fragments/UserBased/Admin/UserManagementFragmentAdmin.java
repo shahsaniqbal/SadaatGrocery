@@ -1,12 +1,20 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,18 +33,26 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.UsersItemAdapterAdmin;
+import com.sadaat.groceryapp.models.locations.AddressModel;
 import com.sadaat.groceryapp.models.UserModel;
+import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.UUID;
 
-public class UserManagementFragmentAdmin extends Fragment {
+public class UserManagementFragmentAdmin extends Fragment implements UsersItemAdapterAdmin.UserItemClickListenersOnlyChild {
 
+    private static final int IMAGE_SEL_REQ = 1234;
     FloatingActionButton addUsersButton;
     CustomPopupViewHolder viewHolder;
 
@@ -51,6 +67,9 @@ public class UserManagementFragmentAdmin extends Fragment {
     AlertDialog.Builder dialogueBuilder;
     AlertDialog userPopupDialogueBox;
     View popupView;
+    String imageRef = "";
+    private StorageReference storageReference;
+    private Uri imageData;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -102,7 +121,7 @@ public class UserManagementFragmentAdmin extends Fragment {
                                                 viewHolder.getTxvName().getText().toString(),
                                                 viewHolder.getTxvEmail().getText().toString(),
                                                 viewHolder.getTxvMobile().getText().toString(),
-                                                null);
+                                                new UserOtherDetailsModel(imageRef, new AddressModel()));
 
                                         firebaseFirestore
                                                 .collection(new FirebaseDataKeys().getUsersRef())
@@ -131,6 +150,21 @@ public class UserManagementFragmentAdmin extends Fragment {
                 }
             }
         });
+
+        viewHolder.getDisplayPictureImageView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(
+                        Intent.createChooser(
+                                intent,
+                                "Select 1:1 Image from here..."),
+                        IMAGE_SEL_REQ);
+            }
+        });
+
     }
 
     private void initializer(View view) {
@@ -148,23 +182,9 @@ public class UserManagementFragmentAdmin extends Fragment {
 
         progressDialog = new LoadingDialogue(requireActivity());
 
-        adapterAdmin = new UsersItemAdapterAdmin(allUsers, false, new UsersItemAdapterAdmin.UserItemClickListenersOnlyChild() {
-            @Override
-            public void onShowFullDetailsButtonClick(View v, int position) {
+        adapterAdmin = new UsersItemAdapterAdmin(UserManagementFragmentAdmin.this.requireActivity(), allUsers, false, this);
 
-            }
-
-            @Override
-            public void onUserProfileAndCreditsButtonClick(View v, int position) {
-
-            }
-
-            @Override
-            public void onCallToPhoneNumberViaSimButtonClick(View v, int position, String mobileNumber) {
-
-            }
-        });
-
+        storageReference = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS).getReference();
     }
 
     private void backgroundExecutorForShowingData(View view) {
@@ -194,6 +214,96 @@ public class UserManagementFragmentAdmin extends Fragment {
                 });
 
 
+    }
+
+    @Override
+    public void onShowFullDetailsButtonClick(View v, int position) {
+
+    }
+
+    @Override
+    public void onUserProfileAndCreditsButtonClick(View v, int position) {
+
+    }
+
+    @Override
+    public void onCallToPhoneNumberViaSimButtonClick(View v, int position, String mobileNumber) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_SEL_REQ
+                && resultCode == RESULT_OK
+                && data != null
+                && data.getData() != null) {
+
+            // Get the Uri of data
+            imageData = data.getData();
+            try {
+
+                // Setting image on image view using Bitmap
+                Bitmap bitmap = MediaStore
+                        .Images
+                        .Media
+                        .getBitmap(
+                                this.requireActivity().getContentResolver(),
+                                imageData);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+
+                //Setting Image Bitmap to my desired ImageView
+                viewHolder.getDisplayPictureImageView().setImageBitmap(bitmap);
+
+                uploadImage(baos.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void uploadImage(byte[] toByteArray) {
+        if (imageRef != null) {
+
+            // Code for showing progressDialog while uploading
+            progressDialog.show("Uploading", "Image");
+
+            // Defining the child of storageReference
+            imageRef = "f/images/users/" + UUID.randomUUID().toString();
+
+            StorageReference ref = storageReference.child(imageRef);
+
+            ref.putBytes(toByteArray)
+                    .addOnSuccessListener(
+                            taskSnapshot -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(
+                                        UserManagementFragmentAdmin.this.requireActivity(),
+                                        "Image Uploaded!!",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                            })
+
+                    .addOnFailureListener(e -> {
+                        progressDialog.dismiss();
+                        Log.e(e.getCause() + "\n", e.getMessage());
+                        Toast.makeText(UserManagementFragmentAdmin.this.requireActivity(),
+                                "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnProgressListener(
+                            taskSnapshot -> {
+                                double progress
+                                        = (100.0
+                                        * taskSnapshot.getBytesTransferred()
+                                        / taskSnapshot.getTotalByteCount());
+                                progressDialog.show(
+                                        "Uploaded ", ""
+                                                + (int) progress + "%");
+                            });
+        }
     }
 
     private class CustomPopupViewHolder {
@@ -288,6 +398,7 @@ public class UserManagementFragmentAdmin extends Fragment {
             getTxvEmail().setText("");
             getTxvMobile().setText("");
             getTxvPassword().setText("");
+            getDisplayPictureImageView().setImageResource(R.drawable.ic_users);
         }
     }
 
