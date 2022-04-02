@@ -1,5 +1,7 @@
 package com.sadaat.groceryapp.ui.Activities.UsersBased.Admin;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,6 +24,7 @@ import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.databinding.AdminActivityMainBinding;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Activities.GenericForAll.LoginNavigatorActivity;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.AccountFragmentCustomer;
 
 public class MainActivityAdmin extends AppCompatActivity {
 
@@ -83,10 +86,31 @@ public class MainActivityAdmin extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.action_logout){
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(this, LoginNavigatorActivity.class));
-            UserLive.currentLoggedInUser = null;
-            finish();
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Signing Out")
+                    .setMessage("Are you sure you want to sign out?")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            FirebaseAuth.getInstance().signOut();
+                            startActivity(new Intent(MainActivityAdmin.this, LoginNavigatorActivity.class));
+                            UserLive.currentLoggedInUser = null;
+                            finish();
+                        }
+                    })
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .setIcon(R.mipmap.logo)
+                    .show();
         }
 
         return super.onOptionsItemSelected(item);

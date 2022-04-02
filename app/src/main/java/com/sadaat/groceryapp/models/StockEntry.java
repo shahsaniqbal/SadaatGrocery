@@ -1,23 +1,25 @@
 package com.sadaat.groceryapp.models;
 
 
+import java.util.Date;
+
 public class StockEntry {
-    private String timeStamp;
+    private Date timeStamp;
     private int stockIncrement;
 
     public StockEntry() {
     }
 
-    public StockEntry(String timeStamp, int stockIncrement) {
+    public StockEntry(Date timeStamp, int stockIncrement) {
         this.timeStamp = timeStamp;
         this.stockIncrement = stockIncrement;
     }
 
-    public String getTimeStamp() {
+    public Date getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(Date timeStamp) {
         this.timeStamp = timeStamp;
     }
 
@@ -28,6 +30,4 @@ public class StockEntry {
     public void setStockIncrement(int stockIncrement) {
         this.stockIncrement = stockIncrement;
     }
-
-    
 }

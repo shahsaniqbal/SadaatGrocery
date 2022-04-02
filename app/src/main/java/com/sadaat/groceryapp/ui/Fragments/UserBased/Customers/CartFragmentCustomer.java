@@ -155,6 +155,8 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
         double a = (Double)UserLive.currentLoggedInUser.getCart().getNetTotalRetailPrice();
         double b = (Double)UserLive.currentLoggedInUser.getCart().getNetTotalSalePrice();
 
+        txvLastUpdateTimestamp.setText(UserLive.currentLoggedInUser.getCart().getTimeStamp().toString());
+
         txvTotalRetail.setText(""+a);
         txvTotalDiscounted.setText(""+b);
 

@@ -68,8 +68,14 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
     private MaterialTextView edxMobile;
     private TextInputEditText edxAddress1;
     private TextInputEditText edxAddress2;
+
+
     private Spinner spinnerCity;
     private Spinner spinnerArea;
+    private ArrayAdapter<String> adapterCities;
+    private ArrayAdapter<String> adapterAreas;
+
+
     private MaterialButton btnSignUp;
     private LoadingDialogue loadingDialogue;
     private String password;
@@ -77,11 +83,9 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
     private FirebaseStorage storage;
     private StorageReference storageReference;
 
-    private ArrayAdapter<String> adapterCities;
-    private ArrayAdapter<String> adapterAreas;
 
     private int selectedCityIndex = 0;
-    private int selectedAreaIndex = 0;
+    //private int selectedAreaIndex = 0;
 
 
     public PostRegisterFragment() {
@@ -146,7 +150,7 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
         spinnerArea.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedAreaIndex = i;
+                // selectedAreaIndex = i;
                 address.setArea(cityModels.get(selectedCityIndex).getAreas().get(i));
             }
 
@@ -157,7 +161,7 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
         });
 
 
-        btnSignUp.setOnClickListener(this);
+        
 
         userDP.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,6 +177,73 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
             }
         });
 
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (analyzeInputsIfEmpty(true)) {
+
+                    address.setAddressLine1(edxAddress1.getText().toString());
+                    if (!edxAddress2.getText().toString().isEmpty()){
+                        address.setAddressLine2(edxAddress2.getText().toString());
+                    }
+                    else address.setAddressLine2("");
+
+                    model.setDetails(
+                            new UserOtherDetailsModel(
+                                    imagePath,
+                                    address
+                            ));
+
+                    //Update User Object
+                    loadingDialogue.show("Please Wait", "Saving User Details");
+                    FirebaseAuth
+                            .getInstance()
+                            .createUserWithEmailAndPassword(model.getEmailAddress(), password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        model.setUID(Objects.requireNonNull(task.getResult().getUser()).getUid());
+                                        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+                                        firebaseFirestore
+                                                .collection(new FirebaseDataKeys().getUsersRef())
+                                                .document(model.getUID())
+                                                .set(model)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(requireActivity(), "User Registration Successful", Toast.LENGTH_SHORT).show();
+                                                            UserLive.currentLoggedInUser = model;
+
+                                                            Intent i = new LoginIntentHandler(PostRegisterFragment.this.requireActivity(), model.getUserType());
+
+                                                            loadingDialogue.dismiss();
+
+                                                            startActivity(i);
+                                                            requireActivity().finish();
+
+                                                        } else {
+                                                            Toast.makeText(requireActivity(), "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                            loadingDialogue.dismiss();
+                                                        }
+                                                    }
+                                                });
+
+                                    } else {
+                                        Toast.makeText(requireActivity(), "Error Signing UP \n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        loadingDialogue.dismiss();
+
+                                    }
+                                }
+                            });
+
+                }
+                else{
+                    Toast.makeText(PostRegisterFragment.this.requireActivity(), "There's some problem with the inputs", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void loadSpinnersData() {
@@ -218,16 +289,16 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
                 Toast.makeText(this.requireActivity(), "Image is necessary. Please Select your 1:1 Image", Toast.LENGTH_SHORT).show();
                 shouldAnalyze = false;
             }
-            if (city.isEmpty()) {
+            if (adapterCities.getItem(0).isEmpty()) {
                 spinnerCity.setPrompt("City Field is mandatory");
                 shouldAnalyze = false;
             }
-            if (area.isEmpty()) {
+            if (adapterAreas.getItem(0).isEmpty()) {
                 spinnerArea.setPrompt("Area Field is mandatory");
                 shouldAnalyze = false;
             }
             if (edxAddress1.getText().toString().isEmpty()) {
-                edxMobile.setError("Address Line 1 is Mandatory");
+                edxAddress1.setError("Address Line 1 is Mandatory");
                 shouldAnalyze = false;
             }
         }
@@ -246,7 +317,7 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
         spinnerCity = (Spinner) v.findViewById(R.id.city_spinner);
         spinnerArea = (Spinner) v.findViewById(R.id.area_spinner);
 
-        btnSignUp = (MaterialButton) v.findViewById(R.id.addUser);
+        btnSignUp = (MaterialButton) v.findViewById(R.id.addUser_as_customer);
         loadingDialogue = new LoadingDialogue(PostRegisterFragment.this.requireActivity());
 
         cityModels = new ArrayList<>();

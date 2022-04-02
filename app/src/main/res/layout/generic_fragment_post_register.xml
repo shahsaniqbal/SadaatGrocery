@@ -179,7 +179,7 @@
             android:layout_margin="8sp"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/addUser"
+            android:id="@+id/addUser_as_customer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="16dp"

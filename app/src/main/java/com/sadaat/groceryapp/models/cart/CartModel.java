@@ -11,11 +11,12 @@ import com.sadaat.groceryapp.models.TimeStamp;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class CartModel {
     private HashMap<String, CartItemModel> cartItems;
-    private TimeStamp timeStamp;
+    private Date timeStamp;
 
     private double netTotalRetailPrice = 0;
     private double netTotalSalePrice = 0;
@@ -26,17 +27,13 @@ public class CartModel {
         this.cartItems = new HashMap<>(1);
     }
 
-    public CartModel(HashMap<String, CartItemModel> cartItems) {
-        this(cartItems, null);
-    }
-
-    public CartModel(HashMap<String, CartItemModel> cartItems, TimeStamp timeStamp) {
+    public CartModel(HashMap<String, CartItemModel> cartItems, Date timeStamp) {
         this.cartItems = cartItems;
         handleTimeStamp(timeStamp);
         handleOverallSum();
     }
 
-    private void handleTimeStamp(TimeStamp timeStamp) {
+    private void handleTimeStamp(Date timeStamp) {
         this.timeStamp = timeStamp;
 
     }
@@ -55,7 +52,7 @@ public class CartModel {
             }
         }
 
-        handleTimeStamp(null);
+        //handleTimeStamp(new Date());
         handleOverallSum();
     }
 
@@ -93,7 +90,6 @@ public class CartModel {
                     });
 
         }
-        handleTimeStamp(null);
         handleOverallSum();
     }
 
@@ -118,11 +114,11 @@ public class CartModel {
         this.cartItems = cartItems;
     }
 
-    public TimeStamp getTimeStamp() {
+    public Date getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(TimeStamp timeStamp) {
+    public void setTimeStamp(Date timeStamp) {
         this.timeStamp = timeStamp;
     }
 
@@ -162,7 +158,7 @@ public class CartModel {
     public String toString() {
         return "CartModel{" +
                 "cartItems=" + cartItems +
-                ", timeStamp=" + timeStamp +
+                ", timeStamp=" + timeStamp.toString() +
                 ", netTotalRetailPrice=" + netTotalRetailPrice +
                 ", netTotalSalePrice=" + netTotalSalePrice +
                 ", netTotalSecurityCharges=" + netTotalSecurityCharges +

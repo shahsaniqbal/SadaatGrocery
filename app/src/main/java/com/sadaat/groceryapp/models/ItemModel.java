@@ -5,7 +5,10 @@ import com.sadaat.groceryapp.models.Items.OtherDataForItem;
 import com.sadaat.groceryapp.models.Items.PriceGroup;
 import com.sadaat.groceryapp.models.Items.QtyUnitModel;
 
+import java.util.ArrayList;
+
 public class ItemModel {
+    private String type = "item";
     private String ID = "";
     private String name;
     private String description;
@@ -14,12 +17,13 @@ public class ItemModel {
     private PriceGroup prices;
     private OtherDataForItem otherDetails;
     private QtyUnitModel qty;
+    private ArrayList<StockEntry> stockEntries;
     private int maxQtyPerOrder = -1;
 
     public ItemModel() {
     }
 
-    public ItemModel(String name, String description, CategoryBindingModel categoryBinding, PriceGroup prices, OtherDataForItem otherDetails, QtyUnitModel qty) {
+    /*public ItemModel(String name, String description, CategoryBindingModel categoryBinding, PriceGroup prices, OtherDataForItem otherDetails, QtyUnitModel qty) {
         this.name = name;
         this.description = description;
         this.categoryBinding = categoryBinding;
@@ -56,6 +60,19 @@ public class ItemModel {
         this.prices = prices;
         this.otherDetails = otherDetails;
         this.qty = qty;
+        this.maxQtyPerOrder = maxQtyPerOrder;
+    }
+*/
+
+    public ItemModel(String ID, String name, String description, CategoryBindingModel categoryBinding, PriceGroup prices, OtherDataForItem otherDetails, QtyUnitModel qty, ArrayList<StockEntry> stockEntries, int maxQtyPerOrder) {
+        this.ID = ID;
+        this.name = name;
+        this.description = description;
+        this.categoryBinding = categoryBinding;
+        this.prices = prices;
+        this.otherDetails = otherDetails;
+        this.qty = qty;
+        this.stockEntries = stockEntries;
         this.maxQtyPerOrder = maxQtyPerOrder;
     }
 
@@ -121,6 +138,14 @@ public class ItemModel {
 
     public void setMaxQtyPerOrder(int maxQtyPerOrder) {
         this.maxQtyPerOrder = maxQtyPerOrder;
+    }
+
+    public ArrayList<StockEntry> getStockEntries() {
+        return stockEntries;
+    }
+
+    public void setStockEntries(ArrayList<StockEntry> stockEntries) {
+        this.stockEntries = stockEntries;
     }
 
     @Override

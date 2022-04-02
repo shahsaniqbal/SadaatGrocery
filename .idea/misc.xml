@@ -111,12 +111,14 @@
         <entry key="app/src/main/res/layout/admin_fragment_returns.xml" value="0.3591485507246377" />
         <entry key="app/src/main/res/layout/admin_item_category_recycler.xml" value="0.2518518518518518" />
         <entry key="app/src/main/res/layout/admin_item_location_recycler.xml" value="0.29270833333333335" />
-        <entry key="app/src/main/res/layout/admin_item_usermgmt_users.xml" value="0.22083333333333333" />
+        <entry key="app/src/main/res/layout/admin_item_usermgmt_users.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/admin_navheader_activity.xml" value="0.2947916666666667" />
         <entry key="app/src/main/res/layout/admin_popup_add_categories.xml" value="0.40102564102564103" />
         <entry key="app/src/main/res/layout/admin_popup_add_items.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/admin_popup_add_locations.xml" value="0.29270833333333335" />
+        <entry key="app/src/main/res/layout/admin_popup_add_stock.xml" value="0.31846153846153846" />
         <entry key="app/src/main/res/layout/admin_popup_add_users.xml" value="0.40729166666666666" />
-        <entry key="app/src/main/res/layout/customer_activity_main.xml" value="0.3826879271070615" />
+        <entry key="app/src/main/res/layout/customer_activity_main.xml" value="0.282752014021124" />
         <entry key="app/src/main/res/layout/customer_category_recycler.xml" value="0.3851851851851852" />
         <entry key="app/src/main/res/layout/customer_content_cart_footer.xml" value="0.36094385391626604" />
         <entry key="app/src/main/res/layout/customer_content_cart_has_items.xml" value="0.25" />
@@ -125,7 +127,7 @@
         <entry key="app/src/main/res/layout/customer_content_detailed_item_properties.xml" value="0.40102564102564103" />
         <entry key="app/src/main/res/layout/customer_content_main_activity.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/customer_fragment_account.xml" value="0.37777777777777777" />
-        <entry key="app/src/main/res/layout/customer_fragment_account_body.xml" value="0.37777777777777777" />
+        <entry key="app/src/main/res/layout/customer_fragment_account_body.xml" value="0.335" />
         <entry key="app/src/main/res/layout/customer_fragment_account_card_appcredits.xml" value="0.37777777777777777" />
         <entry key="app/src/main/res/layout/customer_fragment_cart.xml" value="0.296875" />
         <entry key="app/src/main/res/layout/customer_fragment_categories.xml" value="0.3435185185185185" />
@@ -145,7 +147,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

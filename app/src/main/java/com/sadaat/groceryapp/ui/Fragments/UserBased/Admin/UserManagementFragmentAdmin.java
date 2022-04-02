@@ -37,6 +37,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.UsersItemAdapterAdmin;
+import com.sadaat.groceryapp.models.AppCredits;
+import com.sadaat.groceryapp.models.cart.CartModel;
 import com.sadaat.groceryapp.models.locations.AddressModel;
 import com.sadaat.groceryapp.models.UserModel;
 import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
@@ -62,7 +64,6 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
     UsersItemAdapterAdmin adapterAdmin;
     LoadingDialogue progressDialog;
     ArrayList<UserModel> allUsers;
-
 
     AlertDialog.Builder dialogueBuilder;
     AlertDialog userPopupDialogueBox;
@@ -121,7 +122,11 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
                                                 viewHolder.getTxvName().getText().toString(),
                                                 viewHolder.getTxvEmail().getText().toString(),
                                                 viewHolder.getTxvMobile().getText().toString(),
-                                                new UserOtherDetailsModel(imageRef, new AddressModel()));
+                                                new UserOtherDetailsModel(imageRef, new AddressModel()),
+                                                new CartModel(),
+                                                new AppCredits(),
+                                                new ArrayList<>(),
+                                                new ArrayList<>());
 
                                         firebaseFirestore
                                                 .collection(new FirebaseDataKeys().getUsersRef())

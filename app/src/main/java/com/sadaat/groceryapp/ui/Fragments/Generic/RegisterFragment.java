@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.handler.LoginIntentHandler;
+import com.sadaat.groceryapp.models.AppCredits;
+import com.sadaat.groceryapp.models.cart.CartModel;
 import com.sadaat.groceryapp.models.locations.AddressModel;
 import com.sadaat.groceryapp.models.UserModel;
 import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
@@ -28,6 +30,8 @@ import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -116,7 +120,11 @@ public class RegisterFragment extends Fragment {
                             edxName.getText().toString(),
                             edxEmail.getText().toString(),
                             edxMobile.getText().toString(),
-                            null
+                            null,
+                            new CartModel(),
+                            new AppCredits(),
+                            new ArrayList<>(),
+                            new ArrayList<>()
                     );
 
                     getActivity()

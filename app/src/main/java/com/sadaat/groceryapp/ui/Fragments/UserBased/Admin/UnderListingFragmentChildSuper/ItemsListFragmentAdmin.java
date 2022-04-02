@@ -30,11 +30,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
@@ -45,13 +51,17 @@ import com.sadaat.groceryapp.models.Items.CategoryBindingModel;
 import com.sadaat.groceryapp.models.Items.OtherDataForItem;
 import com.sadaat.groceryapp.models.Items.PriceGroup;
 import com.sadaat.groceryapp.models.Items.QtyUnitModel;
+import com.sadaat.groceryapp.models.StockEntry;
+import com.sadaat.groceryapp.models.locations.CityModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
+import com.sadaat.groceryapp.ui.Fragments.Generic.PostRegisterFragment;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -70,20 +80,32 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     AlertDialog.Builder dialogueBuilder;
     AlertDialog itemPopupDialogueBox;
     View popupView;
+
     ArrayList<CategoriesModel> subcategories;
-    ArrayList<String> categoriesList;
-    ArrayList<String> subcategoriesList;
+    //ArrayList<String> categoriesList;
+    //ArrayList<String> subcategoriesList;
+
     String categoryIDSelected;
     String subCategoryIDSelected;
     ArrayAdapter<String> categorySpinnerAdapter;
     ArrayAdapter<String> subcategorySpinnerAdapter;
+
     FirebaseStorage storage;
     StorageReference storageRef;
+    MaterialButton addStockButton;
+    //String currentItemRefForUpdatingStock;
+    private ItemModel currentModelToLoad;
+    private int currentPosition;
 
     //Uploaded Image path on Firebase Storage
     String imageResource = "";
     //Uri for Image (To be uploaded and setDrawable to ImageView)
     private Uri imageFetchUri;
+    AlertDialog.Builder dialogueBuilderForStock;
+    AlertDialog stockPopupDialogueBox;
+    View stockPopupView;
+    private MaterialTextView txvOldStock;
+
 
     public ItemsListFragmentAdmin() {
 
@@ -137,6 +159,8 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+
+
                         List<DocumentSnapshot> categoriesListRaw = task.getResult().getDocuments();
 
 
@@ -210,6 +234,9 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                     }
                 });
 
+
+
+
     }
 
     @Override
@@ -257,6 +284,14 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         storage = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS);
         storageRef = storage.getReference();
+
+        dialogueBuilderForStock = new AlertDialog.Builder(ItemsListFragmentAdmin.this.requireActivity());
+        stockPopupView = this.getLayoutInflater().inflate(R.layout.admin_popup_add_stock, null, false);
+        dialogueBuilderForStock.setView(stockPopupView);
+        stockPopupDialogueBox = dialogueBuilderForStock.create();
+
+        addStockButton = stockPopupView.findViewById(R.id.addStock);
+        txvOldStock = stockPopupView.findViewById(R.id.old_stock);
 
     }
 
@@ -366,6 +401,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                         max = Integer.parseInt(viewHolder.getEdxMaxQtyPerOrder().getText().toString());
 
                     implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_ADD, new ItemModel(
+                            "",
                             Objects.requireNonNull(viewHolder.getEdxName().getText()).toString(),
                             Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString(),
                             new CategoryBindingModel(
@@ -386,6 +422,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                     Double.parseDouble(viewHolder.getEdxQty().getText().toString()),
                                     viewHolder.getEdxUnit().getText().toString()
                             ),
+                            new ArrayList<>(),
                             max
                     ));
 
@@ -442,6 +479,47 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     @Override
     public void onAddStockButtonClick(View v, int position, ItemModel model) {
+        txvOldStock.setText("" + model.getOtherDetails().getStock());
+        currentModelToLoad = currentModelToLoad;
+        currentPosition = position;
+        stockPopupDialogueBox.show();
+
+        addStockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int newStockNumber;
+                if (((TextInputEditText) stockPopupView.findViewById(R.id.new_stock)).getText().toString().isEmpty()) {
+                    newStockNumber = 0;
+                } else {
+                    newStockNumber = Integer.parseInt(((TextInputEditText) stockPopupView.findViewById(R.id.new_stock)).getText().toString());
+                }
+
+                StockEntry stockEntry = new StockEntry(new Date(), newStockNumber);
+
+                FirebaseFirestore.getInstance()
+                        .collection(new FirebaseDataKeys().getItemsRef())
+                        .document(model.getID())
+                        .update(
+                                "otherDetails.stock", FieldValue.increment(newStockNumber),
+                                "stockEntries", FieldValue.arrayUnion(stockEntry)
+                        )
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Stock Added Successfully", Toast.LENGTH_SHORT).show();
+                                    model.getOtherDetails().setStock(model.getOtherDetails().getStock()+newStockNumber);
+                                    adapterAdmin.notifyItemChanged(position);
+
+                                    stockPopupDialogueBox.dismiss();
+                                } else {
+                                    Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Problem Updating Stock " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+            }
+        });
 
     }
 
@@ -471,8 +549,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                     });
                         }
                     });
-        }
-        else if (CURRENT_ACTION == ActionConstants.ACTION_UPDATE) {
+        } else if (CURRENT_ACTION == ActionConstants.ACTION_UPDATE) {
             firebaseFirestore
                     .collection(new FirebaseDataKeys().getItemsRef())
                     .document(model.getID())
@@ -727,6 +804,35 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     private static class ActionConstants {
         public static final int ACTION_ADD = 0;
         public static final int ACTION_UPDATE = 1;
+    }
+
+    private void loadSpinnersData() {
+        progressDialog.show("Loading", "Available Categories for Items");
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getMenuRef())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            for (DocumentSnapshot d: task.getResult().getDocuments()){
+                                CategoriesModel model = d.toObject(CategoriesModel.class);
+                                cityModels.add(model);
+                                Log.e("Data", model.getId()+"...."+model.getName()+"...."+model.getAreas().size());
+                                adapterCities.add(model.toString());
+                                adapterCities.notifyDataSetChanged();
+                            }
+
+                            loadingDialogue.dismiss();
+                        } else {
+                            loadingDialogue.dismiss();
+                            Toast.makeText(PostRegisterFragment.this.requireActivity(), "Error getting Locations, Please try again later", Toast.LENGTH_SHORT).show();
+                            openRegisterFragmentAgain();
+                        }
+                    }
+                });
     }
 
 }
