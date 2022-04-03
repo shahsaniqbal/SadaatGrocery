@@ -1,6 +1,5 @@
 package com.sadaat.groceryapp.ui.Fragments.Generic;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,22 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.handler.LoginIntentHandler;
 import com.sadaat.groceryapp.models.AppCredits;
 import com.sadaat.groceryapp.models.cart.CartModel;
-import com.sadaat.groceryapp.models.locations.AddressModel;
-import com.sadaat.groceryapp.models.UserModel;
-import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
-import com.sadaat.groceryapp.temp.FirebaseDataKeys;
-import com.sadaat.groceryapp.temp.UserLive;
+import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 

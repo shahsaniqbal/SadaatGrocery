@@ -22,10 +22,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.ItemsDisplayAdapterCustomer;
-import com.sadaat.groceryapp.models.ItemModel;
+import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.models.Items.CategoryBindingModel;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
-import com.sadaat.groceryapp.models.cart.CartModel;
 import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
@@ -33,7 +32,6 @@ import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ItemsFragmentCustomer extends Fragment implements ItemsDisplayAdapterCustomer.ItemClickListeners {
 

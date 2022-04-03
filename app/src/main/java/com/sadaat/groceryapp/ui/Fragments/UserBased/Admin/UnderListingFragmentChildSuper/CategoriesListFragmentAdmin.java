@@ -44,6 +44,7 @@ import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.category.CategoriesItemAdapterAdmin;
 import com.sadaat.groceryapp.adapters.admin.category.SubcategoriesItemAdapterAdmin;
 import com.sadaat.groceryapp.models.CategoriesModel;
+import com.sadaat.groceryapp.models.SubCategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
@@ -94,17 +95,12 @@ public class CategoriesListFragmentAdmin extends Fragment implements
 
 
     public static CategoriesListFragmentAdmin newInstance() {
-        CategoriesListFragmentAdmin fragment = new CategoriesListFragmentAdmin();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        return new CategoriesListFragmentAdmin();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -187,12 +183,10 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                             adapterAdmin.addAll(list);
                             view.setVisibility(View.VISIBLE);
 
-                            progressDialog.dismiss();
-
                         } else {
                             Toast.makeText(CategoriesListFragmentAdmin.this.requireActivity(), "Error Fetching Activities Data", Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
                         }
+                        progressDialog.dismiss();
                     }
                 });
 
@@ -221,17 +215,19 @@ public class CategoriesListFragmentAdmin extends Fragment implements
     @Override
     public void onUpdateCategoryItemClick(View v, int position, CategoriesModel categoriesModel) {
         this.categoriesModel = categoriesModel;
-        if (categoriesModel.isParent()) {
-            action = CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY;
+        /*if (categoriesModel.isParent()) {
+
         } else {
             action = CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY;
-        }
+        }*/
+
+        action = CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY;
         customPopupViewHolder.getEdxCate().setText(categoriesModel.getTitle());
         customPopupViewHolder.getEdxCateDescription().setText(categoriesModel.getDescription());
 
         if (!categoriesModel.getImageRef().equals("")) {
 
-            StorageReference imgRef = storageRef.child(categoriesModel.getImageRef().toString());
+            StorageReference imgRef = storageRef.child(categoriesModel.getImageRef());
             final long ONE_MEGABYTE = 1024 * 1024;
             imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
@@ -279,9 +275,7 @@ public class CategoriesListFragmentAdmin extends Fragment implements
                                     "",
                                     title,
                                     desc,
-                                    true,
-                                    false,
-                                    new ArrayList<CategoriesModel>(),
+                                    new ArrayList<SubCategoriesModel>(),
                                     imageResource
                             ))
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -302,36 +296,30 @@ public class CategoriesListFragmentAdmin extends Fragment implements
             } else if (action == CustomPopupViewHolder.ACTION_ADD_SUB_CATEGORY) {
 
                 if (customPopupViewHolder.inputAnalyzer(true)) {
-                    CategoriesModel subCategory = new CategoriesModel(
+                    SubCategoriesModel subCategory = new SubCategoriesModel(
                             "",
                             customPopupViewHolder.getEdxCate().getText().toString(),
                             customPopupViewHolder.getEdxCateDescription().getText().toString(),
-                            false,
-                            false,
-                            null,
                             imageResource
                     );
-                    MENU_COLLECTION_REFERENCE.document(docID).update("hasSubcategories", true).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            MENU_COLLECTION_REFERENCE
-                                    .document(docID)
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            subCategory.setDocID(getRandomDocumentID(((String) Objects.requireNonNull(task.getResult().get("title"))).substring(0, 2)));
-                                            MENU_COLLECTION_REFERENCE.document(docID).update("subCategories", FieldValue.arrayUnion(subCategory));
-                                            MENU_COLLECTION_REFERENCE.document(docID).update("subCategoriesCount", FieldValue.increment(1));
-                                            backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
-                                            itemPopupDialogueBox.dismiss();
-                                            imageResource = "";
-                                            customPopupViewHolder.getImgViewAddImageToCategory().setImageResource(R.mipmap.grocery_categories);
 
-                                        }
-                                    });
-                        }
-                    });
+                    MENU_COLLECTION_REFERENCE
+                            .document(docID)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    subCategory.setDocID(getRandomDocumentID(((String) Objects.requireNonNull(task.getResult().get("title"))).substring(0, 2)));
+                                    MENU_COLLECTION_REFERENCE.document(docID).update("subCategories", FieldValue.arrayUnion(subCategory));
+                                    MENU_COLLECTION_REFERENCE.document(docID).update("subCategoriesCount", FieldValue.increment(1));
+                                    backgroundExecutorForShowingData(CategoriesListFragmentAdmin.this.getView());
+                                    itemPopupDialogueBox.dismiss();
+                                    imageResource = "";
+                                    customPopupViewHolder.getImgViewAddImageToCategory().setImageResource(R.mipmap.grocery_categories);
+
+                                }
+                            });
+
                 }
 
             } else if (action == CustomPopupViewHolder.ACTION_UPDATE_MAIN_CATEGORY) {
@@ -374,10 +362,10 @@ public class CategoriesListFragmentAdmin extends Fragment implements
             } else if (action == CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY) {
                 if (customPopupViewHolder.inputAnalyzer(true)) {
 
-                    categoryIndexDataHolder.getCategoriesModel().setTitle(customPopupViewHolder.getEdxCate().getText().toString());
-                    categoryIndexDataHolder.getCategoriesModel().setDescription(customPopupViewHolder.getEdxCateDescription().getText().toString());
+                    categoryIndexDataHolder.getSubCategoriesModel().setTitle(customPopupViewHolder.getEdxCate().getText().toString());
+                    categoryIndexDataHolder.getSubCategoriesModel().setDescription(customPopupViewHolder.getEdxCateDescription().getText().toString());
                     if (!imageResource.equals("")) {
-                        categoryIndexDataHolder.getCategoriesModel().setImageRef(imageResource);
+                        categoryIndexDataHolder.getSubCategoriesModel().setImageRef(imageResource);
                     }
                     progressDialog.show("Please Wait", "While We Are Updating Subcategory Data");
 
@@ -395,7 +383,7 @@ public class CategoriesListFragmentAdmin extends Fragment implements
 
                                             if (categoriesModel.getSubCategories() != null) {
                                                 categoriesModel.getSubCategories().remove(categoryIndexDataHolder.getSubDocIndex());
-                                                categoriesModel.getSubCategories().add(categoryIndexDataHolder.getSubDocIndex(), categoryIndexDataHolder.getCategoriesModel());
+                                                categoriesModel.getSubCategories().add(categoryIndexDataHolder.getSubDocIndex(), categoryIndexDataHolder.getSubCategoriesModel());
                                             }
 
                                         }
@@ -452,12 +440,12 @@ public class CategoriesListFragmentAdmin extends Fragment implements
     }
 
     @Override
-    public void onUpdateSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel categoriesModel) {
+    public void onUpdateSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, SubCategoriesModel categoriesModel) {
         action = CustomPopupViewHolder.ACTION_UPDATE_SUB_CATEGORY;
         customPopupViewHolder.setViewsReadyForAction(action);
 
         categoryIndexDataHolder.setMainDocID(mainDocID);
-        categoryIndexDataHolder.setCategoriesModel(categoriesModel);
+        categoryIndexDataHolder.setSubCategoriesModel(categoriesModel);
         categoryIndexDataHolder.setSubDocIndex(subDocIndex);
 
         customPopupViewHolder.getEdxCate().setText(categoriesModel.getTitle());
@@ -467,7 +455,7 @@ public class CategoriesListFragmentAdmin extends Fragment implements
     }
 
     @Override
-    public void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel subCategoryToDelete) {
+    public void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, SubCategoriesModel subCategoryToDelete) {
         MENU_COLLECTION_REFERENCE
                 .document(mainDocID)
                 .update("subCategories", FieldValue.arrayRemove(subCategoryToDelete))
@@ -641,16 +629,16 @@ public class CategoriesListFragmentAdmin extends Fragment implements
         }
     }
 
-    private class SubCategoryIndexDataHolder {
+    private static class SubCategoryIndexDataHolder {
         private String mainDocID;
         private int subDocIndex;
-        private CategoriesModel categoriesModel;
+        private SubCategoriesModel subCategoriesModel;
 
         public SubCategoryIndexDataHolder() {
             this.mainDocID = "SX7JBR81GmqlHh6MD51M";
             this.subDocIndex = 0;
-            this.categoriesModel = new CategoriesModel();
-            this.categoriesModel.setDocID(this.mainDocID);
+            this.subCategoriesModel = new SubCategoriesModel();
+            this.subCategoriesModel.setDocID(this.mainDocID);
         }
 
 
@@ -670,12 +658,12 @@ public class CategoriesListFragmentAdmin extends Fragment implements
             this.subDocIndex = subDocIndex;
         }
 
-        public CategoriesModel getCategoriesModel() {
-            return categoriesModel;
+        public SubCategoriesModel getSubCategoriesModel() {
+            return subCategoriesModel;
         }
 
-        public void setCategoriesModel(CategoriesModel categoriesModel) {
-            this.categoriesModel = categoriesModel;
+        public void setSubCategoriesModel(SubCategoriesModel subCategoriesModel) {
+            this.subCategoriesModel = subCategoriesModel;
         }
     }
 }

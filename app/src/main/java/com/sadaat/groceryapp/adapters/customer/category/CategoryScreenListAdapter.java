@@ -18,9 +18,9 @@ import java.util.List;
 
 public class CategoryScreenListAdapter extends RecyclerView.Adapter<CategoryScreenListAdapter.ViewHolder> {
 
-    private Context mContext;
-    private ArrayList<CategoriesModel> localDataSet;
-    private SubcategoryHorizontalAdapter.OnSubcategoryItemCustomClickListener itemClickListener;
+    private final Context mContext;
+    private final ArrayList<CategoriesModel> localDataSet;
+    private final SubcategoryHorizontalAdapter.OnSubcategoryItemCustomClickListener itemClickListener;
 
     public CategoryScreenListAdapter(Context mContext, ArrayList<CategoriesModel> localDataSet, SubcategoryHorizontalAdapter.OnSubcategoryItemCustomClickListener itemClickListener) {
         this.mContext = mContext;
@@ -96,9 +96,9 @@ public class CategoryScreenListAdapter extends RecyclerView.Adapter<CategoryScre
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private MaterialTextView txvCategoryTitle;
-        private MaterialTextView txvCategoryDescription;
-        private RecyclerView subCategoriesRecyclerView;
+        private final MaterialTextView txvCategoryTitle;
+        private final MaterialTextView txvCategoryDescription;
+        private final RecyclerView subCategoriesRecyclerView;
 
         //  TODO Modify the ViewHolder
         public ViewHolder(@NonNull View itemView) {

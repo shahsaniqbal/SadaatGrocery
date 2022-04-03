@@ -1,7 +1,5 @@
 package com.sadaat.groceryapp.models.Items;
 
-import com.sadaat.groceryapp.models.ItemModel;
-
 public class ItemComboForDeal {
     private ItemModel item;
     private int qty;

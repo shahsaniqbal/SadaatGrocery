@@ -35,14 +35,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.handler.LoginIntentHandler;
-import com.sadaat.groceryapp.models.UserModel;
+import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
 import com.sadaat.groceryapp.models.locations.AddressModel;
 import com.sadaat.groceryapp.models.locations.AreaModel;
 import com.sadaat.groceryapp.models.locations.CityModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.ItemsListFragmentAdmin;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.io.ByteArrayOutputStream;
@@ -54,8 +53,8 @@ import java.util.UUID;
 public class PostRegisterFragment extends Fragment implements View.OnClickListener {
 
     private static final int IMAGE_SEL_REQ = 656;
-    String city = "";
-    String area = "";
+    //String city = "";
+    //String area = "";
     String imagePath = "";
     Uri imageReference;
     private UserModel model;
@@ -80,7 +79,6 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
     private LoadingDialogue loadingDialogue;
     private String password;
 
-    private FirebaseStorage storage;
     private StorageReference storageReference;
 
 
@@ -130,10 +128,10 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedCityIndex = i;
                 address.setCity(cityModels.get(i));
-                loadingDialogue.show("Please wait", "Loading Available areas in "+cityModels.get(i).getName());
+                loadingDialogue.show("Please wait", "Loading Available areas in " + cityModels.get(i).getName());
                 adapterAreas.clear();
 
-                for (AreaModel model: cityModels.get(selectedCityIndex).getAreas()){
+                for (AreaModel model : cityModels.get(selectedCityIndex).getAreas()) {
                     adapterAreas.add(model.toString());
                     adapterAreas.notifyDataSetChanged();
                 }
@@ -161,8 +159,6 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
         });
 
 
-        
-
         userDP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,10 +179,9 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
                 if (analyzeInputsIfEmpty(true)) {
 
                     address.setAddressLine1(edxAddress1.getText().toString());
-                    if (!edxAddress2.getText().toString().isEmpty()){
+                    if (!edxAddress2.getText().toString().isEmpty()) {
                         address.setAddressLine2(edxAddress2.getText().toString());
-                    }
-                    else address.setAddressLine2("");
+                    } else address.setAddressLine2("");
 
                     model.setDetails(
                             new UserOtherDetailsModel(
@@ -238,8 +233,7 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
                                 }
                             });
 
-                }
-                else{
+                } else {
                     Toast.makeText(PostRegisterFragment.this.requireActivity(), "There's some problem with the inputs", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -257,10 +251,10 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
 
-                            for (DocumentSnapshot d: task.getResult().getDocuments()){
+                            for (DocumentSnapshot d : task.getResult().getDocuments()) {
                                 CityModel model = d.toObject(CityModel.class);
                                 cityModels.add(model);
-                                Log.e("Data", model.getId()+"...."+model.getName()+"...."+model.getAreas().size());
+                                Log.e("Data", model.getId() + "...." + model.getName() + "...." + model.getAreas().size());
                                 adapterCities.add(model.toString());
                                 adapterCities.notifyDataSetChanged();
                             }
@@ -308,23 +302,23 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
     private void initializers(View v) {
         userDP = v.findViewById(R.id.card_add_users_dp_imgv);
 
-        edxEmail = (MaterialTextView) v.findViewById(R.id.edx_add_users_email);
-        edxName = (MaterialTextView) v.findViewById(R.id.edx_add_users_full_name);
-        edxMobile = (MaterialTextView) v.findViewById(R.id.edx_add_users_mobile);
-        edxAddress1 = (TextInputEditText) v.findViewById(R.id.address_line_1);
-        edxAddress2 = (TextInputEditText) v.findViewById(R.id.address_line_2);
+        edxEmail = v.findViewById(R.id.edx_add_users_email);
+        edxName = v.findViewById(R.id.edx_add_users_full_name);
+        edxMobile = v.findViewById(R.id.edx_add_users_mobile);
+        edxAddress1 = v.findViewById(R.id.address_line_1);
+        edxAddress2 = v.findViewById(R.id.address_line_2);
 
-        spinnerCity = (Spinner) v.findViewById(R.id.city_spinner);
-        spinnerArea = (Spinner) v.findViewById(R.id.area_spinner);
+        spinnerCity = v.findViewById(R.id.city_spinner);
+        spinnerArea = v.findViewById(R.id.area_spinner);
 
-        btnSignUp = (MaterialButton) v.findViewById(R.id.addUser_as_customer);
+        btnSignUp = v.findViewById(R.id.addUser_as_customer);
         loadingDialogue = new LoadingDialogue(PostRegisterFragment.this.requireActivity());
 
         cityModels = new ArrayList<>();
 
         address = new AddressModel();
 
-        storage = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS);
+        FirebaseStorage storage = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS);
         storageReference = storage.getReference();
 
         adapterCities = new ArrayAdapter<String>(this.requireActivity(),
@@ -334,7 +328,6 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
                 android.R.layout.simple_spinner_item, new ArrayList<>());
 
 
-
     }
 
     @Override
@@ -342,10 +335,9 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
         if (analyzeInputsIfEmpty(true)) {
 
             address.setAddressLine1(edxAddress1.getText().toString());
-            if (!edxAddress2.getText().toString().isEmpty()){
+            if (!edxAddress2.getText().toString().isEmpty()) {
                 address.setAddressLine2(edxAddress2.getText().toString());
-            }
-            else address.setAddressLine2("");
+            } else address.setAddressLine2("");
 
             model.setDetails(
                     new UserOtherDetailsModel(

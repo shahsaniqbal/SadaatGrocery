@@ -1,6 +1,6 @@
 package com.sadaat.groceryapp.models.cart;
 
-import com.sadaat.groceryapp.models.ItemModel;
+import com.sadaat.groceryapp.models.Items.ItemModel;
 
 public class CartItemModel {
     private ItemModel model;

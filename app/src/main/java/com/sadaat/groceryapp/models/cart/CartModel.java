@@ -6,8 +6,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.sadaat.groceryapp.models.ItemModel;
-import com.sadaat.groceryapp.models.TimeStamp;
+import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 

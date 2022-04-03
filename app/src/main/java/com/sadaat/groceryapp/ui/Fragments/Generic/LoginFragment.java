@@ -22,11 +22,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.handler.LoginIntentHandler;
-import com.sadaat.groceryapp.models.UserModel;
+import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
-import com.sadaat.groceryapp.temp.UserTypes;
-import com.sadaat.groceryapp.ui.Activities.UsersBased.Admin.MainActivityAdmin;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 public class LoginFragment extends Fragment {

@@ -30,39 +30,33 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.ItemsDisplayAdapterAdmin;
 import com.sadaat.groceryapp.models.CategoriesModel;
-import com.sadaat.groceryapp.models.ItemModel;
+import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.models.Items.CategoryBindingModel;
 import com.sadaat.groceryapp.models.Items.OtherDataForItem;
 import com.sadaat.groceryapp.models.Items.PriceGroup;
 import com.sadaat.groceryapp.models.Items.QtyUnitModel;
 import com.sadaat.groceryapp.models.StockEntry;
-import com.sadaat.groceryapp.models.locations.CityModel;
+import com.sadaat.groceryapp.models.SubCategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
-import com.sadaat.groceryapp.ui.Fragments.Generic.PostRegisterFragment;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -76,34 +70,26 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     RecyclerView.LayoutManager manager;
     ItemsDisplayAdapterAdmin adapterAdmin;
     LoadingDialogue progressDialog;
-    ArrayList<ItemModel> allItems;
     AlertDialog.Builder dialogueBuilder;
     AlertDialog itemPopupDialogueBox;
     View popupView;
 
-    ArrayList<CategoriesModel> subcategories;
-    //ArrayList<String> categoriesList;
-    //ArrayList<String> subcategoriesList;
+    ArrayList<CategoriesModel> categoriesList;
 
-    String categoryIDSelected;
-    String subCategoryIDSelected;
+    int categorySelected;
+    int subCategorySelected;
     ArrayAdapter<String> categorySpinnerAdapter;
     ArrayAdapter<String> subcategorySpinnerAdapter;
 
     FirebaseStorage storage;
     StorageReference storageRef;
     MaterialButton addStockButton;
-    //String currentItemRefForUpdatingStock;
-    private ItemModel currentModelToLoad;
-    private int currentPosition;
-
     //Uploaded Image path on Firebase Storage
     String imageResource = "";
-    //Uri for Image (To be uploaded and setDrawable to ImageView)
-    private Uri imageFetchUri;
     AlertDialog.Builder dialogueBuilderForStock;
     AlertDialog stockPopupDialogueBox;
     View stockPopupView;
+    private Uri imageFetchUri;
     private MaterialTextView txvOldStock;
 
 
@@ -139,9 +125,9 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapterAdmin);
         backgroundExecutorForShowingData(view);
-        addItemsButton.setOnClickListener(v -> handlePopup(view, ActionConstants.ACTION_ADD, null));
+        addItemsButton.setOnClickListener(v -> handlePopup(ActionConstants.ACTION_ADD, null, -1));
 
-        viewHolder.getImgvAddImageToItem().setOnClickListener(view12 -> {
+        viewHolder.getImageViewAddImageToItem().setOnClickListener(view12 -> {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -152,89 +138,43 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                     IMAGE_SEL_REQ);
         });
 
-        progressDialog.show("Please Wait", "Loading Categories");
+
+        viewHolder.getComboBoxCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
+
+                categorySelected = position;
+                subcategorySpinnerAdapter.clear();
+
+                for (SubCategoriesModel subCategory :
+                        categoriesList.get(position).getSubCategories()) {
+                    subcategorySpinnerAdapter.add(subCategory.getTitle());
+                    subcategorySpinnerAdapter.notifyDataSetChanged();
+                }
+
+                viewHolder.getComboBoxSubCategory().setVisibility(View.VISIBLE);
 
 
-        FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-                        List<DocumentSnapshot> categoriesListRaw = task.getResult().getDocuments();
+            }
+        });
+        viewHolder.getComboBoxSubCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
 
+                subCategorySelected = position;
 
-                        ArrayList<CategoriesModel> categories = new ArrayList<>();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-                        for (DocumentSnapshot d :
-                                categoriesListRaw) {
-
-                            CategoriesModel category = new CategoriesModel(d.getId(), Objects.requireNonNull(d.toObject(CategoriesModel.class)));
-                            categories.add(category);
-                            categorySpinnerAdapter.add(category.toString());
-                        }
-
-                        viewHolder.getComboBoxCategory().setVisibility(View.VISIBLE);
-                        //categoryIDSelected = categoriesListRaw.get(0).toObject(CategoriesModel.class).getDocID();
-
-                        if (categories.size() > 0) {
-                            categoryIDSelected = categories.get(0).getDocID();
-                        }
-
-
-                        progressDialog.dismiss();
-
-                        viewHolder.getComboBoxCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
-
-                                if (categories.size() > 0) {
-                                    categoryIDSelected = categories.get(position).getDocID();
-                                    subcategories = categories.get(position).getSubCategories();
-
-                                    subcategorySpinnerAdapter.clear();
-                                    progressDialog.show("Please Wait", "Loading Subcategories of " + categories.get(position).getTitle());
-
-                                    for (CategoriesModel subCategory :
-                                            subcategories) {
-                                        subcategorySpinnerAdapter.add(subCategory.toString());
-                                    }
-
-                                    progressDialog.dismiss();
-
-                                    viewHolder.getComboBoxSubCategory().setVisibility(View.VISIBLE);
-                                }
-
-
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-                        viewHolder.getComboBoxSubCategory().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
-                                if (subcategories.size() > 0) {
-
-                                    subCategoryIDSelected = subcategories.get(position).getDocID();
-                                }
-
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-
-
-                    }
-                });
-
-
+            }
+        });
 
 
     }
@@ -248,11 +188,10 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Listing -> Items");
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle("Listing -> Items");
     }
 
     private void initializer(View view) {
-        allItems = new ArrayList<>();
         addItemsButton = view.findViewById(R.id.btn_admin_add_items);
         recyclerView = view.findViewById(R.id.admin_recycler_items);
         manager = new LinearLayoutManager(ItemsListFragmentAdmin.this.requireActivity());
@@ -268,16 +207,16 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         progressDialog = new LoadingDialogue(requireActivity());
 
-        adapterAdmin = new ItemsDisplayAdapterAdmin(allItems, this, requireActivity());
+        adapterAdmin = new ItemsDisplayAdapterAdmin(new ArrayList<>(), this, requireActivity());
 
-        categoryIDSelected = "";
-        subCategoryIDSelected = "";
+        categorySelected = 0;
+        subCategorySelected = 0;
 
         categoriesList = new ArrayList<>();
-        subcategoriesList = new ArrayList<>();
+        //subcategoriesList = new ArrayList<>();
 
-        categorySpinnerAdapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_item, categoriesList);
-        subcategorySpinnerAdapter = new ArrayAdapter<String>(requireActivity(), android.R.layout.simple_spinner_item, subcategoriesList);
+        categorySpinnerAdapter = new ArrayAdapter<>(this.requireActivity(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        subcategorySpinnerAdapter = new ArrayAdapter<>(this.requireActivity(), android.R.layout.simple_spinner_item, new ArrayList<>());
 
         viewHolder.getComboBoxCategory().setAdapter(categorySpinnerAdapter);
         viewHolder.getComboBoxSubCategory().setAdapter(subcategorySpinnerAdapter);
@@ -306,7 +245,6 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
                     if (task.isSuccessful()) {
 
-                        allItems.clear();
                         for (DocumentSnapshot d : task.getResult().getDocuments()) {
                             adapterAdmin.addItem(d.toObject(ItemModel.class));
                         }
@@ -322,14 +260,18 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     }
 
     @SuppressLint("SetTextI18n")
-    private void handlePopup(View parent, int action, ItemModel oldModelToUpdate) {
+    private void handlePopup(int action, ItemModel oldModelToUpdate, int position) {
 
 
         viewHolder = new CustomPopupViewHolder(popupView);
         itemPopupDialogueBox.show();
 
+
+        loadSpinnersData();
+
+
         Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(),
-                "For the better performance on Customer Side\n Click on Image Icon & Upload 1:1 Size Imagge",
+                "For the better performance on Customer Side\n Click on Image Icon & Upload 1:1 Size Image",
                 Toast.LENGTH_LONG).show();
 
         if (action == ActionConstants.ACTION_UPDATE) {
@@ -351,23 +293,27 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 viewHolder.edxDirectLink.setText(oldModelToUpdate.getOtherDetails().getImageLink());
                 StorageReference imgRef = storageRef.child(oldModelToUpdate.getOtherDetails().getImageLink());
                 final long ONE_MEGABYTE = 1024 * 1024;
-                imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> viewHolder.getImgvAddImageToItem().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length))).addOnFailureListener(exception -> Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show());
+                imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> viewHolder.getImageViewAddImageToItem().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length))).addOnFailureListener(exception -> Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show());
 
+            }
+
+            if (imageResource.isEmpty()){
+                imageResource = oldModelToUpdate.getOtherDetails().getImageLink();
             }
 
             viewHolder.getAddItemButton().setOnClickListener(v -> {
                 if (viewHolder.analyzeInputs(true)) {
                     int max = 25;
 
-                    if (!viewHolder.getEdxMaxQtyPerOrder().getText().toString().isEmpty())
+                    if (!Objects.requireNonNull(viewHolder.getEdxMaxQtyPerOrder().getText()).toString().isEmpty())
                         max = Integer.parseInt(viewHolder.getEdxMaxQtyPerOrder().getText().toString());
 
 
                     oldModelToUpdate.setName(Objects.requireNonNull(viewHolder.getEdxName().getText()).toString());
                     oldModelToUpdate.setDescription(Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString());
                     oldModelToUpdate.setCategoryBinding(new CategoryBindingModel(
-                            categoryIDSelected,
-                            subCategoryIDSelected
+                            categoriesList.get(categorySelected).getDocID(),
+                            categoriesList.get(categorySelected).getSubCategories().get(subCategorySelected).getDocID()
                     ));
                     oldModelToUpdate.setPrices(new PriceGroup(
                             Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxRetailPrice().getText()).toString()),
@@ -385,7 +331,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                     ));
                     oldModelToUpdate.setMaxQtyPerOrder(max);
 
-                    implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_UPDATE, oldModelToUpdate);
+                    implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_UPDATE, oldModelToUpdate, position);
 
                 }
             });
@@ -396,8 +342,10 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             viewHolder.getAddItemButton().setOnClickListener(v -> {
                 if (viewHolder.analyzeInputs(true)) {
                     int max = 25;
+                    ArrayList<StockEntry> stocks = new ArrayList<>();
+                    stocks.add(new StockEntry(new Date(), Integer.parseInt(Objects.requireNonNull(viewHolder.getEdxStock().getText()).toString())));
 
-                    if (!viewHolder.getEdxMaxQtyPerOrder().getText().toString().isEmpty())
+                    if (!Objects.requireNonNull(viewHolder.getEdxMaxQtyPerOrder().getText()).toString().isEmpty())
                         max = Integer.parseInt(viewHolder.getEdxMaxQtyPerOrder().getText().toString());
 
                     implementOnClickOnButtonClickOnPopup(ActionConstants.ACTION_ADD, new ItemModel(
@@ -405,30 +353,32 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                             Objects.requireNonNull(viewHolder.getEdxName().getText()).toString(),
                             Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString(),
                             new CategoryBindingModel(
-                                    categoryIDSelected,
-                                    subCategoryIDSelected
+                                    categoriesList.get(categorySelected).getDocID(),
+                                    categoriesList.get(categorySelected).getSubCategories().get(subCategorySelected).getDocID()
                             ),
                             new PriceGroup(
-                                    Double.parseDouble(viewHolder.getEdxRetailPrice().getText().toString()),
-                                    Double.parseDouble(viewHolder.getEdxSalePrice().getText().toString())
+                                    Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxRetailPrice().getText()).toString()),
+                                    Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSalePrice().getText()).toString())
                             ),
                             new OtherDataForItem(
-                                    Double.parseDouble(viewHolder.getEdxSecurityCharges().getText().toString()),
-                                    Integer.parseInt(viewHolder.getEdxStock().getText().toString()),
-                                    Double.parseDouble(viewHolder.getEdxCardHolderDiscount().getText().toString()),
+                                    Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSecurityCharges().getText()).toString()),
+                                    Integer.parseInt(Objects.requireNonNull(viewHolder.getEdxStock().getText()).toString()),
+                                    Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxCardHolderDiscount().getText()).toString()),
                                     imageResource
                             ),
                             new QtyUnitModel(
-                                    Double.parseDouble(viewHolder.getEdxQty().getText().toString()),
-                                    viewHolder.getEdxUnit().getText().toString()
+                                    Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxQty().getText()).toString()),
+                                    Objects.requireNonNull(viewHolder.getEdxUnit().getText()).toString()
                             ),
-                            new ArrayList<>(),
+                            stocks,
                             max
-                    ));
+                    ), -1);
 
 
                 }
             });
+
+            viewHolder.setViewsEmpty();
 
         }
     }
@@ -477,23 +427,22 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 });
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onAddStockButtonClick(View v, int position, ItemModel model) {
         txvOldStock.setText("" + model.getOtherDetails().getStock());
-        currentModelToLoad = currentModelToLoad;
-        currentPosition = position;
         stockPopupDialogueBox.show();
 
-        addStockButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int newStockNumber;
-                if (((TextInputEditText) stockPopupView.findViewById(R.id.new_stock)).getText().toString().isEmpty()) {
-                    newStockNumber = 0;
-                } else {
-                    newStockNumber = Integer.parseInt(((TextInputEditText) stockPopupView.findViewById(R.id.new_stock)).getText().toString());
-                }
+        addStockButton.setOnClickListener(view -> {
+            int newStockNumber;
+            if (Objects.requireNonNull(((TextInputEditText) stockPopupView.findViewById(R.id.new_stock)).getText()).toString().isEmpty()) {
+                newStockNumber = 0;
+                ((TextInputEditText) stockPopupView.findViewById(R.id.new_stock)).setText("" + 0);
+            } else {
+                newStockNumber = Integer.parseInt(Objects.requireNonNull(((TextInputEditText) stockPopupView.findViewById(R.id.new_stock)).getText()).toString());
+            }
 
+            if (newStockNumber != 0) {
                 StockEntry stockEntry = new StockEntry(new Date(), newStockNumber);
 
                 FirebaseFirestore.getInstance()
@@ -503,32 +452,35 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                 "otherDetails.stock", FieldValue.increment(newStockNumber),
                                 "stockEntries", FieldValue.arrayUnion(stockEntry)
                         )
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Stock Added Successfully", Toast.LENGTH_SHORT).show();
-                                    model.getOtherDetails().setStock(model.getOtherDetails().getStock()+newStockNumber);
-                                    adapterAdmin.notifyItemChanged(position);
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Stock Added Successfully", Toast.LENGTH_SHORT).show();
+                                model.getOtherDetails().setStock(model.getOtherDetails().getStock() + newStockNumber);
+                                adapterAdmin.notifyItemChanged(position);
 
-                                    stockPopupDialogueBox.dismiss();
-                                } else {
-                                    Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Problem Updating Stock " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
+                                stockPopupDialogueBox.dismiss();
+                            } else {
+                                Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Problem Updating Stock " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-
+            } else {
+                Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "No Changes have been made, Thanks", Toast.LENGTH_SHORT).show();
+                stockPopupDialogueBox.dismiss();
             }
+
+
+            ((TextInputEditText) stockPopupView.findViewById(R.id.new_stock)).setText("");
+
         });
 
     }
 
     @Override
     public void onUpdateDetailsButtonClick(View v, int position, ItemModel oldModelToUpdate) {
-        handlePopup(ItemsListFragmentAdmin.this.getView(), ActionConstants.ACTION_UPDATE, oldModelToUpdate);
+        handlePopup(ActionConstants.ACTION_UPDATE, oldModelToUpdate, position);
     }
 
-    private void implementOnClickOnButtonClickOnPopup(final int CURRENT_ACTION, ItemModel model) {
+    private void implementOnClickOnButtonClickOnPopup(final int CURRENT_ACTION, ItemModel model, int position) {
         if (CURRENT_ACTION == ActionConstants.ACTION_ADD) {
             firebaseFirestore
                     .collection(new FirebaseDataKeys().getItemsRef())
@@ -556,6 +508,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                     .set(model)
                     .addOnCompleteListener(task -> {
                         progressDialog.dismiss();
+                        adapterAdmin.updateItem(position, model);
                         backgroundExecutorForShowingData(ItemsListFragmentAdmin.this.getView());
                         itemPopupDialogueBox.setCancelable(true);
                         itemPopupDialogueBox.dismiss();
@@ -566,7 +519,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         viewHolder.setViewsEmpty();
 
         imageResource = "";
-        viewHolder.getImgvAddImageToItem().setImageResource(R.mipmap.grocery_items);
+        viewHolder.getImageViewAddImageToItem().setImageResource(R.mipmap.grocery_items);
     }
 
     @Override
@@ -600,13 +553,13 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                 this.requireActivity().getContentResolver(),
                                 imageFetchUri);
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+                ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteStream);
 
                 //Setting Image Bitmap to my desired ImageView
-                viewHolder.getImgvAddImageToItem().setImageBitmap(bitmap);
+                viewHolder.getImageViewAddImageToItem().setImageBitmap(bitmap);
 
-                uploadImage(baos.toByteArray());
+                uploadImage(byteStream.toByteArray());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -656,7 +609,40 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         }
     }
 
-    public static class CustomPopupViewHolder {
+    private void loadSpinnersData() {
+        progressDialog.show("Loading", "Available Categories for Items");
+        categoriesList.clear();
+        categoriesList = new ArrayList<>();
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getMenuRef())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+
+                        for (DocumentSnapshot d : task.getResult().getDocuments()) {
+                            CategoriesModel model = d.toObject(CategoriesModel.class);
+                            categoriesList.add(model);
+                            assert model != null;
+                            Log.e("Data", model.getDocID() + "...." + model.getTitle() + "...." + model.getSubCategories().size());
+                            categorySpinnerAdapter.add(model.toString());
+                            categorySpinnerAdapter.notifyDataSetChanged();
+                        }
+                        viewHolder.getComboBoxCategory().setVisibility(View.VISIBLE);
+                        progressDialog.dismiss();
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Error getting Locations, Please try again later", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private static class ActionConstants {
+        public static final int ACTION_ADD = 0;
+        public static final int ACTION_UPDATE = 1;
+    }
+
+    public class CustomPopupViewHolder {
 
         private final TextInputEditText edxName;
 
@@ -679,15 +665,12 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
         private final TextInputEditText edxMaxQtyPerOrder;
         private final TextInputEditText edxDirectLink;
 
-        private final ImageView imgvAddImageToItem;
+        private final ImageView imageViewAddImageToItem;
 
         private final MaterialButton addItemButton;
-        private final View mainView;
 
 
         public CustomPopupViewHolder(View view) {
-
-            this.mainView = view;
 
             edxName = view.findViewById(R.id.edx_add_items_title);
             edxDesc = view.findViewById(R.id.edx_add_items_desc);
@@ -702,7 +685,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             comboBoxCategory = view.findViewById(R.id.admin_items_category_spinner);
             comboBoxSubCategory = view.findViewById(R.id.admin_items_subcategory_spinner);
 
-            imgvAddImageToItem = view.findViewById(R.id.add_item_image);
+            imageViewAddImageToItem = view.findViewById(R.id.add_item_image);
 
             edxMaxQtyPerOrder = view.findViewById(R.id.edx_add_items_max_qty_per_order);
             edxDirectLink = view.findViewById(R.id.edx_add_items_direct_link);
@@ -758,8 +741,8 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             return addItemButton;
         }
 
-        public ImageView getImgvAddImageToItem() {
-            return imgvAddImageToItem;
+        public ImageView getImageViewAddImageToItem() {
+            return imageViewAddImageToItem;
         }
 
         public TextInputEditText getEdxMaxQtyPerOrder() {
@@ -770,19 +753,55 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             return edxDirectLink;
         }
 
-        public View getMainView() {
-            return mainView;
-        }
-
         public boolean analyzeInputs(boolean b) {
+
+            /*if (imageResource.isEmpty() && action){
+                Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Please Select a 1:1 Image", Toast.LENGTH_SHORT).show();
+                b = false;
+            }*/
+
+            if (edxName.getText().toString().isEmpty()) {
+                edxName.setError(edxName.getHint().toString() + " field can't be empty");
+                b = false;
+            } else if (edxQty.getText().toString().isEmpty()) {
+                edxQty.setError(edxQty.getHint().toString() + " field can't be empty");
+                b = false;
+            } else if (edxUnit.getText().toString().isEmpty()) {
+                edxUnit.setError(edxUnit.getHint().toString() + " field can't be empty");
+                b = false;
+
+            } else if (categorySelected == -1) {
+                Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Please Select Category", Toast.LENGTH_SHORT).show();
+                b = false;
+            } else if (subCategorySelected == -1) {
+                Toast.makeText(ItemsListFragmentAdmin.this.requireActivity(), "Please Select Subcategory", Toast.LENGTH_SHORT).show();
+                b = false;
+            } else if (edxDesc.getText().toString().isEmpty()) {
+                edxDesc.setText("");
+            } else if (edxRetailPrice.getText().toString().isEmpty()) {
+                edxRetailPrice.setError(edxRetailPrice.getHint().toString() + " field can't be empty");
+                b = false;
+            } else if (edxSalePrice.getText().toString().isEmpty()) {
+                edxSalePrice.setError(edxSalePrice.getHint().toString() + " field can't be empty");
+                b = false;
+            } else if (edxSecurityCharges.getText().toString().isEmpty()) {
+                edxSecurityCharges.setError(edxSecurityCharges.getHint().toString() + " field can't be empty");
+                b = false;
+            } else if (edxCardHolderDiscount.getText().toString().isEmpty()) {
+                edxCardHolderDiscount.setError(edxCardHolderDiscount.getHint().toString() + " field can't be empty");
+                b = false;
+            } else if (edxStock.getText().toString().isEmpty()) {
+                edxStock.setText("" + 0);
+                edxStock.setError(edxStock.getHint().toString() + " field can't be empty");
+                b = false;
+            } else if (edxMaxQtyPerOrder.getText().toString().isEmpty()) {
+                edxMaxQtyPerOrder.setText("" + 25);
+            }
+
             return b;
         }
 
-        /*
-        public String getImgLink() {
-            return "null";
-        }
-        */
+        @SuppressLint("SetTextI18n")
         public void setViewsEmpty() {
             edxName.setText("");
             edxQty.setText("");
@@ -796,43 +815,15 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
             edxStock.setText("" + 0);
             edxDirectLink.setText("");
             edxMaxQtyPerOrder.setText("");
+            //imageViewAddImageToItem.setImageResource(R.mipmap.grocery_items);
+            categorySelected = -1;
+            subCategorySelected = -1;
+            imageResource = "";
+            categorySpinnerAdapter.clear();
+            subcategorySpinnerAdapter.clear();
         }
 
 
-    }
-
-    private static class ActionConstants {
-        public static final int ACTION_ADD = 0;
-        public static final int ACTION_UPDATE = 1;
-    }
-
-    private void loadSpinnersData() {
-        progressDialog.show("Loading", "Available Categories for Items");
-        FirebaseFirestore
-                .getInstance()
-                .collection(new FirebaseDataKeys().getMenuRef())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-
-                            for (DocumentSnapshot d: task.getResult().getDocuments()){
-                                CategoriesModel model = d.toObject(CategoriesModel.class);
-                                cityModels.add(model);
-                                Log.e("Data", model.getId()+"...."+model.getName()+"...."+model.getAreas().size());
-                                adapterCities.add(model.toString());
-                                adapterCities.notifyDataSetChanged();
-                            }
-
-                            loadingDialogue.dismiss();
-                        } else {
-                            loadingDialogue.dismiss();
-                            Toast.makeText(PostRegisterFragment.this.requireActivity(), "Error getting Locations, Please try again later", Toast.LENGTH_SHORT).show();
-                            openRegisterFragmentAgain();
-                        }
-                    }
-                });
     }
 
 }

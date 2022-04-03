@@ -1,5 +1,7 @@
 package com.sadaat.groceryapp.models;
 
+import com.sadaat.groceryapp.models.Items.ItemModel;
+
 import java.util.ArrayList;
 
 public class MenuModel {

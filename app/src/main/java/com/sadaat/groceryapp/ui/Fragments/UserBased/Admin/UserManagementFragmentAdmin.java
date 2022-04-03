@@ -40,7 +40,7 @@ import com.sadaat.groceryapp.adapters.admin.UsersItemAdapterAdmin;
 import com.sadaat.groceryapp.models.AppCredits;
 import com.sadaat.groceryapp.models.cart.CartModel;
 import com.sadaat.groceryapp.models.locations.AddressModel;
-import com.sadaat.groceryapp.models.UserModel;
+import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserTypes;

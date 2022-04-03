@@ -54,7 +54,7 @@ public class CategoriesItemAdapterAdmin extends RecyclerView.Adapter<CategoriesI
             viewHolder.getTxvDesc().setVisibility(View.VISIBLE);
         }
 
-        if (localDataSet.get(position).isParent() && localDataSet.get(position).getSubCategories().size() > 0) {
+        if (localDataSet.get(position).getSubCategories().size() > 0) {
 
             viewHolder.getRecyclerViewSubCategories().setVisibility(View.VISIBLE);
             viewHolder.getRecyclerViewSubCategories().setLayoutManager(

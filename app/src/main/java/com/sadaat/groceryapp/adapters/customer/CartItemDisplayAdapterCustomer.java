@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.models.ItemModel;
+import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;

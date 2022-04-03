@@ -11,16 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.models.CategoriesModel;
+import com.sadaat.groceryapp.models.SubCategoriesModel;
 
 import java.util.ArrayList;
 
 public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<SubcategoriesItemAdapterAdmin.ViewHolder> {
 
     String mainDocID;
-    private final ArrayList<CategoriesModel> localDataSet;
+    private final ArrayList<SubCategoriesModel> localDataSet;
     public SubCategoriesItemAdapterListener customListenerForSubCategories;
 
-    public SubcategoriesItemAdapterAdmin(String mainDocID, ArrayList<CategoriesModel> localDataSet, SubCategoriesItemAdapterListener customListenerForSubCategories) {
+    public SubcategoriesItemAdapterAdmin(String mainDocID, ArrayList<SubCategoriesModel> localDataSet, SubCategoriesItemAdapterListener customListenerForSubCategories) {
         this.mainDocID = mainDocID;
         this.localDataSet = localDataSet;
         this.customListenerForSubCategories = customListenerForSubCategories;
@@ -72,7 +73,7 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
 
     }
 
-    public void addSubCategory(CategoriesModel model) {
+    public void addSubCategory(SubCategoriesModel model) {
         localDataSet.add(model);
         notifyItemInserted(localDataSet.size() - 1);
     }
@@ -96,9 +97,9 @@ public class SubcategoriesItemAdapterAdmin extends RecyclerView.Adapter<Subcateg
 
 
     public interface SubCategoriesItemAdapterListener {
-        void onUpdateSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel categoriesModel);
+        void onUpdateSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, SubCategoriesModel categoriesModel);
 
-        void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, CategoriesModel subCategoryToDelete);
+        void onDeleteSubCategoryItemClick(View v, int position, String mainDocID, int subDocIndex, SubCategoriesModel subCategoryToDelete);
     }
 
 

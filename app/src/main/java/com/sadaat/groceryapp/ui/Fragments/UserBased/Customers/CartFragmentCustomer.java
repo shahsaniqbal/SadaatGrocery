@@ -17,7 +17,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.CartItemDisplayAdapterCustomer;
-import com.sadaat.groceryapp.models.ItemModel;
+import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.UserLive;

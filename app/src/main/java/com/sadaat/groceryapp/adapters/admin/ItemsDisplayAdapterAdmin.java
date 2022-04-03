@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,9 +21,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.formatter.Price;
-import com.sadaat.groceryapp.models.ItemModel;
+import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.CategoriesListFragmentAdmin;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
 
     public ItemsDisplayAdapterAdmin(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener) {
         this.localDataSet = localDataSet;
-        this.customOnClickListener = (ItemClickListeners) customOnClickListener;
+        this.customOnClickListener = customOnClickListener;
     }
 
     public ItemsDisplayAdapterAdmin(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener, Context mContext) {
@@ -68,7 +66,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
         viewHolder.getTxvRetailPrice().setText(Price.format(localDataSet.get(position).getPrices().getRetailPrice()));
         viewHolder.getTxvSalePrice().setText(Price.format(localDataSet.get(position).getPrices().getSalePrice()));
 
-        viewHolder.getTxvStock().setText(String.valueOf(localDataSet.get(position).getOtherDetails().getStock()) + " Remaining");
+        viewHolder.getTxvStock().setText(localDataSet.get(position).getOtherDetails().getStock() + " Remaining");
 
         viewHolder.getTxvSecurityCharges().setText(Price.format(localDataSet.get(position).getOtherDetails().getSecurityCharges()));
         viewHolder.getTxvCardDiscount().setText(Price.format(localDataSet.get(position).getOtherDetails().getSpecialDiscountForCardHolder()));
@@ -82,7 +80,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
             }
         });
 
-        progressDialogue.show("Please Wait","Loading Item Images.");
+        progressDialogue.show("Please Wait", "Loading Item Images.");
 
         if (!localDataSet
                 .get(position)
@@ -111,9 +109,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
                     //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-
-        else{
+        } else {
             progressDialogue.dismiss();
         }
 
@@ -138,6 +134,12 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
         int size = localDataSet.size();
         localDataSet.clear();
         notifyItemRangeRemoved(0, size);
+    }
+
+    public void updateItem(int index, ItemModel newModel) {
+        localDataSet.remove(index);
+        localDataSet.add(index, newModel);
+        notifyItemChanged(index);
     }
 
     /*
@@ -189,18 +191,18 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
 
             this.mainView = view;
 
-            txvName = (MaterialTextView) view.findViewById(R.id.item_item_name_admin);
-            txvDesc = (MaterialTextView) view.findViewById(R.id.item_item_desc_admin);
-            txvRetailPrice = (MaterialTextView) view.findViewById(R.id.item_item_retail_admin);
-            txvSalePrice = (MaterialTextView) view.findViewById(R.id.item_item_sale_admin);
-            txvQty = (MaterialTextView) view.findViewById(R.id.item_item_qty_admin);
-            txvStock = (MaterialTextView) view.findViewById(R.id.item_item_stock_admin);
-            txvSecurityCharges = (MaterialTextView) view.findViewById(R.id.item_item_security_admin);
-            txvCardDiscount = (MaterialTextView) view.findViewById(R.id.item_item_cardHolderDiscount_admin);
+            txvName = view.findViewById(R.id.item_item_name_admin);
+            txvDesc = view.findViewById(R.id.item_item_desc_admin);
+            txvRetailPrice = view.findViewById(R.id.item_item_retail_admin);
+            txvSalePrice = view.findViewById(R.id.item_item_sale_admin);
+            txvQty = view.findViewById(R.id.item_item_qty_admin);
+            txvStock = view.findViewById(R.id.item_item_stock_admin);
+            txvSecurityCharges = view.findViewById(R.id.item_item_security_admin);
+            txvCardDiscount = view.findViewById(R.id.item_item_cardHolderDiscount_admin);
 
-            imageDisplayItemImage = (ImageView) view.findViewById(R.id.item_item_image_admin);
+            imageDisplayItemImage = view.findViewById(R.id.item_item_image_admin);
 
-            iButtonShowMenuForItemOptions = (ImageButton) view.findViewById(R.id.item_item_button_options);
+            iButtonShowMenuForItemOptions = view.findViewById(R.id.item_item_button_options);
 
             txvRetailPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
@@ -250,7 +252,6 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
             return txvCardDiscount;
         }
     }
-
 
 
 }
