@@ -32,7 +32,6 @@ public class SplashActivity extends AppCompatActivity {
 
         String uid = FirebaseAuth.getInstance().getUid();
 
-
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

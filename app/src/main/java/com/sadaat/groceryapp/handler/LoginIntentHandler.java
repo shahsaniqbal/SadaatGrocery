@@ -32,8 +32,8 @@ public class LoginIntentHandler extends Intent {
             toNavigateTo = CLASS_IF_CUSTOMER;
             UserLive.currentLoggedInUser.getCart().eliminateCartByLatestStock();
         }
-        else if (UserType.equalsIgnoreCase(UserTypes.DeliveryBoy)) toNavigateTo = CLASS_IF_ADMIN;
-        else if (UserType.equalsIgnoreCase(UserTypes.Admin)) toNavigateTo = CLASS_IF_DELIVERY_BOY;
+        else if (UserType.equalsIgnoreCase(UserTypes.DeliveryBoy)) toNavigateTo = CLASS_IF_DELIVERY_BOY;
+        else if (UserType.equalsIgnoreCase(UserTypes.Admin)) toNavigateTo = CLASS_IF_ADMIN;
 
         setClass(context, toNavigateTo);
     }
