@@ -43,8 +43,8 @@ import com.google.firebase.storage.UploadTask;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.category.CategoriesItemAdapterAdmin;
 import com.sadaat.groceryapp.adapters.admin.category.SubcategoriesItemAdapterAdmin;
-import com.sadaat.groceryapp.models.CategoriesModel;
-import com.sadaat.groceryapp.models.SubCategoriesModel;
+import com.sadaat.groceryapp.models.categories.CategoriesModel;
+import com.sadaat.groceryapp.models.categories.SubCategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 

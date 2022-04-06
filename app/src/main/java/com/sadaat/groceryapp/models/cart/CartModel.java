@@ -53,6 +53,7 @@ public class CartModel {
 
         //handleTimeStamp(new Date());
         handleOverallSum();
+        handleTimeStamp(new Date());
     }
 
     public void eliminateCartByLatestStock() {
@@ -157,7 +158,6 @@ public class CartModel {
     public String toString() {
         return "CartModel{" +
                 "cartItems=" + cartItems +
-                ", timeStamp=" + timeStamp.toString() +
                 ", netTotalRetailPrice=" + netTotalRetailPrice +
                 ", netTotalSalePrice=" + netTotalSalePrice +
                 ", netTotalSecurityCharges=" + netTotalSecurityCharges +

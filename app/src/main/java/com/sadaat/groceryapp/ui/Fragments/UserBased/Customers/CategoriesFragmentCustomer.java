@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,7 +19,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.category.CategoryScreenListAdapter;
 import com.sadaat.groceryapp.adapters.customer.category.SubcategoryHorizontalAdapter;
-import com.sadaat.groceryapp.models.CategoriesModel;
+import com.sadaat.groceryapp.models.categories.CategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.ItemsFragmentCustomer;
 

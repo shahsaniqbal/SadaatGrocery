@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textview.MaterialTextView;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.models.CategoriesModel;
+import com.sadaat.groceryapp.models.categories.CategoriesModel;
 
 import java.util.ArrayList;
 import java.util.List;

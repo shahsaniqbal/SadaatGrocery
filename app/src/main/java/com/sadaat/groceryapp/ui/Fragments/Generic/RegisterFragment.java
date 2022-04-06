@@ -17,6 +17,7 @@ import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.models.AppCredits;
 import com.sadaat.groceryapp.models.cart.CartModel;
 import com.sadaat.groceryapp.models.Users.UserModel;
+import com.sadaat.groceryapp.models.orders.OrderModel;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
@@ -71,7 +72,6 @@ public class RegisterFragment extends Fragment {
 
         initializers(view);
 
-        onlyForTesting();
 
 
         openSignInFragment.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +112,7 @@ public class RegisterFragment extends Fragment {
                             null,
                             new CartModel(),
                             new AppCredits(),
+                            "",
                             new ArrayList<>(),
                             new ArrayList<>()
                     );

@@ -18,7 +18,8 @@ public class UserModel {
     private UserOtherDetailsModel details;
     private CartModel cart;
     private AppCredits credits;
-    private ArrayList<OrderModel> orders;
+    private String currentActiveOrder;
+    private ArrayList<String> orders;
     private ArrayList<SuggestionModel> suggestions;
 
 
@@ -27,11 +28,11 @@ public class UserModel {
         this.cart = new CartModel();
         this.orders = new ArrayList<>();
         this.credits = new AppCredits();
-        this.suggestions = new ArrayList<SuggestionModel>();
+        this.suggestions = new ArrayList<>();
     }
 
 
-    public UserModel(String UID, String userType, String fullName, String emailAddress, String mobileNumber, UserOtherDetailsModel details, CartModel cart, AppCredits credits, ArrayList<OrderModel> orders, ArrayList<SuggestionModel> suggestions) {
+    public UserModel(String UID, String userType, String fullName, String emailAddress, String mobileNumber, UserOtherDetailsModel details, CartModel cart, AppCredits credits, String currentActiveOrder, ArrayList<String> orders, ArrayList<SuggestionModel> suggestions) {
         this.UID = UID;
         UserType = userType;
         this.fullName = fullName;
@@ -40,6 +41,7 @@ public class UserModel {
         this.details = details;
         this.cart = cart;
         this.credits = credits;
+        this.currentActiveOrder = currentActiveOrder;
         this.orders = orders;
         this.suggestions = suggestions;
     }
@@ -108,20 +110,28 @@ public class UserModel {
         this.credits = credits;
     }
 
-    public ArrayList<OrderModel> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(ArrayList<OrderModel> orders) {
-        this.orders = orders;
-    }
-
     public ArrayList<SuggestionModel> getSuggestions() {
         return suggestions;
     }
 
     public void setSuggestions(ArrayList<SuggestionModel> suggestions) {
         this.suggestions = suggestions;
+    }
+
+    public String getCurrentActiveOrder() {
+        return currentActiveOrder;
+    }
+
+    public void setCurrentActiveOrder(String currentActiveOrder) {
+        this.currentActiveOrder = currentActiveOrder;
+    }
+
+    public ArrayList<String> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(ArrayList<String> orders) {
+        this.orders = orders;
     }
 
     @Override

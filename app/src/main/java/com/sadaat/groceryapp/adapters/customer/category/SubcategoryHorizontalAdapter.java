@@ -16,7 +16,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.models.SubCategoriesModel;
+import com.sadaat.groceryapp.models.categories.SubCategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 

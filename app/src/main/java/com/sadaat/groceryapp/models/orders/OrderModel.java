@@ -9,25 +9,30 @@ import java.util.ArrayList;
 
 public class OrderModel {
     private String orderID;
-    private CartModel orderDetails;
-    private ArrayList<StatusModel> statusUpdates;
-    private String uid;
-    private String currentDeliveryBoyUID;
+    private CartModel orderDetails; //
+    private ArrayList<StatusModel> statusUpdates; //
+    private String uid; //
+    private String currentDeliveryBoyUID; //
 
-    private PaymentThrough paymentThrough;
-    private double remainingPaymentToPayAtDelivery;
+    private PaymentThrough paymentThrough; //
+    private double remainingPaymentToPayAtDelivery;  //
 
-    private ArrayList<ComplaintsModel> complaints;
-    private String receivingStatus;
+    private ArrayList<ComplaintsModel> complaints;//
+    private String receivingStatus; //
 
-    private double totalOrderAmountInRetail;
-    private double releasingAppCredits;
+    private double totalOrderAmountInRetail; //
+    private double releasingAppCredits; //
+
+    private String deliveryLocation;
 
 
     public OrderModel() {
+
+        orderID = "";
+
     }
 
-    public OrderModel(String orderID, CartModel orderDetails, ArrayList<StatusModel> statusUpdates, String uid, String currentDeliveryBoyUID, PaymentThrough paymentThrough, double remainingPaymentToPayAtDelivery, ArrayList<ComplaintsModel> complaints, String receivingStatus, double totalOrderAmountInRetail, double releasingAppCredits) {
+    public OrderModel(String orderID, CartModel orderDetails, ArrayList<StatusModel> statusUpdates, String uid, String currentDeliveryBoyUID, PaymentThrough paymentThrough, double remainingPaymentToPayAtDelivery, ArrayList<ComplaintsModel> complaints, String receivingStatus, double totalOrderAmountInRetail, double releasingAppCredits, String deliveryLocation) {
         this.orderID = orderID;
         this.orderDetails = orderDetails;
         this.statusUpdates = statusUpdates;
@@ -39,6 +44,7 @@ public class OrderModel {
         this.receivingStatus = receivingStatus;
         this.totalOrderAmountInRetail = totalOrderAmountInRetail;
         this.releasingAppCredits = releasingAppCredits;
+        this.deliveryLocation = deliveryLocation;
     }
 
     public String getOrderID() {
@@ -127,5 +133,18 @@ public class OrderModel {
 
     public void setReleasingAppCredits(double releasingAppCredits) {
         this.releasingAppCredits = releasingAppCredits;
+    }
+
+    public String getDeliveryLocation() {
+        return deliveryLocation;
+    }
+
+    public void setDeliveryLocation(String deliveryLocation) {
+        this.deliveryLocation = deliveryLocation;
+    }
+
+    @Override
+    public String toString() {
+        return orderID;
     }
 }

@@ -10,8 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.models.CategoriesModel;
-import com.sadaat.groceryapp.models.SubCategoriesModel;
+import com.sadaat.groceryapp.models.categories.SubCategoriesModel;
 
 import java.util.ArrayList;
 

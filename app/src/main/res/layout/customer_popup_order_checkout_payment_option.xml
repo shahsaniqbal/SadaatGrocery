@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/logo"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5.25"
+        android:layout_marginVertical="8dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.75"
+            android:text="Total Payable"
+            android:textStyle="bold"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_total_payable"
+            android:paddingHorizontal="8dp"
+            android:gravity="center_vertical|right"
+            android:text="0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.75"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:text="Rs."
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5.25"
+        android:layout_marginVertical="8dp">
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/mSwitch"
+            android:layout_width="0dp"
+            android:layout_weight="2.75"
+            android:layout_height="wrap_content"
+            android:text="Partial Pay App Credits"
+            app:useMaterialThemeColors="true"/>
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_app_cr"
+            android:paddingHorizontal="8dp"
+            android:gravity="center_vertical|right"
+            android:text="0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.75"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:text="Credits"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:textColor="@color/black"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_margin="10dp"
+        android:background="@color/grey"
+        android:layout_gravity="center"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5.25"
+        android:layout_marginVertical="8dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.75"
+            android:text="Net Total"
+            android:textStyle="bold"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_net_total"
+            android:paddingHorizontal="8dp"
+            android:gravity="center_vertical|right"
+            android:text="0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.75"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:text="Rs."
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5.25"
+        android:layout_marginVertical="8dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.75"
+            android:text="Credits Reward for COD"
+            android:textStyle="bold"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_cod_credits"
+            android:paddingHorizontal="8dp"
+            android:gravity="center_vertical|right"
+            android:text="0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.75"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:text="Credits"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5.25"
+        android:layout_marginVertical="8dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.75"
+            android:text="Credits Reward for Card"
+            android:textStyle="bold"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_credits_card"
+            android:paddingHorizontal="8dp"
+            android:gravity="center_vertical|right"
+            android:text="0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.75"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:text="Credits"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+
+
+    <RadioGroup
+        android:id="@+id/rdg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rdb_cod"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Cash on Delivery"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:checked="true"/>
+        <RadioButton
+            android:id="@+id/rdb_card"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Card"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+
+
+
+    </RadioGroup>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_margin="10dp"
+        android:background="@color/grey"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txv_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4.25"
+            android:text="Location"
+            android:textColor="@color/black">
+
+
+
+        </com.google.android.material.textview.MaterialTextView>
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:text="Update"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="4dp"
+            android:visibility="gone"
+            android:background="@color/scarlet_red_700"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_margin="10dp"
+        android:background="@color/grey"
+        android:layout_gravity="center"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_proceed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Proceed"/>
+
+
+</LinearLayout>

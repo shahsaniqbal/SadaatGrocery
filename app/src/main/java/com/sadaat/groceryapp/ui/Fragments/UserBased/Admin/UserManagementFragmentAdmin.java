@@ -125,6 +125,7 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
                                                 new UserOtherDetailsModel(imageRef, new AddressModel()),
                                                 new CartModel(),
                                                 new AppCredits(),
+                                                null,
                                                 new ArrayList<>(),
                                                 new ArrayList<>());
 

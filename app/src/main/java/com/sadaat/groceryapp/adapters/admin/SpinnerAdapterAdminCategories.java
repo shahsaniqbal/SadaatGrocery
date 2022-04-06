@@ -5,7 +5,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 
-import com.sadaat.groceryapp.models.CategoriesModel;
+import com.sadaat.groceryapp.models.categories.CategoriesModel;
 
 import java.util.List;
 

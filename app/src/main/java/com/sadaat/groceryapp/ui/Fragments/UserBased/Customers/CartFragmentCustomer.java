@@ -1,10 +1,15 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,23 +19,37 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textview.MaterialTextView;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.CartItemDisplayAdapterCustomer;
 import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
+import com.sadaat.groceryapp.models.orders.OrderModel;
+import com.sadaat.groceryapp.models.orders.PaymentThrough;
+import com.sadaat.groceryapp.models.orders.StatusModel;
 import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.UserLive;
+import com.sadaat.groceryapp.temp.order_management.OrderStatus;
+import com.sadaat.groceryapp.temp.order_management.PaymentMethods;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.ItemsFragmentCustomer;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.OrderGatewayFragmentCustomer;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class CartFragmentCustomer extends Fragment implements CartItemDisplayAdapterCustomer.ItemClickListeners, View.OnClickListener {
-    private final String YOU_ARE_SAVING = "You are saving Rs. ";
-    private final String BY_PAYING_THROUGH_CARD = "By Paying through card, you will save extra Rs. ";
+    AlertDialog.Builder dialogueBuilder;
+    AlertDialog checkoutPopupDialogueBox;
+    View popupView;
+    PopupViewHolder holder;
     private RecyclerView recyclerView;
     private CartItemDisplayAdapterCustomer cartAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private LinearLayout layoutEmptyCart, layoutFilledCart;
     private MaterialButton emptyCartExploreButton;
+
     private MaterialTextView txvName;
     private MaterialTextView txvLastUpdateTimestamp;
     private MaterialTextView txvEmail;
@@ -42,6 +61,13 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
     private MaterialTextView txvTotalCard_ED;
     private MaterialTextView txvYouAreSaving;
     private MaterialTextView txvByPayingThroughCard;
+
+    private MaterialButton btnCheckoutMainFragment;
+
+    private OrderModel orderModel;
+
+    private boolean paymentThroughCOD = true;
+
 
     public CartFragmentCustomer() {
 
@@ -76,6 +102,80 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
 
         emptyCartExploreButton.setOnClickListener(this);
 
+        btnCheckoutMainFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkoutPopupDialogueBox.show();
+                updatePopup();
+            }
+        });
+
+        holder.getRadioGroupPaymentType().setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (radioGroup.getId() == holder.getRadioButtonCard().getId()) {
+                    paymentThroughCOD = false;
+
+                } else if (radioGroup.getId() == holder.getRadioButtonCOD().getId()) {
+                    paymentThroughCOD = true;
+                }
+            }
+        });
+
+        holder.getmSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                holder.getTxvPartialAppCredits().setText(
+                        (b) ? String.valueOf((long) UserLive.currentLoggedInUser.getCredits().getOwningCredits()) : String.valueOf(0)
+                );
+                updatePopup();
+            }
+        });
+
+        holder.getButtonProceed().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                orderModel.setOrderDetails(UserLive.currentLoggedInUser.getCart());
+                orderModel.setComplaints(new ArrayList<>());
+                orderModel.setCurrentDeliveryBoyUID("");
+                orderModel.setReceivingStatus("");
+                orderModel.setReleasingAppCredits(
+                        (paymentThroughCOD) ? Double.parseDouble(holder.getTxvCreditsForCOD().getText().toString()) :
+                                Double.parseDouble(holder.getTxvCreditsForCard().getText().toString())
+                );
+
+                orderModel.setPaymentThrough(new PaymentThrough(
+                        ((paymentThroughCOD) ? PaymentMethods.COD : PaymentMethods.CARD),
+                        Long.parseLong(holder.getTxvPartialAppCredits().getText().toString())
+                ));
+
+                orderModel.setUid(UserLive.currentLoggedInUser.getUID());
+
+                ArrayList<StatusModel> updates = new ArrayList<StatusModel>();
+                updates.add(new StatusModel(OrderStatus.INITIATED, new Date()));
+
+                orderModel.setStatusUpdates(updates);
+                orderModel.setComplaints( new ArrayList<>());
+
+                orderModel.setTotalOrderAmountInRetail(Double.parseDouble(holder.getTxvNetTotal().getText().toString()));
+                orderModel.setRemainingPaymentToPayAtDelivery(
+                        (paymentThroughCOD) ?
+                                Double.parseDouble(holder.getTxvNetTotal().getText().toString()) : 0
+                );
+
+                orderModel.setDeliveryLocation(UserLive.currentLoggedInUser.getDetails().getAddress().toString());
+
+                checkoutPopupDialogueBox.dismiss();
+
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragmentCustomer, OrderGatewayFragmentCustomer.newInstance(orderModel))
+                        .addToBackStack("cart")
+                        .commit();
+            }
+        });
+
     }
 
     private void init_(View v) {
@@ -99,6 +199,17 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
         txvTotalCard_ED = v.findViewById(R.id.txv_cart_item_total_net_CD);
         txvYouAreSaving = v.findViewById(R.id.you_are_saving);
         txvByPayingThroughCard = v.findViewById(R.id.by_paying_through_card);
+        btnCheckoutMainFragment = v.findViewById(R.id.checkout);
+
+        dialogueBuilder = new AlertDialog.Builder(requireActivity());
+
+        popupView = this.getLayoutInflater().inflate(R.layout.customer_popup_order_checkout_payment_option, null, false);
+        dialogueBuilder.setView(popupView);
+        holder = new PopupViewHolder(popupView);
+
+        checkoutPopupDialogueBox = dialogueBuilder.create();
+        orderModel = new OrderModel();
+
     }
 
     @Override
@@ -152,20 +263,22 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
             txvLocation.setText(UserLive.currentLoggedInUser.getDetails().getAddress().toString());
         }
 
-        double a = (Double)UserLive.currentLoggedInUser.getCart().getNetTotalRetailPrice();
-        double b = (Double)UserLive.currentLoggedInUser.getCart().getNetTotalSalePrice();
+        double a = (Double) UserLive.currentLoggedInUser.getCart().getNetTotalRetailPrice();
+        double b = (Double) UserLive.currentLoggedInUser.getCart().getNetTotalSalePrice();
 
         txvLastUpdateTimestamp.setText(UserLive.currentLoggedInUser.getCart().getTimeStamp().toString());
 
-        txvTotalRetail.setText(""+a);
-        txvTotalDiscounted.setText(""+b);
+        txvTotalRetail.setText("" + a);
+        txvTotalDiscounted.setText("" + b);
 
-        txvTotalCOD_SC.setText(""+(Double)UserLive.currentLoggedInUser.getCart().getNetTotalSecurityCharges());
+        txvTotalCOD_SC.setText("" + (Double) UserLive.currentLoggedInUser.getCart().getNetTotalSecurityCharges());
 
-        txvTotalCard_ED.setText(""+(Double)UserLive.currentLoggedInUser.getCart().getNetTotalCardDiscount());
+        txvTotalCard_ED.setText("" + (Double) UserLive.currentLoggedInUser.getCart().getNetTotalCardDiscount());
 
-        txvYouAreSaving.setText(YOU_ARE_SAVING + (a-b));
-        txvByPayingThroughCard.setText(BY_PAYING_THROUGH_CARD+ (Double)UserLive.currentLoggedInUser.getCart().getNetTotalCardDiscount()+" in your AppCredits after completing the order");
+        String YOU_ARE_SAVING = "You are saving Rs. ";
+        txvYouAreSaving.setText(YOU_ARE_SAVING + (a - b));
+        String BY_PAYING_THROUGH_CARD = "By Paying through card, you will save extra Rs. ";
+        txvByPayingThroughCard.setText(BY_PAYING_THROUGH_CARD + (Double) UserLive.currentLoggedInUser.getCart().getNetTotalCardDiscount() + " in your AppCredits after completing the order");
 
     }
 
@@ -179,11 +292,116 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private void updatePopup() {
+        holder.getTxvTotalPayable().setText("" + ((long) UserLive.currentLoggedInUser.getCart().getNetTotalRetailPrice() + (long) UserLive.currentLoggedInUser.getCart().getNetTotalSecurityCharges()));
+        long totalPayable = Long.parseLong(holder.getTxvTotalPayable().getText().toString());
+        long partialCredits = Long.parseLong(holder.getTxvPartialAppCredits().getText().toString());
+        holder.getTxvNetTotal().setText("" + (totalPayable - partialCredits));
+
+        holder.getTxvCreditsForCOD().setText(
+                "" + (
+                        (long) UserLive.currentLoggedInUser.getCart().getNetTotalRetailPrice() -
+                                (long) UserLive.currentLoggedInUser.getCart().getNetTotalSalePrice() +
+                                (long) UserLive.currentLoggedInUser.getCart().getNetTotalSecurityCharges()
+                )
+        );
+
+        holder.getTxvCreditsForCard().setText(
+                "" + (
+                        (long) UserLive.currentLoggedInUser.getCart().getNetTotalRetailPrice() -
+                                (long) UserLive.currentLoggedInUser.getCart().getNetTotalSalePrice() +
+                                (long) UserLive.currentLoggedInUser.getCart().getNetTotalSecurityCharges() +
+                                (long) UserLive.currentLoggedInUser.getCart().getNetTotalCardDiscount()
+                )
+        );
+
+        holder.getTxvLocation().setText(UserLive.currentLoggedInUser.getDetails().getAddress().toString());
+
+    }
+
     @Override
     public void onClick(View view) {
         if (view.getId() == emptyCartExploreButton.getId()) {
             ((BottomNavigationView) requireActivity().findViewById(R.id.bottomNavigationView)).setSelectedItemId(R.id.nav_customer_categories);
             requireActivity().getSupportFragmentManager().getFragments().remove(this);
+        }
+    }
+
+    private class PopupViewHolder {
+        MaterialTextView txvTotalPayable;
+        MaterialTextView txvPartialAppCredits;
+        MaterialTextView txvNetTotal;
+        MaterialTextView txvCreditsForCOD;
+        MaterialTextView txvCreditsForCard;
+        MaterialTextView txvLocation;
+
+        SwitchMaterial mSwitch;
+        RadioGroup radioGroupPaymentType;
+        RadioButton radioButtonCard;
+        RadioButton radioButtonCOD;
+
+        MaterialButton buttonProceed;
+
+        public PopupViewHolder(View pV) {
+            //Initializations
+            txvTotalPayable = pV.findViewById(R.id.txv_total_payable);
+            txvPartialAppCredits = pV.findViewById(R.id.txv_app_cr);
+            txvNetTotal = pV.findViewById(R.id.txv_net_total);
+            txvCreditsForCOD = pV.findViewById(R.id.txv_cod_credits);
+            txvCreditsForCard = pV.findViewById(R.id.txv_credits_card);
+            txvLocation = pV.findViewById(R.id.txv_location);
+
+            mSwitch = pV.findViewById(R.id.mSwitch);
+            radioGroupPaymentType = pV.findViewById(R.id.rdg);
+            radioButtonCard = pV.findViewById(R.id.rdb_card);
+            radioButtonCOD = pV.findViewById(R.id.rdb_cod);
+
+            buttonProceed = pV.findViewById(R.id.btn_proceed);
+        }
+
+        public MaterialTextView getTxvTotalPayable() {
+            return txvTotalPayable;
+        }
+
+        public MaterialTextView getTxvPartialAppCredits() {
+            return txvPartialAppCredits;
+        }
+
+        public MaterialTextView getTxvNetTotal() {
+            return txvNetTotal;
+        }
+
+        public MaterialTextView getTxvCreditsForCOD() {
+            return txvCreditsForCOD;
+        }
+
+        public MaterialTextView getTxvCreditsForCard() {
+            return txvCreditsForCard;
+        }
+
+        public MaterialTextView getTxvLocation() {
+            return txvLocation;
+        }
+
+        public SwitchMaterial getmSwitch() {
+            return mSwitch;
+        }
+
+        public RadioGroup getRadioGroupPaymentType() {
+            return radioGroupPaymentType;
+        }
+
+        public RadioButton getRadioButtonCard() {
+            return radioButtonCard;
+        }
+
+        public RadioButton getRadioButtonCOD() {
+            return radioButtonCOD;
+        }
+
+        public MaterialButton getButtonProceed() {
+            return buttonProceed;
         }
     }
 }

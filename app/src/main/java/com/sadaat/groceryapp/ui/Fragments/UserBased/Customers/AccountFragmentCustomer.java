@@ -57,10 +57,18 @@ public class AccountFragmentCustomer extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initialize(view);
+
+        setCreditsToUser();
         setImageToUser();
         setUserAddress();
 
         listeners();
+
+    }
+
+    private void setCreditsToUser() {
+        txvCreditsInPending.setText(String.valueOf(UserLive.currentLoggedInUser.getCredits().getPendingCredits()));
+        txvCreditsInWallet.setText(String.valueOf(UserLive.currentLoggedInUser.getCredits().getOwningCredits()));
 
     }
 

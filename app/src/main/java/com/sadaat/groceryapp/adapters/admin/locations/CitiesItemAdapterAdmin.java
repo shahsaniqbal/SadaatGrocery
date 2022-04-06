@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.models.CategoriesModel;
-import com.sadaat.groceryapp.models.locations.AreaModel;
 import com.sadaat.groceryapp.models.locations.CityModel;
 
 import java.util.ArrayList;

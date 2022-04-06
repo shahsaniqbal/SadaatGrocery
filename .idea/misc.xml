@@ -105,6 +105,7 @@
         <entry key="app/src/main/res/layout/admin_app_bar_main_activity.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/admin_content_main_activity.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/admin_fragment_categories_list.xml" value="0.34717948717948716" />
+        <entry key="app/src/main/res/layout/admin_fragment_home.xml" value="0.315625" />
         <entry key="app/src/main/res/layout/admin_fragment_listing.xml" value="0.2703125" />
         <entry key="app/src/main/res/layout/admin_fragment_listing_v2.xml" value="0.2703125" />
         <entry key="app/src/main/res/layout/admin_fragment_locations_list.xml" value="0.29270833333333335" />
@@ -132,6 +133,7 @@
         <entry key="app/src/main/res/layout/customer_fragment_cart.xml" value="0.296875" />
         <entry key="app/src/main/res/layout/customer_fragment_categories.xml" value="0.3435185185185185" />
         <entry key="app/src/main/res/layout/customer_fragment_items.xml" value="0.25416666666666665" />
+        <entry key="app/src/main/res/layout/customer_fragment_order_gateway.xml" value="0.335" />
         <entry key="app/src/main/res/layout/customer_item_cartitem.xml" value="0.40102564102564103" />
         <entry key="app/src/main/res/layout/customer_item_cartitem_recycler.xml" value="0.375" />
         <entry key="app/src/main/res/layout/customer_item_cartitem_recycler_v2.xml" value="0.40729166666666666" />
@@ -140,14 +142,20 @@
         <entry key="app/src/main/res/layout/customer_item_items_recycler.xml" value="0.55" />
         <entry key="app/src/main/res/layout/customer_item_subcategory_recycler.xml" value="0.3851851851851852" />
         <entry key="app/src/main/res/layout/customer_popup_dp_at_register.xml" value="0.40729166666666666" />
+        <entry key="app/src/main/res/layout/customer_popup_order_checkout_payment_option.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/generic_activity_login_navigator.xml" value="0.1" />
         <entry key="app/src/main/res/layout/generic_fragment_item_full_modal.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/generic_fragment_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/generic_fragment_post_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/generic_fragment_register.xml" value="0.3338541666666667" />
         <entry key="app/src/main/res/layout/sadaat_waiting_progress_layout.xml" value="0.40729166666666666" />
+        <entry key="app/src/main/res/menu/admin_home_menu_bottom.xml" value="0.315625" />
+        <entry key="app/src/main/res/menu/admin_main_activity_option_menu.xml" value="0.315625" />
+        <entry key="app/src/main/res/menu/admin_main_drawer_menu_items.xml" value="0.284375" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

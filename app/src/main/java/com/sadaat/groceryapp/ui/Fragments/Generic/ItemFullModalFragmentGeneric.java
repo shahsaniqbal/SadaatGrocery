@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.models.CategoriesModel;
+import com.sadaat.groceryapp.models.categories.CategoriesModel;
 import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;

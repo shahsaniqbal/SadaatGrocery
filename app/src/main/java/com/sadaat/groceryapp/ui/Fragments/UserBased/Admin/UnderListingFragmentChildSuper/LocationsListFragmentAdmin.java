@@ -30,7 +30,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.locations.AreasItemAdapterAdmin;
 import com.sadaat.groceryapp.adapters.admin.locations.CitiesItemAdapterAdmin;
-import com.sadaat.groceryapp.models.CategoriesModel;
 import com.sadaat.groceryapp.models.locations.AreaModel;
 import com.sadaat.groceryapp.models.locations.CityModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;

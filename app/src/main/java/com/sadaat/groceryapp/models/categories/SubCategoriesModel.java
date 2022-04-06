@@ -1,6 +1,4 @@
-package com.sadaat.groceryapp.models;
-
-import java.util.ArrayList;
+package com.sadaat.groceryapp.models.categories;
 
 public class SubCategoriesModel {
 

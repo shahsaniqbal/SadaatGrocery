@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.models;
+package com.sadaat.groceryapp.models.categories;
 
 import androidx.annotation.NonNull;
 

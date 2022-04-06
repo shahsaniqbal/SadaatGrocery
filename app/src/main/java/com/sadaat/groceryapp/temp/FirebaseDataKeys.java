@@ -18,4 +18,8 @@ public class FirebaseDataKeys {
     public String getLocationsRef() {
         return LOCATIONS;
     }
+
+    public String getOrdersRef() {
+        return "Orders";
+    }
 }
