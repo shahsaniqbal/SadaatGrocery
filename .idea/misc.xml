@@ -45,6 +45,7 @@
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/admin_fragment_user_management.xml" value="0.22" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/admin_item_category_recycler.xml" value="0.16547231270358306" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/admin_item_items_recycler.xml" value="0.2" />
+        <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/admin_item_order_list.xml" value="0.5" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/admin_item_usermgmt_users.xml" value="0.21" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/admin_navheader_activity.xml" value="0.201171875" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/admin_navheader_activity_admin.xml" value="0.2046875" />
@@ -62,7 +63,9 @@
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/customer_fragment_cart.xml" value="0.2015625" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/customer_fragment_categories.xml" value="0.2015625" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/customer_fragment_home.xml" value="0.2015625" />
+        <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/customer_fragment_orders.xml" value="0.2015625" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/customer_fragment_search.xml" value="0.2015625" />
+        <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/customer_item_order_list.xml" value="0.22" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/fragment_appcredits_admin.xml" value="0.26927083333333335" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/fragment_complaints_feedback_admin.xml" value="0.14010416666666667" />
         <entry key="..\:/Users/ahsan/AndroidStudioProjects/SadaatGroceryStore/app/src/main/res/layout/fragment_feedbacks_admin.xml" value="0.2046875" />

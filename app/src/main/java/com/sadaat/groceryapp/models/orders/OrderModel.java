@@ -1,9 +1,7 @@
 package com.sadaat.groceryapp.models.orders;
 
-import com.sadaat.groceryapp.ComplaintsModel;
+import com.sadaat.groceryapp.models.ComplaintsModel;
 import com.sadaat.groceryapp.models.cart.CartModel;
-import com.sadaat.groceryapp.models.orders.PaymentThrough;
-import com.sadaat.groceryapp.models.orders.StatusModel;
 
 import java.util.ArrayList;
 

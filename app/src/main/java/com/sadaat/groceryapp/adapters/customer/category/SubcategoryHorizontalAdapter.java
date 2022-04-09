@@ -74,7 +74,6 @@ public class SubcategoryHorizontalAdapter extends RecyclerView.Adapter<Subcatego
                 localDataSet.get(holder.getAdapterPosition()).getDescription()
         ));
 
-
         if (!localDataSet.get(holder.getAdapterPosition()).getImageRef().equals("")) {
             loadingDialogue.show("Please wait", "While Loading Images");
             StorageReference imgRef = FirebaseStorage
