@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".ui.Fragments.UserBased.Customers.passive.OrdersFragmentCustomer">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/layout_for_live_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <include layout="@layout/customer_item_live_current_order"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_for_no_live_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="16dp"
+        android:background="#07000000"
+        android:visibility="gone">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/scarlet_red_700"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="No Active Order"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/customer_item_order_item_recycler"/>
+
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/recycler"
+        android:layout_margin="4dp"/>
 
-</FrameLayout>
+
+</LinearLayout>

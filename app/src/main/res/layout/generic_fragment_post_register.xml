@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@mipmap/login_bg"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/listing_top_card_margin">
@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="8dp">
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_add_users_dp"
             android:layout_width="80dp"
@@ -25,6 +26,7 @@
             android:layout_gravity="center"
             app:cardElevation="8dp"
             app:cardCornerRadius="80dp"
+            android:backgroundTint="#FFDDA4"
             android:layout_margin="8dp"
             >
 
@@ -158,6 +160,7 @@
             android:layout_height="wrap_content"
             android:hint="Address Line 1"
             android:paddingHorizontal="8dp"
+            android:backgroundTint="#FFD693"
             android:textColor="@color/black"
             android:inputType="textLongMessage"/>
 
@@ -168,6 +171,7 @@
             android:layout_height="wrap_content"
             android:hint="Address Line 2"
             android:paddingHorizontal="8dp"
+            android:backgroundTint="#FFD693"
             android:textColor="@color/black"
             android:inputType="textLongMessage"/>
 

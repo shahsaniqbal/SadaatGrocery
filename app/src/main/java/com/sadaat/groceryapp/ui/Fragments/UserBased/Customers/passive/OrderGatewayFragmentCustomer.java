@@ -23,6 +23,7 @@ import com.sadaat.groceryapp.models.orders.OrderModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.order_management.PaymentMethods;
+import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedOrderView;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 public class OrderGatewayFragmentCustomer extends Fragment {
@@ -137,6 +138,11 @@ public class OrderGatewayFragmentCustomer extends Fragment {
                                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                     UserLive.currentLoggedInUser = task.getResult().toObject(UserModel.class);
                                                                     dialogue.dismiss();
+                                                                    OrderGatewayFragmentCustomer.this.requireActivity()
+                                                                            .getSupportFragmentManager()
+                                                                            .beginTransaction()
+                                                                            .replace(R.id.flFragmentCustomer, OrdersFragmentCustomer.newInstance())
+                                                                            .commit();
                                                                 }
                                                             });
                                                 }

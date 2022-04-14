@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.Activities.GenericForAll.SplashActivity"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="#FFFFF2DD">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,7 +17,7 @@
         android:textAlignment="center"
         android:textColor="@color/scarlet_red_700"
         android:textStyle="bold"
-        android:textSize="32sp"/>
+        android:textSize="48sp"/>
 
     <TextView
         android:layout_width="match_parent"

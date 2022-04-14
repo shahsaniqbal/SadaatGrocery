@@ -32,14 +32,15 @@ import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.order_management.OrderStatus;
 import com.sadaat.groceryapp.temp.order_management.PaymentMethods;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.ItemsFragmentCustomer;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.OrderGatewayFragmentCustomer;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CartFragmentCustomer extends Fragment implements CartItemDisplayAdapterCustomer.ItemClickListeners, View.OnClickListener {
+public class CartFragmentCustomer extends Fragment
+        implements CartItemDisplayAdapterCustomer.ItemClickListeners, View.OnClickListener {
+
     AlertDialog.Builder dialogueBuilder;
     AlertDialog checkoutPopupDialogueBox;
     View popupView;
@@ -49,7 +50,6 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
     private RecyclerView.LayoutManager layoutManager;
     private LinearLayout layoutEmptyCart, layoutFilledCart;
     private MaterialButton emptyCartExploreButton;
-
     private MaterialTextView txvName;
     private MaterialTextView txvLastUpdateTimestamp;
     private MaterialTextView txvEmail;
@@ -61,11 +61,8 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
     private MaterialTextView txvTotalCard_ED;
     private MaterialTextView txvYouAreSaving;
     private MaterialTextView txvByPayingThroughCard;
-
     private MaterialButton btnCheckoutMainFragment;
-
     private OrderModel orderModel;
-
     private boolean paymentThroughCOD = true;
 
 
@@ -125,9 +122,21 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
         holder.getmSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                holder.getTxvPartialAppCredits().setText(
-                        (b) ? String.valueOf((long) UserLive.currentLoggedInUser.getCredits().getOwningCredits()) : String.valueOf(0)
-                );
+
+                long maxCredits = (long) (orderModel.getTotalOrderAmountInRetail() / 2);
+
+                if (maxCredits > UserLive.currentLoggedInUser.getCredits().getOwningCredits()){
+                    holder.getTxvPartialAppCredits().setText(
+                            (b) ? String.valueOf((long) UserLive.currentLoggedInUser.getCredits().getOwningCredits()) : String.valueOf(0)
+                    );
+                }
+
+                else{
+                    holder.getTxvPartialAppCredits().setText(
+                            (b) ? String.valueOf((long) maxCredits) : String.valueOf(0)
+                    );
+                }
+
                 updatePopup();
             }
         });
@@ -147,7 +156,8 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
 
                 orderModel.setPaymentThrough(new PaymentThrough(
                         ((paymentThroughCOD) ? PaymentMethods.COD : PaymentMethods.CARD),
-                        Long.parseLong(holder.getTxvPartialAppCredits().getText().toString())
+                        Long.parseLong(holder.getTxvPartialAppCredits().getText().toString()),
+                        ""
                 ));
 
                 orderModel.setUid(UserLive.currentLoggedInUser.getUID());
@@ -156,7 +166,7 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
                 updates.add(new StatusModel(OrderStatus.INITIATED, new Date()));
 
                 orderModel.setStatusUpdates(updates);
-                orderModel.setComplaints( new ArrayList<>());
+                orderModel.setComplaints(new ArrayList<>());
 
                 orderModel.setTotalOrderAmountInRetail(Double.parseDouble(holder.getTxvNetTotal().getText().toString()));
                 orderModel.setRemainingPaymentToPayAtDelivery(
@@ -165,6 +175,10 @@ public class CartFragmentCustomer extends Fragment implements CartItemDisplayAda
                 );
 
                 orderModel.setDeliveryLocation(UserLive.currentLoggedInUser.getDetails().getAddress().toString());
+
+                orderModel.setReleasedAppCredits(0.0);
+
+                orderModel.setCurrentStatus(OrderStatus.INITIATED);
 
                 checkoutPopupDialogueBox.dismiss();
 

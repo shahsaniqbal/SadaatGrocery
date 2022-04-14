@@ -7,8 +7,11 @@ import java.util.ArrayList;
 
 public class OrderModel {
     private String orderID;
-    private CartModel orderDetails; //
+    private CartModel orderDetails; // With Save Items, Unit Price, Qty etc
     private ArrayList<StatusModel> statusUpdates; //
+
+    private String currentStatus;
+
     private String uid; //
     private String currentDeliveryBoyUID; //
 
@@ -20,6 +23,7 @@ public class OrderModel {
 
     private double totalOrderAmountInRetail; //
     private double releasingAppCredits; //
+    private double releasedAppCredits = 0.0; //
 
     private String deliveryLocation;
 
@@ -30,10 +34,24 @@ public class OrderModel {
 
     }
 
-    public OrderModel(String orderID, CartModel orderDetails, ArrayList<StatusModel> statusUpdates, String uid, String currentDeliveryBoyUID, PaymentThrough paymentThrough, double remainingPaymentToPayAtDelivery, ArrayList<ComplaintsModel> complaints, String receivingStatus, double totalOrderAmountInRetail, double releasingAppCredits, String deliveryLocation) {
+    public OrderModel(String orderID,
+                      CartModel orderDetails,
+                      ArrayList<StatusModel> statusUpdates,
+                      String currentStatus,
+                      String uid,
+                      String currentDeliveryBoyUID,
+                      PaymentThrough paymentThrough,
+                      double remainingPaymentToPayAtDelivery,
+                      ArrayList<ComplaintsModel> complaints,
+                      String receivingStatus,
+                      double totalOrderAmountInRetail,
+                      double releasingAppCredits,
+                      double releasedAppCredits,
+                      String deliveryLocation) {
         this.orderID = orderID;
         this.orderDetails = orderDetails;
         this.statusUpdates = statusUpdates;
+        this.currentStatus = currentStatus;
         this.uid = uid;
         this.currentDeliveryBoyUID = currentDeliveryBoyUID;
         this.paymentThrough = paymentThrough;
@@ -42,6 +60,7 @@ public class OrderModel {
         this.receivingStatus = receivingStatus;
         this.totalOrderAmountInRetail = totalOrderAmountInRetail;
         this.releasingAppCredits = releasingAppCredits;
+        this.releasedAppCredits = releasedAppCredits;
         this.deliveryLocation = deliveryLocation;
     }
 
@@ -139,6 +158,22 @@ public class OrderModel {
 
     public void setDeliveryLocation(String deliveryLocation) {
         this.deliveryLocation = deliveryLocation;
+    }
+
+    public double getReleasedAppCredits() {
+        return releasedAppCredits;
+    }
+
+    public void setReleasedAppCredits(double releasedAppCredits) {
+        this.releasedAppCredits = releasedAppCredits;
+    }
+
+    public String getCurrentStatus() {
+        return currentStatus;
+    }
+
+    public void setCurrentStatus(String currentStatus) {
+        this.currentStatus = currentStatus;
     }
 
     @Override
