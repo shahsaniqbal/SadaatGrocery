@@ -14,8 +14,6 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -30,26 +28,20 @@ import java.util.ArrayList;
 public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayAdapterAdmin.ViewHolder> {
 
     private final ArrayList<ItemModel> localDataSet;
-    private final int LAYOUT_FILE = R.layout.admin_item_items_recycler;
+    private final LoadingDialogue progressDialogue;
     public ItemClickListeners customOnClickListener;
-    private Context mContext;
-    private LoadingDialogue progressDialogue;
 
-
-    public ItemsDisplayAdapterAdmin(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener) {
-        this.localDataSet = localDataSet;
-        this.customOnClickListener = customOnClickListener;
-    }
 
     public ItemsDisplayAdapterAdmin(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener, Context mContext) {
         this.localDataSet = localDataSet;
         this.customOnClickListener = customOnClickListener;
-        this.mContext = mContext;
         this.progressDialogue = new LoadingDialogue(mContext);
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        int LAYOUT_FILE = R.layout.admin_item_items_recycler;
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(LAYOUT_FILE, viewGroup, false);
 
@@ -59,31 +51,45 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        viewHolder.getTxvName().setText(localDataSet.get(position).getName());
-        viewHolder.getTxvDesc().setText(localDataSet.get(position).getDescription());
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, @SuppressLint("RecyclerView") int position) {
+        viewHolder.getTxvName().setText(localDataSet.get(viewHolder.getAdapterPosition()).getName());
+        viewHolder.getTxvDesc().setText(localDataSet.get(viewHolder.getAdapterPosition()).getDescription());
 
-        viewHolder.getTxvRetailPrice().setText(Price.format(localDataSet.get(position).getPrices().getRetailPrice()));
-        viewHolder.getTxvSalePrice().setText(Price.format(localDataSet.get(position).getPrices().getSalePrice()));
+        viewHolder.getTxvRetailPrice().setText(Price.format(localDataSet.get(viewHolder.getAdapterPosition()).getPrices().getRetailPrice()));
+        viewHolder.getTxvSalePrice().setText(Price.format(localDataSet.get(viewHolder.getAdapterPosition()).getPrices().getSalePrice()));
 
-        viewHolder.getTxvStock().setText(localDataSet.get(position).getOtherDetails().getStock() + " Remaining");
+        viewHolder.getTxvStock().setText(localDataSet.get(viewHolder.getAdapterPosition()).getOtherDetails().getStock() + " Remaining");
 
-        viewHolder.getTxvSecurityCharges().setText(Price.format(localDataSet.get(position).getOtherDetails().getSecurityCharges()));
-        viewHolder.getTxvCardDiscount().setText(Price.format(localDataSet.get(position).getOtherDetails().getSpecialDiscountForCardHolder()));
+        viewHolder.getTxvSecurityCharges().setText(Price.format(localDataSet.get(viewHolder.getAdapterPosition()).getOtherDetails().getSecurityCharges()));
+        viewHolder.getTxvCardDiscount().setText(Price.format(localDataSet.get(viewHolder.getAdapterPosition()).getOtherDetails().getSpecialDiscountForCardHolder()));
 
-        viewHolder.getTxvQty().setText(localDataSet.get(position).getQty().toString());
+        viewHolder.getTxvQty().setText(localDataSet.get(viewHolder.getAdapterPosition()).getQty().toString());
 
-        viewHolder.getiButtonShowMenuForItemOptions().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                customOnClickListener.setItemButtonPopupAtPosition(v, viewHolder.getAdapterPosition(), localDataSet.get(viewHolder.getAdapterPosition())).show();
-            }
+
+        viewHolder.getiButtonShowMenuForItemOptions().setOnClickListener(v -> customOnClickListener.setItemButtonPopupAtPosition(v, viewHolder.getAdapterPosition(), localDataSet.get(viewHolder.getAdapterPosition())).show());
+
+        viewHolder.getiButtonIsHot().setOnClickListener(view -> {
+            localDataSet.get(viewHolder.getAdapterPosition()).setHot(!(localDataSet.get(viewHolder.getAdapterPosition()).isHot()));
+            customOnClickListener.onIsHotButtonClick(
+                    localDataSet.get(viewHolder.getAdapterPosition()).isHot(),
+                    (ImageButton) view,
+                    localDataSet.get(viewHolder.getAdapterPosition()).getID(),
+                    viewHolder.getAdapterPosition()
+            );
+            notifyItemChanged(viewHolder.getAdapterPosition());
         });
 
-        progressDialogue.show("Please Wait", "Loading Item Images.");
+
+        progressDialogue.show("Please Wait", "Loading Item Images");
+
+
+        if (localDataSet.get(viewHolder.getAdapterPosition()).isHot()) {
+            viewHolder.getiButtonIsHot().setImageResource(R.drawable.ic_fire_filled);
+        } else viewHolder.getiButtonIsHot().setImageResource(R.drawable.ic_fire_outlined);
+
 
         if (!localDataSet
-                .get(position)
+                .get(viewHolder.getAdapterPosition())
                 .getOtherDetails()
                 .getImageLink().equals("")) {
 
@@ -91,23 +97,17 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
                     .getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS)
                     .getReference()
                     .child(localDataSet
-                            .get(position)
+                            .get(viewHolder.getAdapterPosition())
                             .getOtherDetails()
                             .getImageLink());
 
             final long ONE_MEGABYTE = 1024 * 1024;
 
-            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    viewHolder.getImageDisplayItemImage().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                    progressDialogue.dismiss();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
-                }
+            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                viewHolder.getImageDisplayItemImage().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                progressDialogue.dismiss();
+            }).addOnFailureListener(exception -> {
+                //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
             });
         } else {
             progressDialogue.dismiss();
@@ -165,6 +165,8 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
 
         void onShowFullDetailsButtonClick(ItemModel modelToShow);
 
+        void onIsHotButtonClick(boolean isHot, ImageButton view, String itemID, int position);
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -183,6 +185,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
         private final ImageView imageDisplayItemImage;
 
         private final ImageButton iButtonShowMenuForItemOptions;
+        private final ImageButton iButtonIsHot;
         private final View mainView;
 
 
@@ -203,6 +206,7 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
             imageDisplayItemImage = view.findViewById(R.id.item_item_image_admin);
 
             iButtonShowMenuForItemOptions = view.findViewById(R.id.item_item_button_options);
+            iButtonIsHot = view.findViewById(R.id.item_item_button_hot);
 
             txvRetailPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
 
@@ -250,6 +254,10 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
 
         public MaterialTextView getTxvCardDiscount() {
             return txvCardDiscount;
+        }
+
+        public ImageButton getiButtonIsHot() {
+            return iButtonIsHot;
         }
     }
 

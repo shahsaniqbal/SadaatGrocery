@@ -30,4 +30,12 @@ public class AppCredits {
     public void setOwningCredits(long owningCredits) {
         this.owningCredits = owningCredits;
     }
+
+    @Override
+    public String toString() {
+        return "AppCredits{" +
+                "pendingCredits=" + pendingCredits +
+                ", owningCredits=" + owningCredits +
+                '}';
+    }
 }

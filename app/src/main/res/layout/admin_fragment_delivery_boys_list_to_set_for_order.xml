@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".ui.Fragments.UserBased.Admin.DeliveryBoysListToSetForOrder">
 
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textColor="@color/scarlet_red_700"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:fontFamily="monospace"
+        android:textSize="18sp"
+        android:text="Delivery Boys"/>
+
+    <include
+        layout="@layout/admin_item_list_deliveryboy_recycler"
+        android:layout_margin="4dp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler"/>
+        android:id="@+id/recycler"
+        android:layout_margin="4dp"/>
 
-</FrameLayout>
+</LinearLayout>

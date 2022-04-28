@@ -1,15 +1,11 @@
 package com.sadaat.groceryapp.models.Items;
 
-import com.sadaat.groceryapp.models.Items.CategoryBindingModel;
-import com.sadaat.groceryapp.models.Items.OtherDataForItem;
-import com.sadaat.groceryapp.models.Items.PriceGroup;
-import com.sadaat.groceryapp.models.Items.QtyUnitModel;
 import com.sadaat.groceryapp.models.StockEntry;
 
 import java.util.ArrayList;
 
 public class ItemModel {
-    private String type = "item";
+    private boolean isDeal = false;
     private String ID = "";
     private String name;
     private String description;
@@ -20,6 +16,7 @@ public class ItemModel {
     private QtyUnitModel qty;
     private ArrayList<StockEntry> stockEntries;
     private int maxQtyPerOrder = -1;
+    private boolean hot = true;
 
     public ItemModel() {
     }
@@ -65,7 +62,16 @@ public class ItemModel {
     }
 */
 
-    public ItemModel(String ID, String name, String description, CategoryBindingModel categoryBinding, PriceGroup prices, OtherDataForItem otherDetails, QtyUnitModel qty, ArrayList<StockEntry> stockEntries, int maxQtyPerOrder) {
+    public ItemModel(String ID,
+                     String name,
+                     String description,
+                     CategoryBindingModel categoryBinding,
+                     PriceGroup prices,
+                     OtherDataForItem otherDetails,
+                     QtyUnitModel qty,
+                     ArrayList<StockEntry> stockEntries,
+                     int maxQtyPerOrder,
+                     boolean hot) {
         this.ID = ID;
         this.name = name;
         this.description = description;
@@ -75,6 +81,7 @@ public class ItemModel {
         this.qty = qty;
         this.stockEntries = stockEntries;
         this.maxQtyPerOrder = maxQtyPerOrder;
+        this.hot = hot;
     }
 
     public String getName() {
@@ -149,16 +156,27 @@ public class ItemModel {
         this.stockEntries = stockEntries;
     }
 
+    public boolean isDeal() {
+        return isDeal;
+    }
+
+    public void setDeal(boolean deal) {
+        isDeal = deal;
+    }
+
+    public boolean isHot() {
+        return hot;
+    }
+
+    public void setHot(boolean hot) {
+        this.hot = hot;
+    }
+
     @Override
     public String toString() {
         return "ItemModel{" +
-                "ID='" + ID + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", categoryBinding=" + categoryBinding +
-                ", prices=" + prices +
-                ", otherDetails=" + otherDetails +
-                ", qty=" + qty +
+                "name='" + name + '\'' +
+                ", hot=" + hot +
                 '}';
     }
 }

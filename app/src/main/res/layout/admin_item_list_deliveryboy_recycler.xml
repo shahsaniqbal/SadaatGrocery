@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/mainView"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginHorizontal="4dp"
-    app:cardElevation="4dp"
+    app:cardElevation="2dp"
     android:clickable="true"
     android:focusable="true"
     android:layout_margin="4dp"
     app:cardCornerRadius="1dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="407dp"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
-        android:weightSum="1"
-        android:padding="2dp"
-
-        android:gravity="center">
+        android:padding="8dp"
+        android:weightSum="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,39 +32,47 @@
                 android:layout_height="match_parent"
                 android:layout_weight="4"
                 android:orientation="vertical"
-                >
+                tools:ignore="NestedWeights">
 
-                <LinearLayout
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/delivery_boy_assign_name"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/order_item_status_sr"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="User ID"
-                        android:textSize="14sp"
-                        android:paddingHorizontal="4dp"
-                        android:gravity="center_vertical"/>
-
-                </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|start"
+                    android:paddingHorizontal="8dp"
+                    android:text="Name" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="6"
+                android:layout_weight="3"
                 android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/order_item_status_status"
+                    android:id="@+id/delivery_boy_assign_queue"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical|start"
-                    android:text="Name"
-                    android:paddingHorizontal="8dp"/>
+                    android:gravity="center_vertical|end"
+                    android:paddingHorizontal="8dp"
+                    android:text="In Queue" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/delivery_boy_assign_total"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:paddingHorizontal="8dp"
+                    android:text="Total Delivered" />
 
             </LinearLayout>
 

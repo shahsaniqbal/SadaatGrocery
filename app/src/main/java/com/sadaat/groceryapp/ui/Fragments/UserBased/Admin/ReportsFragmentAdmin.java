@@ -2,6 +2,8 @@ package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -9,13 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sadaat.groceryapp.R;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.OCRFragmentAdmin;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.StocksReportFragmentAdmin;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ReportsFragmentAdmin#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReportsFragmentAdmin extends Fragment {
+public class ReportsFragmentAdmin extends Fragment implements View.OnClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,5 +66,32 @@ public class ReportsFragmentAdmin extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.admin_fragment_reports, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.findViewById(R.id.admin_report_ocr).setOnClickListener(this);
+        view.findViewById(R.id.admin_report_stocks).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.admin_report_ocr) {
+             requireActivity()
+                     .getSupportFragmentManager()
+                     .beginTransaction()
+                     .replace(R.id.nav_host_fragment_content_main_activity_admin, OCRFragmentAdmin.newInstance())
+                     .addToBackStack("reports")
+                     .commit();
+        }
+        else if (view.getId() == R.id.admin_report_stocks) {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main_activity_admin, StocksReportFragmentAdmin.newInstance())
+                    .addToBackStack("reports")
+                    .commit();
+        }
     }
 }

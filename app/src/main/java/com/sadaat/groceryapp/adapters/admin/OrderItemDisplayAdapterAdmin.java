@@ -107,9 +107,7 @@ public class OrderItemDisplayAdapterAdmin extends RecyclerView.Adapter<OrderItem
             viewHolder.getTxvDeliveryBoy().setText("");
         }
 
-        if (localDataSet.get(viewHolder.getAdapterPosition()).getStatusUpdates().get(
-                localDataSet.get(viewHolder.getAdapterPosition()).getStatusUpdates().size() - 1
-        ).getStatus().equalsIgnoreCase(OrderStatus.INITIATED)) {
+        if (localDataSet.get(viewHolder.getAdapterPosition()).getCurrentStatus().equalsIgnoreCase(OrderStatus.INITIATED)) {
             viewHolder.getBtnStartPacking().setVisibility(View.VISIBLE);
         }
 
@@ -125,16 +123,17 @@ public class OrderItemDisplayAdapterAdmin extends RecyclerView.Adapter<OrderItem
             viewHolder.getBtnAddDeliveryBoy().setVisibility(View.GONE);
         }
 
-        if (localDataSet.get(viewHolder.getAdapterPosition()).getStatusUpdates().get(localDataSet.get(viewHolder.getAdapterPosition()).getStatusUpdates().size()-1).getStatus().equalsIgnoreCase(OrderStatus.INITIATED)){
+        if (localDataSet.get(viewHolder.getAdapterPosition()).getCurrentStatus().equalsIgnoreCase(OrderStatus.PACKING)){
+            viewHolder.getBtnAddDeliveryBoy().setVisibility(View.VISIBLE);
+        }
+        else{
             viewHolder.getBtnAddDeliveryBoy().setVisibility(View.GONE);
         }
 
         if (
                 (localDataSet.get(viewHolder.getAdapterPosition()).getReleasingAppCredits() -
                         localDataSet.get(viewHolder.getAdapterPosition()).getReleasedAppCredits()) > 0
-                        && localDataSet.get(viewHolder.getAdapterPosition()).getStatusUpdates()
-                        .get(localDataSet.get(viewHolder.getAdapterPosition()).getStatusUpdates().size() - 1)
-                        .getStatus().equalsIgnoreCase(OrderStatus.DELIVERED)
+                        && localDataSet.get(viewHolder.getAdapterPosition()).getCurrentStatus().equalsIgnoreCase(OrderStatus.DELIVERED)
         ) {
             viewHolder.getBtnReleaseAppCredits().setVisibility(View.VISIBLE);
         } else {

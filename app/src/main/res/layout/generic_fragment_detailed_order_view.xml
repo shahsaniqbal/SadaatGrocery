@@ -211,7 +211,7 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="2dp"
             app:cardCornerRadius="1dp"
             app:cardElevation="4dp">
 
@@ -226,7 +226,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.9"
-                    android:layout_margin="2dp"
                     android:background="@drawable/grey_border"
                     android:orientation="vertical">
 
@@ -241,7 +240,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
-                            android:layout_weight="1.6"
+                            android:layout_weight="1.8"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="8dp"
@@ -252,7 +251,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/d_order_amount"
                             android:layout_width="0dp"
-                            android:layout_weight="2.4"
+                            android:layout_weight="2.2"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical|end"
                             android:paddingHorizontal="8dp"
@@ -270,7 +269,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
-                            android:layout_weight="1.6"
+                            android:layout_weight="1.8"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="8dp"
@@ -281,7 +280,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/d_order_orderMethod"
                             android:layout_width="0dp"
-                            android:layout_weight="2.4"
+                            android:layout_weight="2.2"
                             android:layout_height="wrap_content"
 
                             android:gravity="center_vertical|end"
@@ -300,7 +299,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
-                            android:layout_weight="1.6"
+                            android:layout_weight="1.8"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="8dp"
@@ -311,7 +310,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/d_order_partial"
                             android:layout_width="0dp"
-                            android:layout_weight="2.4"
+                            android:layout_weight="2.2"
                             android:layout_height="wrap_content"
 
                             android:gravity="center_vertical|end"
@@ -327,7 +326,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.1"
-                    android:layout_margin="2dp"
                     android:background="@drawable/grey_border"
                     android:orientation="vertical">
 
@@ -340,7 +338,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
-                            android:layout_weight="1.7"
+                            android:layout_weight="1.8"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="8dp"
@@ -351,7 +349,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/d_order_remaining"
                             android:layout_width="0dp"
-                            android:layout_weight="2.3"
+                            android:layout_weight="2.2"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical|end"
                             android:paddingHorizontal="8dp"
@@ -369,7 +367,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
-                            android:layout_weight="1.7"
+                            android:layout_weight="1.8"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="8dp"
@@ -380,7 +378,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/d_order_releasing"
                             android:layout_width="0dp"
-                            android:layout_weight="2.3"
+                            android:layout_weight="2.2"
                             android:layout_height="wrap_content"
 
                             android:gravity="center_vertical|end"
@@ -399,7 +397,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
-                            android:layout_weight="1.7"
+                            android:layout_weight="1.8"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="8dp"
@@ -410,7 +408,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/d_order_discount"
                             android:layout_width="0dp"
-                            android:layout_weight="2.3"
+                            android:layout_weight="2.2"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical|end"
                             android:paddingHorizontal="8dp"
@@ -578,7 +576,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
-                            android:layout_weight="0.75"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical|end"
                             android:paddingHorizontal="8dp"
@@ -589,7 +587,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/d_order_transaction"
                             android:layout_width="0dp"
-                            android:layout_weight="5.25"
+                            android:layout_weight="2"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:paddingHorizontal="8dp"

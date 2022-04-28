@@ -20,24 +20,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.OrderItemDisplayAdapterCustomer;
-import com.sadaat.groceryapp.models.Users.UserModel;
+import com.sadaat.groceryapp.models.StockEntry;
+import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.models.orders.OrderModel;
+import com.sadaat.groceryapp.models.orders.StatusModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.order_management.OrderStatus;
+import com.sadaat.groceryapp.temp.order_management.PaymentMethods;
 import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedOrderView;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
 
 public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplayAdapterCustomer.ItemClickListeners {
 
@@ -86,6 +88,7 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         dialogue = new LoadingDialogue(this.requireActivity());
+
         initializeViews(view);
 
         recyclerView.setLayoutManager(manager);
@@ -94,65 +97,115 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
         ORDERS_REF
                 .whereEqualTo("uid", UserLive.currentLoggedInUser.getUID())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
 
-                            for (QueryDocumentSnapshot q :
-                                    task.getResult()) {
-                                adapter.addItem(q.toObject(OrderModel.class));
-                            }
-
+                        for (QueryDocumentSnapshot q :
+                                task.getResult()) {
+                            adapter.addItem(q.toObject(OrderModel.class));
                         }
 
                     }
+
                 });
 
         updateView(view);
 
         if (!UserLive.currentLoggedInUser.getCurrentActiveOrder().isEmpty()) {
-            ORDERS_REF.document(UserLive.currentLoggedInUser.getCurrentActiveOrder()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                    @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e);
-                        return;
+            ORDERS_REF.document(UserLive.currentLoggedInUser.getCurrentActiveOrder()).addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    currentLiveOrder = snapshot.toObject(OrderModel.class);
+                    assert currentLiveOrder != null;
+                    if (currentLiveOrder.getCurrentStatus().equalsIgnoreCase(OrderStatus.DELIVERED) || currentLiveOrder.getCurrentStatus().equalsIgnoreCase(OrderStatus.CANCELLED)) {
+                        UserLive.currentLoggedInUser.setCurrentActiveOrder("");
+                        currentLiveOrder = null;
+                        USER_REF.document(UserLive.currentLoggedInUser.getUID())
+                                .update("currentActiveOrder", "");
                     }
+                    updateView(view);
 
-                    if (snapshot != null && snapshot.exists()) {
-                        //TODO snapshot set
-                        currentLiveOrder = snapshot.toObject(OrderModel.class);
-                        assert currentLiveOrder != null;
-                        if (currentLiveOrder.getCurrentStatus().equalsIgnoreCase(OrderStatus.DELIVERED) || currentLiveOrder.getCurrentStatus().equalsIgnoreCase(OrderStatus.CANCELLED)) {
-                            currentLiveOrder = null;
-                            USER_REF.document(UserLive.currentLoggedInUser.getUID())
-                                    .update("currentActiveOrder", "").addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    USER_REF.document(UserLive.currentLoggedInUser.getUID())
-                                            .get()
-                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if (task.isSuccessful())
-                                                        UserLive.currentLoggedInUser = task.getResult().toObject(UserModel.class);
-                                                }
-                                            });
-
-                                }
-                            });
-                        }
-                        updateView(view);
-
-                    } else {
-                        Log.d(TAG, "Current data: null");
-                    }
+                } else {
+                    Log.d(TAG, "Current data: null");
                 }
             });
         }
+
+        btnCancel.setOnClickListener(v -> {
+            if (currentLiveOrder != null) {
+                onCancelOrder();
+            }
+        });
+    }
+
+    private void onCancelOrder() {
+
+        if (currentLiveOrder != null) {
+
+            dialogue.show("Please Wait", "Cancelling Order");
+
+            UserLive.currentLoggedInUser.getCredits().setPendingCredits((long) UserLive.currentLoggedInUser.getCredits().getPendingCredits() - (long) currentLiveOrder.getReleasingAppCredits());
+            UserLive.currentLoggedInUser.setCurrentActiveOrder("");
+
+            FirebaseFirestore.getInstance()
+                    .collection(new FirebaseDataKeys().getUsersRef())
+                    .document(currentLiveOrder.getUid())
+                    .update(
+                            "currentActiveOrder", "",
+                            "credits.pendingCredits", UserLive.currentLoggedInUser.getCredits().getPendingCredits())
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+
+                            ArrayList<CartItemModel> list = new ArrayList<>();
+                            for (String k : currentLiveOrder.getOrderDetails().getCartItems().keySet()) {
+
+                                list.add(currentLiveOrder.getOrderDetails().getCartItems().get(k));
+
+                            }
+
+                            for (int i = 0; i < list.size(); i++) {
+
+                                int finalI = i;
+                                FirebaseFirestore
+                                        .getInstance()
+                                        .collection(new FirebaseDataKeys().getItemsRef())
+                                        .document(Objects.requireNonNull(list.get(i).getModel().getID()))
+                                        .update("otherDetails.stock", FieldValue.increment(Objects.requireNonNull(list.get(i)).getQty()),
+                                                "stockEntries", FieldValue.arrayUnion(
+                                                        new StockEntry(new Date(), Objects.requireNonNull(list.get(i)).getQty())
+                                                ))
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful() && finalI == list.size()-1) {
+
+                                                    FirebaseFirestore.getInstance()
+                                                            .collection(new FirebaseDataKeys().getOrdersRef())
+                                                            .document(currentLiveOrder.getOrderID())
+                                                            .update("currentStatus", OrderStatus.CANCELLED,
+                                                                    "statusUpdates", FieldValue.arrayUnion(
+                                                                            new StatusModel(OrderStatus.CANCELLED, new Date())
+                                                                    ))
+                                                            .addOnCompleteListener(task1 -> {
+                                                                if (task1.isSuccessful()) {
+                                                                    dialogue.dismiss();
+                                                                }
+                                                            });
+                                                }
+                                            }
+                                        });
+                            }
+
+
+                        }
+                    });
+
+        }
+
     }
 
     private void initializeViews(View view) {
@@ -199,22 +252,20 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
                         .collection(new FirebaseDataKeys().getUsersRef())
                         .document(currentLiveOrder.getCurrentDeliveryBoyUID())
                         .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    UserModel userModel = task.getResult().toObject(UserModel.class);
-                                    txvDeliveryBoy.setText(task.getResult().get("fullName", String.class));
-                                } else {
-                                    txvDeliveryBoy.setText("");
-                                }
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                txvDeliveryBoy.setText(task.getResult().get("fullName", String.class));
+                            } else {
+                                txvDeliveryBoy.setText("");
                             }
                         });
             } else {
+
                 txvDeliveryBoy.setText("");
+
             }
 
-            if (currentLiveOrder.getCurrentStatus().equalsIgnoreCase(OrderStatus.INITIATED)) {
+            if (currentLiveOrder.getCurrentStatus().equalsIgnoreCase(OrderStatus.INITIATED) && currentLiveOrder.getPaymentThrough().getPaymentThroughMethod().equalsIgnoreCase(PaymentMethods.COD)) {
                 btnCancel.setVisibility(View.VISIBLE);
             } else {
                 btnCancel.setVisibility(View.GONE);

@@ -18,9 +18,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
+import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapterAdmin.ViewHolder> {
@@ -86,7 +88,38 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
             }
         }
 
-        // TODO Change this viewHolder.getImageDisplayPicture().setImageResource(R.drawable.ic_users);
+        if (!localDataSet.get(viewHolder.getAdapterPosition()).getUID().equalsIgnoreCase(UserLive.currentLoggedInUser.getUID())) {
+
+            viewHolder.getImgbCallToPhoneNumber().setVisibility(View.VISIBLE);
+
+            viewHolder.getTxvPendingCredits().setText(
+                    MessageFormat.format("{0}", localDataSet.get(viewHolder.getAdapterPosition()).getCredits().getPendingCredits())
+            );
+
+            viewHolder.getTxvWalletCredits().setText(
+                    MessageFormat.format("{0}", localDataSet.get(viewHolder.getAdapterPosition()).getCredits().getOwningCredits())
+            );
+
+            viewHolder.getMainView().findViewById(R.id.row_for_credits).setVisibility(View.VISIBLE);
+            viewHolder.getMainView().findViewById(R.id.row_for_user_detail_buttons).setVisibility(View.VISIBLE);
+
+        }
+
+        else{
+            viewHolder.getImgbCallToPhoneNumber().setVisibility(View.GONE);
+
+            viewHolder.getTxvPendingCredits().setText(
+                    ""
+            );
+
+            viewHolder.getTxvWalletCredits().setText(
+                    ""
+            );
+
+            viewHolder.getMainView().findViewById(R.id.row_for_credits).setVisibility(View.GONE);
+            viewHolder.getMainView().findViewById(R.id.row_for_user_detail_buttons).setVisibility(View.GONE);
+
+        }
 
         viewHolder.getImgvUserTypeAvatar().setImageResource(UserTypes.getRelevantUserAvatar(localDataSet.get(position).getUserType()));
 
@@ -168,7 +201,10 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
         private final MaterialCardView btnProfileAndCredits;
         private final ImageView imgvDisplayPicture;
         private final ImageView imgvUserTypeAvatar;
-        private final ImageButton imgbCallToPhoneNumber;
+        private final ImageView imgbCallToPhoneNumber;
+        private final MaterialTextView txvPendingCredits;
+        private final MaterialTextView txvWalletCredits;
+
         private final View mainView;
 
 
@@ -180,6 +216,8 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
             txvName = (MaterialTextView) view.findViewById(R.id.txv_name_admin_show_users);
             txvEmail = (MaterialTextView) view.findViewById(R.id.txv_email_admin_show_users);
             txvMobile = (MaterialTextView) view.findViewById(R.id.txv_mobile_admin_show_users);
+            txvPendingCredits = (MaterialTextView) view.findViewById(R.id.txv_pending_admin_show_users);
+            txvWalletCredits = (MaterialTextView) view.findViewById(R.id.txv_wallet_admin_show_users);
 
             btnShowFullDetailsDialogue = (MaterialCardView) view.findViewById(R.id.btn_showFullDetails_admin_show_users);
             btnProfileAndCredits = (MaterialCardView) view.findViewById(R.id.btn_userProfileCredits_admin_show_users);
@@ -187,7 +225,7 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
             imgvDisplayPicture = (ImageView) view.findViewById(R.id.imgv_dp_admin_show_users);
             imgvUserTypeAvatar = (ImageView) view.findViewById(R.id.imgv_user_type_admin_show_users);
 
-            imgbCallToPhoneNumber = (ImageButton) view.findViewById(R.id.imgbtn_Call_admin_show_users);
+            imgbCallToPhoneNumber = (ImageView) view.findViewById(R.id.imgbtn_Call_admin_show_users);
         }
 
         public MaterialTextView getTxvName() {
@@ -218,12 +256,20 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
             return imgvUserTypeAvatar;
         }
 
-        public ImageButton getImgbCallToPhoneNumber() {
+        public ImageView getImgbCallToPhoneNumber() {
             return imgbCallToPhoneNumber;
         }
 
         public View getMainView() {
             return mainView;
+        }
+
+        public MaterialTextView getTxvPendingCredits() {
+            return txvPendingCredits;
+        }
+
+        public MaterialTextView getTxvWalletCredits() {
+            return txvWalletCredits;
         }
     }
 

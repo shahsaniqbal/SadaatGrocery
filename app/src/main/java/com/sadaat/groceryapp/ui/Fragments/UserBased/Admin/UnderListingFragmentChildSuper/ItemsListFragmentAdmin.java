@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -276,6 +277,9 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         if (action == ActionConstants.ACTION_UPDATE) {
 
+            popupView.findViewById(R.id.row_category).setVisibility(GONE);
+            popupView.findViewById(R.id.row_subcategory).setVisibility(GONE);
+
             viewHolder.getAddItemButton().setText("Update Item");
 
             viewHolder.getEdxName().setText(oldModelToUpdate.getName());
@@ -311,10 +315,15 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
                     oldModelToUpdate.setName(Objects.requireNonNull(viewHolder.getEdxName().getText()).toString());
                     oldModelToUpdate.setDescription(Objects.requireNonNull(viewHolder.getEdxDesc().getText()).toString());
+
+                    //Hide the category and subcategory update data on Item Update
+                    /*
                     oldModelToUpdate.setCategoryBinding(new CategoryBindingModel(
                             categoriesList.get(categorySelected).getDocID(),
                             categoriesList.get(categorySelected).getSubCategories().get(subCategorySelected).getDocID()
                     ));
+                    */
+
                     oldModelToUpdate.setPrices(new PriceGroup(
                             Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxRetailPrice().getText()).toString()),
                             Double.parseDouble(Objects.requireNonNull(viewHolder.getEdxSalePrice().getText()).toString())
@@ -336,7 +345,13 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 }
             });
 
-        } else if (action == ActionConstants.ACTION_ADD) {
+        }
+
+        else if (action == ActionConstants.ACTION_ADD) {
+
+            popupView.findViewById(R.id.row_category).setVisibility(View.VISIBLE);
+            popupView.findViewById(R.id.row_subcategory).setVisibility(View.VISIBLE);
+
             viewHolder.getAddItemButton().setText(R.string.add_item);
             viewHolder.getEdxStock().setVisibility(View.VISIBLE);
             viewHolder.getAddItemButton().setOnClickListener(v -> {
@@ -371,7 +386,8 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                     Objects.requireNonNull(viewHolder.getEdxUnit().getText()).toString()
                             ),
                             stocks,
-                            max
+                            max,
+                            false
                     ), -1);
 
 
@@ -530,6 +546,15 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                 .replace(R.id.nav_host_fragment_content_main_activity_admin, ItemFullModalFragmentGeneric.newInstance(modelToShow))
                 .addToBackStack("item_list")
                 .commit();
+    }
+
+    @Override
+    public void onIsHotButtonClick(boolean isHot, ImageButton view, String itemID, int position) {
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getItemsRef())
+                .document(itemID)
+                .update("hot", isHot);
     }
 
     @Override

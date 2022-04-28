@@ -65,4 +65,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-inappmessaging:20.1.2'
     implementation 'com.google.firebase:firebase-inappmessaging-display:20.1.2'
     implementation 'com.google.firebase:firebase-messaging:23.0.2'
+
+    implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'
+    implementation 'com.nineoldandroids:library:2.4.0'
 }

@@ -134,13 +134,21 @@ public class UserModel {
         this.orders = orders;
     }
 
+
     @Override
     public String toString() {
         return "UserModel{" +
                 "UID='" + UID + '\'' +
+                ", UserType='" + UserType + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", emailAddress='" + emailAddress + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", details=" + details +
+                ", cart=" + cart +
+                ", credits=" + credits +
+                ", currentActiveOrder='" + currentActiveOrder + '\'' +
+                ", orders=" + orders +
+                ", suggestions=" + suggestions +
                 '}';
     }
-
 }

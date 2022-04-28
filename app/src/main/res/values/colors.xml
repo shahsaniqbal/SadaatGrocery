@@ -12,6 +12,8 @@
 
     <color name="grey">#88000000</color>
 
+    <color name="light_grey">#173E3C3C</color>
+
     <color name="royal_blue_200">#80246EE9</color>
     <color name="royal_blue_500">#CC246EE9</color>
     <color name="royal_blue_700">#246EE9</color>

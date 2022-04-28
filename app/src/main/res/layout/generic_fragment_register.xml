@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.Fragments.Generic.RegisterFragment"
-    android:background="@mipmap/login_bg">
+    android:background="@mipmap/bg"
+    tools:context=".ui.Fragments.Generic.RegisterFragment">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,10 +24,6 @@
                 android:gravity="center"
                 android:paddingBottom="48dp">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/logo"/>
 
             </LinearLayout>
 
@@ -41,13 +37,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:layout_weight="0.5" >
 
+
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@mipmap/buyer_symbol_actor"/>
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@mipmap/logo"/>
 
                 </LinearLayout>
 

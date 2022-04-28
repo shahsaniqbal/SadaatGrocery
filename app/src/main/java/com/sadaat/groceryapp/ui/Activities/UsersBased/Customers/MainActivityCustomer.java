@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class MainActivityCustomer extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        ((TextView) findViewById(R.id.actionbar_title)).setText("Hello"+"!");
+        //((TextView) findViewById(R.id.actionbar_title)).setText("Hello, "); //Already Set
         ((TextView) findViewById(R.id.actionbar_subtitle)).setText(UserLive.currentLoggedInUser.getFullName());
 
         initialize();

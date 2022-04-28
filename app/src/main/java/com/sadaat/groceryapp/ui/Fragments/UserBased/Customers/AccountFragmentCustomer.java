@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +14,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
+import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Activities.GenericForAll.LoginNavigatorActivity;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.OrdersFragmentCustomer;
+
+import java.text.MessageFormat;
 
 public class AccountFragmentCustomer extends Fragment {
 
@@ -56,18 +64,37 @@ public class AccountFragmentCustomer extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initialize(view);
 
-        setCreditsToUser();
-        setImageToUser();
-        setUserAddress();
+        FirebaseFirestore.getInstance()
+                .collection(new FirebaseDataKeys().getUsersRef())
+                .document(UserLive.currentLoggedInUser.getUID())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> t) {
+                        if (t.isSuccessful()) {
+                            UserLive.currentLoggedInUser = t.getResult().toObject(UserModel.class);
+                            assert UserLive.currentLoggedInUser != null;
+                            Log.e("USER", UserLive.currentLoggedInUser.toString());
 
+
+
+                        }
+                    }
+                });
+
+        if (UserLive.currentLoggedInUser != null) {
+            setCreditsToUser();
+            setImageToUser();
+            setUserAddress();
+        }
         listeners();
 
     }
 
     private void setCreditsToUser() {
-        txvCreditsInPending.setText(String.valueOf(UserLive.currentLoggedInUser.getCredits().getPendingCredits()));
-        txvCreditsInWallet.setText(String.valueOf(UserLive.currentLoggedInUser.getCredits().getOwningCredits()));
 
+        txvCreditsInPending.setText(MessageFormat.format("{0}", UserLive.currentLoggedInUser.getCredits().getPendingCredits()));
+        txvCreditsInWallet.setText(MessageFormat.format("{0}", UserLive.currentLoggedInUser.getCredits().getOwningCredits()));
     }
 
     private void listeners() {

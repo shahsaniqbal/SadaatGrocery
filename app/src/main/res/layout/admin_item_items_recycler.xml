@@ -35,7 +35,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3.9"
+                    android:layout_weight="3.2"
                     android:orientation="vertical"
                     android:padding="@dimen/listing_top_card_margin">
 
@@ -59,10 +59,18 @@
                 </LinearLayout>
 
                 <ImageButton
-                    android:id="@+id/item_item_button_options"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/item_item_button_hot"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
+                    android:layout_weight="0.4"
+                    android:src="@drawable/ic_fire_outlined"
+                    android:backgroundTint="@color/white" />
+
+                <ImageButton
+                    android:id="@+id/item_item_button_options"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
                     android:backgroundTint="@color/white"
                     android:src="@drawable/ic_baseline_more_vert_24" />
 

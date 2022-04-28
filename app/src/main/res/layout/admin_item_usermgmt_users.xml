@@ -12,26 +12,32 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="164dp">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@color/grey"
-            android:alpha="0.1"/>
+            android:alpha="0.25"
+            android:background="@mipmap/bg"
+            android:contentDescription="DP"
+            android:src="@color/grey" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
             android:backgroundTint="@color/white"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="5.5">
+                android:layout_weight="4"
+                android:baselineAligned="false">
 
 
                 <LinearLayout
@@ -42,18 +48,19 @@
                     tools:ignore="NestedWeights">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
                         android:layout_gravity="center"
-                        app:cardCornerRadius="100dp"
-                        android:layout_margin="8dp">
-                    <ImageView
-                        android:id="@+id/imgv_dp_admin_show_users"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/nav_header_desc"
-                        app:srcCompat="@drawable/ic_users"
-                        android:layout_gravity="center"/>
+                        android:layout_margin="8dp"
+                        app:cardCornerRadius="100dp">
+
+                        <ImageView
+                            android:id="@+id/imgv_dp_admin_show_users"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/nav_header_desc"
+                            app:srcCompat="@drawable/ic_users" />
                     </com.google.android.material.card.MaterialCardView>
 
 
@@ -63,76 +70,73 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/txv_name_admin_show_users"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/scarlet_red_700"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/txv_email_admin_show_users"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="8dp">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/txv_name_admin_show_users"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Ahsan Iqbal"
-                            android:textColor="@color/scarlet_red_700"
-                            android:textSize="22sp"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/txv_email_admin_show_users"
-
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="ahsan.iqbal064@gmail.com"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/txv_mobile_admin_show_users"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="0304 9523237"
+                            android:layout_weight="4"
+                            android:fontFamily="monospace"
                             android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:textSize="14sp" />
 
-                        <ImageButton
+                        <ImageView
                             android:id="@+id/imgbtn_Call_admin_show_users"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end|bottom"
-                            android:background="@color/scarlet_red_500"
-                            android:backgroundTint="@color/white"
-                            android:backgroundTintMode="multiply"
-                            android:src="@android:drawable/ic_menu_call" />
+                            android:layout_weight="1"
+                            android:src="@mipmap/call" />
 
                     </LinearLayout>
 
                 </LinearLayout>
-
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="4">
+                android:layout_weight="3"
+                android:baselineAligned="false">
 
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
-                    android:gravity="center">
+                    android:gravity="center"
+                    tools:ignore="NestedWeights">
 
                     <ImageView
                         android:id="@+id/imgv_user_type_admin_show_users"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
-                        android:src="@mipmap/admin_symbol_actor"/>
+                        android:src="@mipmap/admin_symbol_actor" />
 
                 </LinearLayout>
 
@@ -143,49 +147,100 @@
                     android:gravity="center_vertical|end"
                     android:orientation="vertical">
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/btn_showFullDetails_admin_show_users"
+                    <LinearLayout
+                        android:id="@+id/row_for_credits"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/scarlet_red_700"
-                        android:clickable="true"
-                        android:focusable="true">
+                        android:layout_height="wrap_content">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="4dp"
-                            android:text="Full Details Dialogue"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textStyle="bold" />
-                    </com.google.android.material.card.MaterialCardView>
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/txv_pending_admin_show_users"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:drawableStart="@mipmap/pending_credits"
+                            android:drawablePadding="4dp"
+                            android:focusable="true"
+                            android:gravity="center_vertical" />
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/btn_userProfileCredits_admin_show_users"
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/txv_wallet_admin_show_users"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:drawableStart="@drawable/ic_outline_money"
+                            android:drawablePadding="4dp"
+                            android:focusable="true"
+                            android:gravity="center_vertical" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/row_for_user_detail_buttons"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/scarlet_red_700"
-                        android:clickable="true">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="4dp"
-                            android:text="User Profile &amp; Credits"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textStyle="bold" />
-                    </com.google.android.material.card.MaterialCardView>
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_showFullDetails_admin_show_users"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/scarlet_red_700"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="4dp"
+                                android:text="Full Details"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/btn_userProfileCredits_admin_show_users"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/scarlet_red_700"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="4dp"
+                                android:text="Profile Credits"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
 
 
             </LinearLayout>
-
+            <!--
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_make_deliveryBoy_admin_show_users"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/black"
+                android:text="Assign Delivery Boy Roles"/>
+                -->
 
         </LinearLayout>
 

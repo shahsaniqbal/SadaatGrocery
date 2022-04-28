@@ -10,34 +10,38 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.SadaatGroceryStore.AppBarOverlay">
+        android:theme="@style/Theme.SadaatGroceryStore.AppBarOverlay"
+        app:elevation="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
-            android:gravity="center"
-            android:orientation="vertical"
             android:paddingVertical="4dp"
             android:paddingHorizontal="12dp"
+            android:gravity="center_vertical"
             app:popupTheme="@style/Theme.SadaatGroceryStore.PopupOverlay">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/actionbar_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome"
+                android:gravity="center"
+                android:textSize="28sp"
+                android:fontFamily="sans-serif-thin"
                 android:textColor="@color/scarlet_red_700"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:text="Hello, "
+                android:layout_marginHorizontal="8dp"/>
 
-            <TextView
-                android:id="@+id/actionbar_subtitle"
-                android:layout_width="match_parent"
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome"
+                android:gravity="center"
+                android:textSize="28sp"
                 android:textColor="@color/scarlet_red_700"
-                android:textSize="14sp" />
+                android:text="Hash Delivery"
+                android:id="@+id/actionbar_subtitle"/>
+
 
         </LinearLayout>
 

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.Activities.UsersBased.DeliveryBoy.ProfileActivityDelivery">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/delivery_profile_userImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/call_to_customer"
+            android:layout_marginVertical="8dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/delivery_profile_userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textColor="@color/scarlet_red_700"
+            android:text="Hash Delivery"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/delivery_profile_userEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textColor="@color/black"
+            android:text="test@test.com"/>
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/delivery_profile_mobile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="03049523237"
+            android:textColor="@color/black"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-thin"
+            android:drawableLeft="@drawable/ic_baseline_edit_24"
+            android:drawablePadding="16dp"
+            android:textColor="@color/black"
+            android:layout_marginVertical="16dp"
+            android:text="For Updating Any Details, Contact Admin"/>
+
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_margin="8dp">
+
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/delivery_boy_symbol_actor"/>
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="2dp"
+                    android:background="#4D000000"
+                    android:layout_margin="16dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="8dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Total Orders Delivered"
+                        android:textStyle="bold"
+                        android:textColor="@color/scarlet_red_700"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/delivery_profile_orders_delivered"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="0"
+                        android:gravity="center_vertical|end"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="8dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Total Orders In Queue"
+                        android:textStyle="bold"
+                        android:textColor="@color/scarlet_red_700"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/delivery_profile_orders_in_queue"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="0"
+                        android:gravity="center_vertical|end"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="2dp"
+                    android:background="#4D000000"
+                    android:layout_margin="16dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="8dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Pending Payment to Receive from Customers"
+                        android:textStyle="bold"
+                        android:textColor="@color/scarlet_red_700"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/delivery_profile_orders_pending_payments"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="0.0 Rs."
+                        android:gravity="center_vertical|end"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="8dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Payment Received and Need to Pay to Admin"
+                        android:textStyle="bold"
+                        android:textColor="@color/scarlet_red_700"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/delivery_profile_orders_payments_received"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="0.0 Rs."
+                        android:gravity="center_vertical|end"
+                        android:paddingHorizontal="16dp"
+                        android:textColor="@color/black"/>
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="2dp"
+                    android:background="#4D000000"
+                    android:layout_margin="16dp"/>
+
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -27,7 +27,6 @@ public class OrderModel {
 
     private String deliveryLocation;
 
-
     public OrderModel() {
 
         orderID = "";
@@ -178,6 +177,17 @@ public class OrderModel {
 
     @Override
     public String toString() {
-        return orderID;
+        return "OrderModel{" +
+                "orderID='" + orderID + '\'' +
+                ", orderDetails=" + orderDetails +
+                ", currentStatus='" + currentStatus + '\'' +
+                ", uid='" + uid + '\'' +
+                ", currentDeliveryBoyUID='" + currentDeliveryBoyUID + '\'' +
+                ", remainingPaymentToPayAtDelivery=" + remainingPaymentToPayAtDelivery +
+                ", totalOrderAmountInRetail=" + totalOrderAmountInRetail +
+                ", releasingAppCredits=" + releasingAppCredits +
+                ", releasedAppCredits=" + releasedAppCredits +
+                ", deliveryLocation='" + deliveryLocation + '\'' +
+                '}';
     }
 }

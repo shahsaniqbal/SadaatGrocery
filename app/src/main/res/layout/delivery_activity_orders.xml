@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    tools:context=".ui.Activities.UsersBased.DeliveryBoy.OrdersActivityDelivery"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_margin="4dp"
+        android:text="Delivered by you\n(With Unreleased App Credits)"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txv_detailed_item_alternate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:textColor="@color/grey"
+        android:layout_margin="4dp"
+        android:text="No Orders Data Live"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/delivery_boy_orders_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"/>
+
+</LinearLayout>

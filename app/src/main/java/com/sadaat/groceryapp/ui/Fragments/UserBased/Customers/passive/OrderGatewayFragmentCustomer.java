@@ -91,7 +91,7 @@ public class OrderGatewayFragmentCustomer extends Fragment {
             int qty = orderModel.getOrderDetails().getCartItems().get(itemKey).getQty();
 
             ITEMS_REFERENCE.document(itemKey).update(
-                    "otherDetails.stock", FieldValue.increment((-1) * qty)
+                    "otherDetails.stock", FieldValue.increment(((-1) * qty))
             );
         }
 
