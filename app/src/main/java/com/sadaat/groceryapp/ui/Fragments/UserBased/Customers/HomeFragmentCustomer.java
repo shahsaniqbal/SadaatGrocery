@@ -1,35 +1,34 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.ItemsDisplayAdapterCustomer;
-import com.sadaat.groceryapp.models.Items.CategoryBindingModel;
+import com.sadaat.groceryapp.models.ItemIDListModel;
 import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.ItemsFragmentCustomer;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
@@ -41,6 +40,10 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
     private RecyclerView recyclerViewHotItems;
     private RecyclerView.LayoutManager layoutManagerForHotItems;
     private ItemsDisplayAdapterCustomer displayAdapterHotItems;
+
+    private RecyclerView recyclerViewMostSelling;
+    private RecyclerView.LayoutManager layoutManagerForMostSelling;
+    private ItemsDisplayAdapterCustomer displayAdapterMostSelling;
 
     private LoadingDialogue progressDialogue;
 
@@ -72,6 +75,52 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
         initializations(view);
 
         showHotProducts(view);
+        showMostSelling();
+
+
+    }
+
+    private void showMostSelling() {
+        UserLive.currentLoggedInUser.getCart().eliminateCartByLatestStock();
+
+        recyclerViewMostSelling.setLayoutManager(layoutManagerForMostSelling);
+        recyclerViewMostSelling.setAdapter(displayAdapterMostSelling);
+
+        progressDialogue.show("Please Wait", "Loading Most Selling Items");
+
+        FirebaseFirestore
+                .getInstance()
+                .collection("TopSelling")
+                .document("Items")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            ItemIDListModel list = task.getResult().toObject(ItemIDListModel.class);
+
+                            for (String s : list.getItems()) {
+
+                                ITEMS_COLLECTION_REF
+                                        .document(s)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if (task.isSuccessful()){
+                                                    displayAdapterMostSelling.addItem(task.getResult().toObject(ItemModel.class));
+                                                }
+                                            }
+                                        });
+
+                            }
+
+                        }
+                        progressDialogue.dismiss();
+                    }
+                });
+
 
     }
 
@@ -91,10 +140,9 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             displayAdapterHotItems.addAll(task.getResult().toObjects(ItemModel.class));
-                        }
-                        else{
+                        } else {
                             Toast.makeText(HomeFragmentCustomer.this.requireActivity(), "Error Loading Items", Toast.LENGTH_SHORT).show();
                         }
                         progressDialogue.dismiss();
@@ -108,16 +156,22 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
         layoutManagerForHotItems = new LinearLayoutManager(HomeFragmentCustomer.this.requireActivity(), LinearLayoutManager.HORIZONTAL, false);
         displayAdapterHotItems = new ItemsDisplayAdapterCustomer(new ArrayList<>(), this, HomeFragmentCustomer.this.requireActivity());
         progressDialogue = new LoadingDialogue(HomeFragmentCustomer.this.requireActivity());
+
+        recyclerViewMostSelling = vParent.findViewById(R.id.recycler_customer_items_most_selling);
+        layoutManagerForMostSelling = new LinearLayoutManager(HomeFragmentCustomer.this.requireActivity(), LinearLayoutManager.HORIZONTAL, false);
+        displayAdapterMostSelling = new ItemsDisplayAdapterCustomer(new ArrayList<>(), this, HomeFragmentCustomer.this.requireActivity());
+
     }
 
 
     /*
-    * Hot Items Override
-    */
+     * Hot Items Override
+     */
     @Override
     public CartItemModel indicateItemCountChange(ItemModel item, int quantity) {
-        return new CartItemModel(item,quantity);
+        return new CartItemModel(item, quantity);
     }
+
     @Override
     public void prepareCart(CartItemModel cartItemModel) {
         UserLive.currentLoggedInUser.getCart().modifyCartItem(cartItemModel);
@@ -128,12 +182,13 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
 
         Log.e("CART", UserLive.currentLoggedInUser.getCart().toString());
     }
+
     @Override
     public void onClick(ItemModel model) {
         getParentFragmentManager()
                 .beginTransaction()
                 .replace(R.id.flFragmentCustomer, ItemFullModalFragmentGeneric.newInstance(model))
-                .addToBackStack("items")
+                .addToBackStack("home")
                 .commit();
     }
 }

@@ -142,6 +142,7 @@ public class OCRFragmentAdmin extends Fragment {
         txvNotReceived.setText(new DecimalFormat("##.##").format(percentage));
         chart.startAnimation();
     }
+/*
 
     @Override
     public void onPause() {
@@ -163,5 +164,6 @@ public class OCRFragmentAdmin extends Fragment {
                 .remove(this)
                 .commit();
     }
+*/
 
 }

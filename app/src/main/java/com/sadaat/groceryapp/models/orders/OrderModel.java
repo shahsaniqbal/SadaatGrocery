@@ -18,7 +18,8 @@ public class OrderModel {
     private PaymentThrough paymentThrough; //
     private double remainingPaymentToPayAtDelivery;  //
 
-    private ArrayList<ComplaintsModel> complaints;//
+    private String complaintID;//
+
     private String receivingStatus; //
 
     private double totalOrderAmountInRetail; //
@@ -41,7 +42,7 @@ public class OrderModel {
                       String currentDeliveryBoyUID,
                       PaymentThrough paymentThrough,
                       double remainingPaymentToPayAtDelivery,
-                      ArrayList<ComplaintsModel> complaints,
+                      String complaintID,
                       String receivingStatus,
                       double totalOrderAmountInRetail,
                       double releasingAppCredits,
@@ -55,7 +56,7 @@ public class OrderModel {
         this.currentDeliveryBoyUID = currentDeliveryBoyUID;
         this.paymentThrough = paymentThrough;
         this.remainingPaymentToPayAtDelivery = remainingPaymentToPayAtDelivery;
-        this.complaints = complaints;
+        this.complaintID = complaintID;
         this.receivingStatus = receivingStatus;
         this.totalOrderAmountInRetail = totalOrderAmountInRetail;
         this.releasingAppCredits = releasingAppCredits;
@@ -119,12 +120,12 @@ public class OrderModel {
         this.remainingPaymentToPayAtDelivery = remainingPaymentToPayAtDelivery;
     }
 
-    public ArrayList<ComplaintsModel> getComplaints() {
-        return complaints;
+    public String getComplaintID() {
+        return complaintID;
     }
 
-    public void setComplaints(ArrayList<ComplaintsModel> complaints) {
-        this.complaints = complaints;
+    public void setComplaintID(String complaintID) {
+        this.complaintID = complaintID;
     }
 
     public String getReceivingStatus() {

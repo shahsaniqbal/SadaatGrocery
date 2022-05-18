@@ -36,28 +36,28 @@ public class HomeFragment extends Fragment {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                FrameLayout fl = view.findViewById(R.id.flFragment);
+                FrameLayout fl = view.findViewById(R.id.flFragmentChild);
                 fl.removeAllViews();
 
                 switch (item.getItemId()) {
                     case R.id.nav_admin_home_orders:
                         getChildFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragment, OrdersFragmentAdmin.class, null)
+                                .replace(R.id.flFragmentChild, OrdersFragmentAdmin.class, null)
                                 .commit();
                         return true;
 
                     case R.id.nav_admin_home_listing:
                         getChildFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragment, ListingFragmentAdmin.class, null)
+                                .replace(R.id.flFragmentChild, ListingFragmentAdmin.class, null)
                                 .commit();
                         return true;
 
                     case R.id.nav_admin_home_tracking:
                         getChildFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragment, TrackingFragmentAdmin.class, null)
+                                .replace(R.id.flFragmentChild, TrackingFragmentAdmin.class, null)
                                 .commit();
                         return true;
 

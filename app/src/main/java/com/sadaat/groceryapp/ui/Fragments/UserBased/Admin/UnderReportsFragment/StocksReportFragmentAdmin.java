@@ -104,6 +104,7 @@ public class StocksReportFragmentAdmin extends Fragment {
         txvTotalRetail.setText(MessageFormat.format("{0} Rs.", totalRetail));
         txvTotalDiscounted.setText(MessageFormat.format("{0} Rs.", totalDiscounted));
     }
+/*
 
     @Override
     public void onPause() {
@@ -125,5 +126,6 @@ public class StocksReportFragmentAdmin extends Fragment {
                 .remove(this)
                 .commit();
     }
+*/
 
 }

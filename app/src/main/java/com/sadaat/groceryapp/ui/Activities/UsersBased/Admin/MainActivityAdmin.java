@@ -3,11 +3,14 @@ package com.sadaat.groceryapp.ui.Activities.UsersBased.Admin;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,14 +20,21 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.databinding.AdminActivityMainBinding;
+import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Activities.GenericForAll.LoginNavigatorActivity;
+import com.sadaat.groceryapp.ui.Activities.UsersBased.DeliveryBoy.MainActivityDelivery;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.AccountFragmentCustomer;
+import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 public class MainActivityAdmin extends AppCompatActivity {
 
@@ -55,6 +65,34 @@ public class MainActivityAdmin extends AppCompatActivity {
 
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.admin_header_name_txv)).setText(UserLive.currentLoggedInUser.getFullName());
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.admin_header_title_txv)).setText(TYPE);
+
+        if (!UserLive.currentLoggedInUser.getDetails()
+                .getImageReference().isEmpty()) {
+
+            StorageReference imgRef = FirebaseStorage
+                    .getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS)
+                    .getReference()
+                    .child(UserLive.currentLoggedInUser.getDetails()
+                            .getImageReference());
+
+            final long ONE_MEGABYTE = 1024 * 1024;
+
+            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    ((ImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView)).setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(MainActivityAdmin.this, "User Image Load Failed, \n Leave it ", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+        }
+
+
+
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_app_credits_admin, R.id.nav_user_mgmt,

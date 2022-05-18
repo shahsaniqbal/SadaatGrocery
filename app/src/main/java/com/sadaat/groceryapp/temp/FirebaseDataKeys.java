@@ -22,4 +22,20 @@ public class FirebaseDataKeys {
     public String getOrdersRef() {
         return "Orders";
     }
+
+    public String getComplaintsRef() {
+        return "Order_Complaints";
+    }
+
+    public String getSuggestionsRef() {
+        return "Suggestions";
+    }
+
+    public String getTopSellingRef() {
+        return "TopSelling";
+    }
+
+
+
+
 }

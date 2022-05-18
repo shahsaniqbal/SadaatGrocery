@@ -1,61 +1,55 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderResponsesFragmentSuper;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
+import com.sadaat.groceryapp.adapters.admin.SuggestionsDisplayAdapterAdmin;
+import com.sadaat.groceryapp.models.SuggestionModel;
+import com.sadaat.groceryapp.temp.FirebaseDataKeys;
+
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SuggestionsFragmentAdmin#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SuggestionsFragmentAdmin extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class SuggestionsFragmentAdmin extends Fragment implements SuggestionsDisplayAdapterAdmin.OnClickListener {
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager manager;
+    SuggestionsDisplayAdapterAdmin adapter;
 
     public SuggestionsFragmentAdmin() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SuggestionsFragmentAdmin.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static SuggestionsFragmentAdmin newInstance(String param1, String param2) {
-        SuggestionsFragmentAdmin fragment = new SuggestionsFragmentAdmin();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        return new SuggestionsFragmentAdmin();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -65,6 +59,43 @@ public class SuggestionsFragmentAdmin extends Fragment {
         return inflater.inflate(R.layout.admin_fragment_suggestions, container, false);
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recyclerView = view.findViewById(R.id.recycler);
+        manager = new LinearLayoutManager(SuggestionsFragmentAdmin.this.requireActivity());
+        adapter = new SuggestionsDisplayAdapterAdmin(new ArrayList<>(), this);
+
+
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getSuggestionsRef())
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w("TAG", "Listen failed. SuggestionFragmentAdmin", error);
+                            return;
+                        }
+
+                        if (value != null && value.getDocuments().size() > 0) {
+
+                            adapter.deleteAll();
+                            for (DocumentSnapshot d :
+                                    value.getDocuments()) {
+                                adapter.addItem(d.toObject(SuggestionModel.class));
+                            }
+
+                        } else {
+                            Log.d("TAG", "source file SuggestionFragmentAdmin" + " data: null");
+                        }
+                    }
+                });
+    }
 
     @Override
     public void onPause() {
@@ -78,4 +109,22 @@ public class SuggestionsFragmentAdmin extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Suggestions");
     }
 
+    @Override
+    public void onCallButtonClick(String mobileNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + mobileNumber));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPostReplyButtonClick(int position, String id, String reply, Date replyDate) {
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getComplaintsRef())
+                .document(id)
+                .update(
+                        "replyMessage", reply,
+                        "replyDate", replyDate
+                );
+    }
 }

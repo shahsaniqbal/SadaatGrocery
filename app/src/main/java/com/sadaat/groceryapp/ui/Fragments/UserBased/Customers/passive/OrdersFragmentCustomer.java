@@ -3,11 +3,13 @@ package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive;
 import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldValue;
@@ -25,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.OrderItemDisplayAdapterCustomer;
+import com.sadaat.groceryapp.models.ComplaintsModel;
 import com.sadaat.groceryapp.models.StockEntry;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.models.orders.OrderModel;
@@ -33,7 +38,7 @@ import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.order_management.OrderStatus;
 import com.sadaat.groceryapp.temp.order_management.PaymentMethods;
-import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedOrderView;
+import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedOrderViewFragmentGeneric;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.text.MessageFormat;
@@ -60,6 +65,12 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager manager;
     private OrderItemDisplayAdapterCustomer adapter;
+
+    AlertDialog.Builder dialogueBuilderForComplaints;
+    AlertDialog complaintPopupDialogueBox;
+    ViewHolderPopupAddComplaint viewHolderForComplaints;
+    View popupView;
+
 
 
     public OrdersFragmentCustomer() {
@@ -224,8 +235,17 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
         dialogue = new LoadingDialogue(this.requireActivity());
         manager = new LinearLayoutManager(this.requireActivity());
         adapter = new OrderItemDisplayAdapterCustomer(new ArrayList<>(), this, this.requireActivity());
-    }
 
+        dialogueBuilderForComplaints = new AlertDialog.Builder(requireActivity());
+
+        popupView = this.getLayoutInflater().inflate(R.layout.customer_popup_add_order_complaint, null, false);
+        dialogueBuilderForComplaints.setView(popupView);
+
+        complaintPopupDialogueBox = dialogueBuilderForComplaints.create();
+
+        viewHolderForComplaints = new ViewHolderPopupAddComplaint(popupView);
+
+    }
 
     private void updateView(View v) {
         if (currentLiveOrder == null) {
@@ -279,8 +299,110 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
         requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.flFragmentCustomer, DetailedOrderView.newInstance(orderModel))
+                .replace(R.id.flFragmentCustomer, DetailedOrderViewFragmentGeneric.newInstance(orderModel))
                 .addToBackStack("orders_list")
                 .commit();
+    }
+
+    @Override
+    public void onComplaintButtonClick(String orderID, boolean whetherHasAnyComplaint, int position) {
+        if (whetherHasAnyComplaint){
+            Toast.makeText(OrdersFragmentCustomer.this.requireActivity(), "Complaint With the Order already exists", Toast.LENGTH_SHORT).show();
+        }
+
+        else{
+            complaintPopupDialogueBox.show();
+            viewHolderForComplaints.getTxvOrderID().setText(orderID);
+
+            /*
+            * Prepare Complaint Model
+            * Update Complaint ID to OrderModel Locally
+            * Update Complaint ID to OrderModel Cloud
+            * */
+
+            viewHolderForComplaints.getBtnPost().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (viewHolderForComplaints.getEdxComplaintTitle().getText().toString().isEmpty()){
+                        viewHolderForComplaints.getEdxComplaintTitle().setError("Title Cannot be Empty");
+                    }
+                    else if (viewHolderForComplaints.getEdxComplaintMessage().getText().toString().isEmpty()){
+                        viewHolderForComplaints.getEdxComplaintMessage().setError("Please Type your Complaint Message");
+                    }
+                    else{
+                        ComplaintsModel model = new ComplaintsModel();
+                        model.setComplaintTitle(viewHolderForComplaints.getEdxComplaintTitle().getText().toString());
+                        model.setComplaintMessage(viewHolderForComplaints.getEdxComplaintMessage().getText().toString());
+                        model.setOrderID(orderID);
+                        model.setComplaintID("C_"+orderID);
+                        model.setComplaintIssueDate(new Date());
+                        model.setUid(UserLive.currentLoggedInUser.getUID());
+
+                        FirebaseFirestore
+                                .getInstance()
+                                .collection(new FirebaseDataKeys().getComplaintsRef())
+                                .document(model.getComplaintID())
+                                .set(model)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+
+                                            FirebaseFirestore
+                                                    .getInstance()
+                                                    .collection(new FirebaseDataKeys().getOrdersRef())
+                                                    .document(orderID)
+                                                    .update("complaintID", model.getComplaintID())
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()){
+                                                                adapter.getLocalDataSet().get(position).setComplaintID(model.getComplaintID());
+                                                                adapter.notifyItemChanged(position);
+                                                                complaintPopupDialogueBox.dismiss();
+                                                            }
+                                                        }
+                                                    });
+
+                                        }
+                                    }
+                                });
+                    }
+                }
+            });
+
+        }
+    }
+
+    private class ViewHolderPopupAddComplaint {
+
+        private MaterialTextView txvOrderID;
+        private TextInputEditText edxComplaintTitle;
+        private TextInputEditText edxComplaintMessage;
+        private MaterialButton btnPost;
+
+        public ViewHolderPopupAddComplaint(View mainView) {
+            txvOrderID = mainView.findViewById(R.id.txv_order_id);
+            edxComplaintTitle = mainView.findViewById(R.id.edx_complaint_title);
+            edxComplaintMessage = mainView.findViewById(R.id.edx_complaint_message);
+            btnPost = mainView.findViewById(R.id.btn_post);
+
+        }
+
+        public MaterialTextView getTxvOrderID() {
+            return txvOrderID;
+        }
+
+        public TextInputEditText getEdxComplaintTitle() {
+            return edxComplaintTitle;
+        }
+
+        public TextInputEditText getEdxComplaintMessage() {
+            return edxComplaintMessage;
+        }
+
+        public MaterialButton getBtnPost() {
+            return btnPost;
+        }
     }
 }

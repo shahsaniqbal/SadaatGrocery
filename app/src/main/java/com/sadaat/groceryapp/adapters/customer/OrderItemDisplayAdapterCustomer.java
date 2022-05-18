@@ -9,16 +9,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.models.orders.OrderModel;
-import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.order_management.OrderStatus;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
@@ -64,6 +58,19 @@ public class OrderItemDisplayAdapterCustomer extends RecyclerView.Adapter<OrderI
 
         //Listeners
         viewHolder.getMainView().setOnClickListener(view -> customOnClickListener.onFullItemClick(localDataSet.get(viewHolder.getAdapterPosition())));
+
+        if (localDataSet.get(viewHolder.getAdapterPosition()).getCurrentStatus().equalsIgnoreCase(OrderStatus.DELIVERED) &&
+                localDataSet.get(viewHolder.getAdapterPosition()).getReleasedAppCredits() == 0.0
+        ) {
+            viewHolder.getCardPostComplaint().setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.getCardPostComplaint().setVisibility(View.GONE);
+        }
+
+        viewHolder.getCardPostComplaint().setOnClickListener(v -> customOnClickListener.onComplaintButtonClick(
+                localDataSet.get(viewHolder.getAdapterPosition()).getOrderID(),
+                !localDataSet.get(viewHolder.getAdapterPosition()).getComplaintID().equalsIgnoreCase(""),
+                viewHolder.getAdapterPosition()));
     }
 
     @Override
@@ -93,8 +100,14 @@ public class OrderItemDisplayAdapterCustomer extends RecyclerView.Adapter<OrderI
         notifyItemChanged(index);
     }
 
+    public ArrayList<OrderModel> getLocalDataSet() {
+        return localDataSet;
+    }
+
     public interface ItemClickListeners {
         void onFullItemClick(OrderModel orderModel);
+
+        void onComplaintButtonClick(String orderID, boolean whetherHasAnyComplaint, int position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -103,6 +116,7 @@ public class OrderItemDisplayAdapterCustomer extends RecyclerView.Adapter<OrderI
         private final MaterialTextView txvOrderID;
         private final MaterialTextView txvAmount;
         private final MaterialTextView txvOrderStatus;
+        private final MaterialCardView cardPostComplaint;
 
 
         public ViewHolder(View view) {
@@ -112,6 +126,7 @@ public class OrderItemDisplayAdapterCustomer extends RecyclerView.Adapter<OrderI
             txvOrderID = view.findViewById(R.id.customer_order_item_orderID);
             txvAmount = view.findViewById(R.id.customer_order_item_amount);
             txvOrderStatus = view.findViewById(R.id.customer_order_item_status);
+            cardPostComplaint = view.findViewById(R.id.card_report_problem);
 
         }
 
@@ -131,9 +146,10 @@ public class OrderItemDisplayAdapterCustomer extends RecyclerView.Adapter<OrderI
             return txvOrderStatus;
         }
 
+        public MaterialCardView getCardPostComplaint() {
+            return cardPostComplaint;
+        }
     }
 
-    public ArrayList<OrderModel> getLocalDataSet() {
-        return localDataSet;
-    }
+
 }

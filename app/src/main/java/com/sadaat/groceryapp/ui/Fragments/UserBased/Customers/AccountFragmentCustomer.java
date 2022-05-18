@@ -29,6 +29,8 @@ import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Activities.GenericForAll.LoginNavigatorActivity;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.OrdersFragmentCustomer;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.SuggestionsAndComplaintsHostFragmentCustomer;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.WalletFragmentCustomer;
 
 import java.text.MessageFormat;
 
@@ -41,13 +43,13 @@ public class AccountFragmentCustomer extends Fragment {
     MaterialTextView txvCreditsInPending;
 
     MaterialCardView cardAppCredits;
-    MaterialCardView cardOrders;
-    MaterialCardView cardWallet;
+    MaterialCardView cardOrders; //
+    MaterialCardView cardWallet; //
     MaterialCardView cardAddress;
     MaterialCardView cardSuggestionsAndComplaints;
     MaterialCardView cardHelpAndSupport;
     MaterialCardView cardSettings;
-    MaterialCardView cardSignOut;
+    MaterialCardView cardSignOut; //
     MaterialCardView cardCallToCustomerSupport;
 
     @Nullable
@@ -122,6 +124,24 @@ public class AccountFragmentCustomer extends Fragment {
                     .getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragmentCustomer, OrdersFragmentCustomer.newInstance())
+                    .addToBackStack("account")
+                    .commit();
+        });
+
+        cardWallet.setOnClickListener(v -> {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragmentCustomer, WalletFragmentCustomer.newInstance())
+                    .addToBackStack("account")
+                    .commit();
+        });
+
+        cardSuggestionsAndComplaints.setOnClickListener(v -> {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragmentCustomer, SuggestionsAndComplaintsHostFragmentCustomer.newInstance())
                     .addToBackStack("account")
                     .commit();
         });

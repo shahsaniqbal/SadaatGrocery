@@ -1,23 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:scrollbars="none">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:drawableLeft="@drawable/ic_fire_filled"
-        android:drawablePadding="8dp"
-        android:text="Hot Products"/>
-
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/recycler_customer_items"
-        android:layout_margin="4dp"/>
+        android:orientation="vertical"
+        android:gravity="center">
 
-</LinearLayout>
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:text="Ordering your favourite grocery items is no more a big deal."
+            android:textSize="22sp"
+            android:textColor="@color/grey"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:fontFamily="cursive"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="Explore Most of Our Products"
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:fontFamily="cursive"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="With Sadaat Online App"
+            android:fontFamily="cursive"
+            android:padding="4dp"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center|end"
+            />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:drawableLeft="@drawable/ic_fire_filled"
+            android:drawablePadding="8dp"
+            android:text="Hot Products"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_customer_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp" />
+
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@drawable/ic_return"
+            android:drawablePadding="8dp"
+            android:text="Most Selling Products"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_customer_items_most_selling"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp" />
+
+    </LinearLayout>
+
+</ScrollView>

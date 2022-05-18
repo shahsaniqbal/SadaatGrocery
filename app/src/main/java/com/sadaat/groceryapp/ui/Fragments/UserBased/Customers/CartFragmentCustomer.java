@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +35,7 @@ import com.sadaat.groceryapp.temp.order_management.PaymentMethods;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.OrderGatewayFragmentCustomer;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -102,43 +103,51 @@ public class CartFragmentCustomer extends Fragment
         btnCheckoutMainFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkoutPopupDialogueBox.show();
                 updatePopup();
+                checkoutPopupDialogueBox.show();
             }
         });
 
         holder.getRadioGroupPaymentType().setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if (radioGroup.getId() == holder.getRadioButtonCard().getId()) {
+                if (((RadioButton) holder.getRadioButtonCard()).isChecked()) {
                     paymentThroughCOD = false;
 
-                } else if (radioGroup.getId() == holder.getRadioButtonCOD().getId()) {
+                } else if (((RadioButton) holder.getRadioButtonCOD()).isChecked()) {
                     paymentThroughCOD = true;
                 }
             }
         });
 
-        holder.getmSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        holder.getmSwitch().setOnCheckedChangeListener((compoundButton, b) -> {
 
-                long maxCredits = (long) (orderModel.getTotalOrderAmountInRetail() / 2);
 
-                if (maxCredits > UserLive.currentLoggedInUser.getCredits().getOwningCredits()){
-                    holder.getTxvPartialAppCredits().setText(
-                            (b) ? String.valueOf((long) UserLive.currentLoggedInUser.getCredits().getOwningCredits()) : String.valueOf(0)
-                    );
-                }
+            long maxCredits = (long) (Long.parseLong(holder.getTxvTotalPayable().getText().toString()) / 2);
 
-                else{
-                    holder.getTxvPartialAppCredits().setText(
-                            (b) ? String.valueOf((long) maxCredits) : String.valueOf(0)
-                    );
-                }
-
-                updatePopup();
+            if (b) {
+                Toast.makeText(CartFragmentCustomer.this.requireActivity(), "You are about to use your previous stored reward points from " + UserLive.currentLoggedInUser.getCredits().getOwningCredits() + " Credits. Max Use In this Order " + maxCredits + " Rs.", Toast.LENGTH_LONG).show();
             }
+
+            long toShowCredits;
+
+            if (maxCredits > UserLive.currentLoggedInUser.getCredits().getOwningCredits()) {
+                if (b) {
+                    toShowCredits = (long) UserLive.currentLoggedInUser.getCredits().getOwningCredits();
+                } else {
+                    toShowCredits = 0;
+                }
+            } else {
+                if (b) {
+                    toShowCredits = (long) maxCredits;
+                } else {
+                    toShowCredits = 0;
+                }
+            }
+
+            holder.getTxvPartialAppCredits().setText(MessageFormat.format("{0}", toShowCredits));
+
+            updatePopup();
         });
 
         holder.getButtonProceed().setOnClickListener(new View.OnClickListener() {
@@ -146,7 +155,7 @@ public class CartFragmentCustomer extends Fragment
             public void onClick(View view) {
 
                 orderModel.setOrderDetails(UserLive.currentLoggedInUser.getCart());
-                orderModel.setComplaints(new ArrayList<>());
+                orderModel.setTotalOrderAmountInRetail(UserLive.currentLoggedInUser.getCart().getNetTotalRetailPrice());
                 orderModel.setCurrentDeliveryBoyUID("");
                 orderModel.setReceivingStatus("");
                 orderModel.setReleasingAppCredits(
@@ -166,7 +175,7 @@ public class CartFragmentCustomer extends Fragment
                 updates.add(new StatusModel(OrderStatus.INITIATED, new Date()));
 
                 orderModel.setStatusUpdates(updates);
-                orderModel.setComplaints(new ArrayList<>());
+                orderModel.setComplaintID("");
 
                 orderModel.setTotalOrderAmountInRetail(Double.parseDouble(holder.getTxvNetTotal().getText().toString()));
                 orderModel.setRemainingPaymentToPayAtDelivery(

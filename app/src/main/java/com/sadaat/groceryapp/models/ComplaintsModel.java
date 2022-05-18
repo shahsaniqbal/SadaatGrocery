@@ -5,6 +5,7 @@ import java.util.Date;
 public class ComplaintsModel {
     private String complaintID;
     private String orderID;
+    private String uid;
     private String complaintTitle;
     private String complaintMessage;
     private Date complaintIssueDate;
@@ -15,11 +16,20 @@ public class ComplaintsModel {
     private boolean isResolved;
 
     public ComplaintsModel() {
+        this.uid = "";
+        this.complaintID = "";
+        this.orderID = "";
+        this.complaintTitle = "";
+        this.complaintMessage = "";
+        this.replyTitle = "";
+        this.replyMessage = "";
     }
 
-    public ComplaintsModel(String complaintID, String orderID, String complaintTitle, String complaintMessage, Date complaintIssueDate, String replyTitle, String replyMessage, Date replyResolvedDate, boolean isResolved) {
+
+    public ComplaintsModel(String complaintID, String orderID, String uid, String complaintTitle, String complaintMessage, Date complaintIssueDate, String replyTitle, String replyMessage, Date replyResolvedDate, boolean isResolved) {
         this.complaintID = complaintID;
         this.orderID = orderID;
+        this.uid = uid;
         this.complaintTitle = complaintTitle;
         this.complaintMessage = complaintMessage;
         this.complaintIssueDate = complaintIssueDate;
@@ -99,5 +109,13 @@ public class ComplaintsModel {
 
     public void setResolved(boolean resolved) {
         isResolved = resolved;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

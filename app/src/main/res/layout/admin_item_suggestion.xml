@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- TODO Change -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        app:cardElevation="6dp"
+        android:id="@+id/mainView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="6dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="2dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_suggestion"
+                    android:drawablePadding="8dp"
+                    android:text="This is a sample complaint title"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:fontFamily="serif"
+                    android:id="@+id/txv_complaint_title"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="8dp"
+                    android:fontFamily="serif"
+                    android:text="This is a sample complaint Text showing the complaint message, you have to solve it in order to make your complaint service better"
+
+                    android:id="@+id/txv_complaint_message"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|end"
+                    android:textSize="10sp"
+                    android:paddingHorizontal="16dp"
+                    android:fontFamily="serif"
+                    android:text="Posted at"
+                    android:id="@+id/txv_complaint_posted_at"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_margin="4dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/txv_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
+                        android:text="Temp User"
+                        android:textColor="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/txv_mobile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mobile Number"
+                        android:layout_marginHorizontal="4dp"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/txv_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email"
+                        android:layout_marginHorizontal="4dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
+                        android:text="Ratings"
+                        android:textColor="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/txv_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="4.5"
+                        android:layout_marginHorizontal="4dp"/>
+
+                </LinearLayout>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    app:cardElevation="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="16dp"
+                    android:id="@+id/card_call_to_user">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:layout_margin="4dp"
+                        android:fontFamily="serif"
+                        android:gravity="center"
+                        android:text="Call"
+                        android:drawableLeft="@mipmap/call"
+                        android:drawablePadding="8dp"/>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardElevation="4dp"
+                android:backgroundTint="@color/light_grey"
+                android:backgroundTintMode="src_atop"
+                android:id="@+id/card_response">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_margin="8dp">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="8dp"
+                            android:fontFamily="serif"
+                            android:text="This is a sample complaint Text showing the complaint response, we have solved it, in order to make your complaint service better"
+
+                            android:id="@+id/txv_complaint_response"/>
+
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical|end"
+                            android:textSize="10sp"
+                            android:paddingHorizontal="16dp"
+                            android:fontFamily="serif"
+                            android:text="Replied at"
+                            android:id="@+id/txv_complaint_replied_at"/>
+
+                    </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardElevation="0dp"
+                android:id="@+id/card_reply">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="2dp">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:hint="Reply"
+                        android:layout_margin="4dp"
+                        android:layout_weight="7"
+                        android:inputType="textMultiLine"
+
+                        android:id="@+id/edx_complaint_reply"/>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardElevation="0dp"
+                        android:layout_gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:id="@+id/card_send_reply">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_round_send_24"/>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

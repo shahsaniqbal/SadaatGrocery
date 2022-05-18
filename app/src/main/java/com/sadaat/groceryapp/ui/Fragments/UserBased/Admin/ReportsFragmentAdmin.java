@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sadaat.groceryapp.R;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.AppCreditsReportFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.OCRFragmentAdmin;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.SalesReportFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.StocksReportFragmentAdmin;
 
 /**
@@ -73,6 +75,8 @@ public class ReportsFragmentAdmin extends Fragment implements View.OnClickListen
         super.onViewCreated(view, savedInstanceState);
         view.findViewById(R.id.admin_report_ocr).setOnClickListener(this);
         view.findViewById(R.id.admin_report_stocks).setOnClickListener(this);
+        view.findViewById(R.id.admin_report_credits).setOnClickListener(this);
+        view.findViewById(R.id.admin_report_sales).setOnClickListener(this);
     }
 
     @Override
@@ -93,5 +97,22 @@ public class ReportsFragmentAdmin extends Fragment implements View.OnClickListen
                     .addToBackStack("reports")
                     .commit();
         }
+        else if (view.getId() == R.id.admin_report_credits) {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main_activity_admin, AppCreditsReportFragmentAdmin.newInstance())
+                    .addToBackStack("reports")
+                    .commit();
+        }
+        else if (view.getId() == R.id.admin_report_sales) {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_main_activity_admin, SalesReportFragmentAdmin.newInstance())
+                    .addToBackStack("reports")
+                    .commit();
+        }
     }
+
 }

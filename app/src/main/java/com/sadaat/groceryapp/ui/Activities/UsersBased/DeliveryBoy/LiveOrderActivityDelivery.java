@@ -113,8 +113,9 @@ public class LiveOrderActivityDelivery extends AppCompatActivity implements Live
                 .collection(new FirebaseDataKeys().getUsersRef())
                 .document(UserLive.currentLoggedInUser.getUID())
                 .update(
-                        "credits.pendingCredits", FieldValue.increment(creditsToAddToUserMainWallet),
-                        "credits.owningCredits", FieldValue.increment(((-1) * creditsToAddToUserMainWallet))
+                        "credits.owningCredits", FieldValue.increment((int)((-1) * creditsToAddToUserMainWallet)),
+                        "credits.pendingCredits", FieldValue.increment(creditsToAddToUserMainWallet)
+
                 )
                 .addOnCompleteListener(task -> FirebaseFirestore
                         .getInstance()
@@ -128,8 +129,6 @@ public class LiveOrderActivityDelivery extends AppCompatActivity implements Live
                         .addOnCompleteListener(task1 -> {
 
                         }));
-
-
     }
 
     /**

@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,10 +19,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.OrderItemDisplayAdapterAdmin;
@@ -32,7 +28,7 @@ import com.sadaat.groceryapp.models.orders.OrderModel;
 import com.sadaat.groceryapp.models.orders.StatusModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.order_management.OrderStatus;
-import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedOrderView;
+import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedOrderViewFragmentGeneric;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.DeliveryBoysListToSetForOrder;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
@@ -218,7 +214,7 @@ public class OrdersFragmentAdmin extends Fragment implements OrderItemDisplayAda
         requireActivity().
                 getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main_activity_admin, DetailedOrderView.newInstance(orderModel))
+                .replace(R.id.nav_host_fragment_content_main_activity_admin, DetailedOrderViewFragmentGeneric.newInstance(orderModel))
                 .addToBackStack("order_list")
                 .commit();
     }

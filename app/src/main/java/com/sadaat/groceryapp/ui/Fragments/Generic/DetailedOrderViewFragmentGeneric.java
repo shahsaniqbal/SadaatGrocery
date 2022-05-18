@@ -27,7 +27,7 @@ import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
-public class DetailedOrderView extends Fragment {
+public class DetailedOrderViewFragmentGeneric extends Fragment {
 
     private OrderModel orderModel;
     private LoadingDialogue loading;
@@ -54,18 +54,38 @@ public class DetailedOrderView extends Fragment {
     private DetailedOrderItemsListAdapter adapterItems;
     private DetailedOrderStatusListAdapter adapterStatuses;
 
-    public DetailedOrderView() {
+    public DetailedOrderViewFragmentGeneric() {
         // Required empty public constructor
     }
 
-    public DetailedOrderView(OrderModel orderModel) {
+
+    public DetailedOrderViewFragmentGeneric(String orderModelID) {
+
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getOrdersRef())
+                .document(orderModelID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            orderModel = task.getResult().toObject(OrderModel.class);
+                        }
+                    }
+                });
+
+    }
+
+    public DetailedOrderViewFragmentGeneric(OrderModel orderModel) {
         this.orderModel = orderModel;
     }
 
 
-    public static DetailedOrderView newInstance(OrderModel orderModel) {
-        return new DetailedOrderView(orderModel);
+    public static DetailedOrderViewFragmentGeneric newInstance(OrderModel orderModel) {
+        return new DetailedOrderViewFragmentGeneric(orderModel);
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -188,7 +208,7 @@ public class DetailedOrderView extends Fragment {
     }
 
     private void initialize(View v) {
-        loading = new LoadingDialogue(DetailedOrderView.this.requireActivity());
+        loading = new LoadingDialogue(DetailedOrderViewFragmentGeneric.this.requireActivity());
 
         txvOrderID = v.findViewById(R.id.d_order_orderID);
         txvCustomerName = v.findViewById(R.id.d_order_customerName);

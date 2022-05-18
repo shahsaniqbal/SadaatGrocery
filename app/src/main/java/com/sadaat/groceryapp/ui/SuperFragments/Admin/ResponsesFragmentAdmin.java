@@ -1,5 +1,6 @@
 package com.sadaat.groceryapp.ui.SuperFragments.Admin;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderResponsesFragmentSuper.FeedbacksFragmentAdmin;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderResponsesFragmentSuper.ComplaintsFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderResponsesFragmentSuper.QueriesFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderResponsesFragmentSuper.SuggestionsFragmentAdmin;
 
@@ -26,45 +27,17 @@ public class ResponsesFragmentAdmin extends Fragment {
 
     BottomNavigationView bottomNavigationView;
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public ResponsesFragmentAdmin() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ResponsesFragmentAdmin.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ResponsesFragmentAdmin newInstance(String param1, String param2) {
-        ResponsesFragmentAdmin fragment = new ResponsesFragmentAdmin();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        return new ResponsesFragmentAdmin();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -78,7 +51,7 @@ public class ResponsesFragmentAdmin extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FeedbacksFragmentAdmin feedbacksFragmentAdmin = new FeedbacksFragmentAdmin();
+        ComplaintsFragmentAdmin complaintsFragmentAdmin = new ComplaintsFragmentAdmin();
         QueriesFragmentAdmin queriesFragmentAdmin = new QueriesFragmentAdmin();
         SuggestionsFragmentAdmin suggestionsFragmentAdmin = new SuggestionsFragmentAdmin();
 
@@ -86,29 +59,29 @@ public class ResponsesFragmentAdmin extends Fragment {
         bottomNavigationView = view.findViewById(R.id.bottomNavigationView);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 switch (item.getItemId()) {
-                    case R.id.nav_admin_response_feedback:
-                        getChildFragmentManager().beginTransaction().replace(R.id.flFragment, feedbacksFragmentAdmin).commit();
+                    case R.id.nav_admin_response_complaints:
+                        getChildFragmentManager().beginTransaction().replace(R.id.flFragmentChild, complaintsFragmentAdmin).commit();
                         return true;
 
+/*
                     case R.id.nav_admin_response_queries:
                         getChildFragmentManager().beginTransaction().replace(R.id.flFragment, queriesFragmentAdmin).commit();
                         return true;
+*/
 
                     case R.id.nav_admin_response_suggestions:
-                        getChildFragmentManager().beginTransaction().replace(R.id.flFragment, suggestionsFragmentAdmin).commit();
+                        getChildFragmentManager().beginTransaction().replace(R.id.flFragmentChild, suggestionsFragmentAdmin).commit();
                         return true;
 
                 }
-
-
                 return false;
             }
         });
-        bottomNavigationView.setSelectedItemId(R.id.nav_admin_home_orders);
+        bottomNavigationView.setSelectedItemId(R.id.nav_admin_response_suggestions);
 
     }
 
