@@ -21,11 +21,13 @@
             android:id="@+id/nav_responses"
             android:icon="@drawable/ic_responses"
             android:title="Responses" />
+<!--
 
         <item
             android:id="@+id/nav_returns_admin"
             android:icon="@drawable/ic_return"
             android:title="Returns" />
+-->
 
         <item
             android:id="@+id/nav_reports_admin"

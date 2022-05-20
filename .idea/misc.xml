@@ -108,6 +108,7 @@
         <entry key="app/src/main/res/drawable/ic_right_arrow_black.xml" value="0.182" />
         <entry key="app/src/main/res/drawable/main_fade_view_bg.xml" value="0.264" />
         <entry key="app/src/main/res/drawable/view_main_alternative_outlined.xml" value="0.264" />
+        <entry key="app/src/main/res/layout/admin_activity_main.xml" value="0.33646857631466437" />
         <entry key="app/src/main/res/layout/admin_app_bar_main_activity.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/admin_content_main_activity.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/admin_fragment_appcredits.xml" value="0.335" />
@@ -119,6 +120,7 @@
         <entry key="app/src/main/res/layout/admin_fragment_listing.xml" value="0.2703125" />
         <entry key="app/src/main/res/layout/admin_fragment_listing_v2.xml" value="0.2703125" />
         <entry key="app/src/main/res/layout/admin_fragment_locations_list.xml" value="0.29270833333333335" />
+        <entry key="app/src/main/res/layout/admin_fragment_order_menu.xml" value="0.33646857631466437" />
         <entry key="app/src/main/res/layout/admin_fragment_orders.xml" value="0.375" />
         <entry key="app/src/main/res/layout/admin_fragment_reports.xml" value="0.25" />
         <entry key="app/src/main/res/layout/admin_fragment_reports_app_credits.xml" value="0.33646857631466437" />
@@ -141,7 +143,7 @@
         <entry key="app/src/main/res/layout/admin_item_report_stock.xml" value="0.33646857631466437" />
         <entry key="app/src/main/res/layout/admin_item_suggestion.xml" value="0.335" />
         <entry key="app/src/main/res/layout/admin_item_usermgmt_users.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/admin_navheader_activity.xml" value="0.2947916666666667" />
+        <entry key="app/src/main/res/layout/admin_navheader_activity.xml" value="0.335" />
         <entry key="app/src/main/res/layout/admin_popup_add_categories.xml" value="0.40102564102564103" />
         <entry key="app/src/main/res/layout/admin_popup_add_items.xml" value="0.40729166666666666" />
         <entry key="app/src/main/res/layout/admin_popup_add_locations.xml" value="0.29270833333333335" />
@@ -166,7 +168,7 @@
         <entry key="app/src/main/res/layout/customer_fragment_items.xml" value="0.25416666666666665" />
         <entry key="app/src/main/res/layout/customer_fragment_order_gateway.xml" value="0.335" />
         <entry key="app/src/main/res/layout/customer_fragment_orders.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/customer_fragment_search.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/customer_fragment_search.xml" value="0.165" />
         <entry key="app/src/main/res/layout/customer_fragment_suggestions.xml" value="0.33646857631466437" />
         <entry key="app/src/main/res/layout/customer_fragment_suggestions_and_complaints_host.xml" value="0.33646857631466437" />
         <entry key="app/src/main/res/layout/customer_fragment_wallet.xml" value="0.33646857631466437" />

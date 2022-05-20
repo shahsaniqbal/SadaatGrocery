@@ -41,7 +41,7 @@ public class MainActivityAdmin extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private AdminActivityMainBinding binding;
 
-    private final String TYPE = "Admin - Sadaat";
+    private final String TYPE = UserLive.currentLoggedInUser.getUserType();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

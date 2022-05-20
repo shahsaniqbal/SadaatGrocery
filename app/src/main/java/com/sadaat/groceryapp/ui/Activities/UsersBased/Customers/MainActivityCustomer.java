@@ -4,16 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.temp.UserLive;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.OrdersFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.AccountFragmentCustomer;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.CartFragmentCustomer;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.CategoriesFragmentCustomer;

@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.datatransport.runtime.scheduling.jobscheduling.SchedulerConfig;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
@@ -29,7 +28,7 @@ import com.sadaat.groceryapp.models.orders.StatusModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.temp.order_management.OrderStatus;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.OrdersFragmentAdmin;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.OrdersListFragmentAdmin;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -136,7 +135,7 @@ public class DeliveryBoysListToSetForOrder extends Fragment implements DeliveryB
                                             requireActivity().
                                                     getSupportFragmentManager()
                                                     .beginTransaction()
-                                                    .replace(R.id.nav_host_fragment_content_main_activity_admin, OrdersFragmentAdmin.newInstance("", ""))
+                                                    .replace(R.id.nav_host_fragment_content_main_activity_admin, OrdersListFragmentAdmin.newInstance(OrderStatus.DELIVERING))
                                                     .commit();
                                         }
                                     }

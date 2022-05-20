@@ -120,7 +120,7 @@ public class SuggestionsFragmentAdmin extends Fragment implements SuggestionsDis
     public void onPostReplyButtonClick(int position, String id, String reply, Date replyDate) {
         FirebaseFirestore
                 .getInstance()
-                .collection(new FirebaseDataKeys().getComplaintsRef())
+                .collection(new FirebaseDataKeys().getSuggestionsRef())
                 .document(id)
                 .update(
                         "replyMessage", reply,

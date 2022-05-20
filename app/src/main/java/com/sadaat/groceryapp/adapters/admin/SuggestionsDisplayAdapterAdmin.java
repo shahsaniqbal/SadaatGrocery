@@ -31,7 +31,7 @@ public class SuggestionsDisplayAdapterAdmin extends RecyclerView.Adapter<Suggest
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.admin_item_complaint, parent, false);
+                .inflate(R.layout.admin_item_suggestion, parent, false);
 
         return new SuggestionsDisplayAdapterAdmin.ViewHolder(view);
     }

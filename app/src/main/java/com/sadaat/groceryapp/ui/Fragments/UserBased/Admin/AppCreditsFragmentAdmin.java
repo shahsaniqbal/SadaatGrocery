@@ -16,12 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.DeliveryBoyAppCreditsListAdapter;
+import com.sadaat.groceryapp.models.SuggestionModel;
 import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserTypes;
@@ -52,6 +55,8 @@ public class AppCreditsFragmentAdmin extends Fragment implements DeliveryBoyAppC
         recyclerDeliveryBoys.setAdapter(adapter);
 
         refreshData();
+
+        Toast.makeText(AppCreditsFragmentAdmin.this.requireActivity(), "Hold the \"Add Receeipt\" button in case you have received the payment (in negative) from the Delivery Boy", Toast.LENGTH_LONG).show();
     }
 
     private void refreshData() {
@@ -60,20 +65,24 @@ public class AppCreditsFragmentAdmin extends Fragment implements DeliveryBoyAppC
                 .getInstance()
                 .collection(new FirebaseDataKeys().getUsersRef())
                 .whereEqualTo("userType", UserTypes.DeliveryBoy)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        //adapter.deleteAll();
-                        if (task.isSuccessful()) {
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+
+                            return;
+                        }
+
+                        if (value != null && value.getDocuments().size() > 0) {
+
+                            adapter.deleteAll();
                             for (DocumentSnapshot d :
-                                    task.getResult().getDocuments()) {
+                                    value.getDocuments()) {
                                 adapter.addItem(d.toObject(UserModel.class));
                             }
-                        }
-                        else {
-                            Log.e("Err", task.getException().getMessage());
-                            Toast.makeText(AppCreditsFragmentAdmin.this.requireActivity(), ""+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
+                        } else {
+
                         }
                     }
                 });
@@ -85,12 +94,6 @@ public class AppCreditsFragmentAdmin extends Fragment implements DeliveryBoyAppC
                 .getInstance()
                 .collection(new FirebaseDataKeys().getUsersRef())
                 .document(deliveryBoyUID)
-                .update("credits.owningCredits", FieldValue.increment(((-1) * appCredits)))
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        refreshData();
-                    }
-                });
+                .update("credits.owningCredits", FieldValue.increment(((-1) * appCredits)));
     }
 }

@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -35,44 +35,46 @@ import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class OrdersFragmentAdmin extends Fragment implements OrderItemDisplayAdapterAdmin.ItemClickListeners, View.OnClickListener {
+public class OrdersListFragmentAdmin extends Fragment implements OrderItemDisplayAdapterAdmin.ItemClickListeners {
 
-    final CollectionReference MENU_COLLECTION_REFERENCE = FirebaseFirestore.getInstance().collection(new FirebaseDataKeys().getMenuRef());
+    private static final String ARG_PARAM = "orders_type";
 
-    AlertDialog.Builder dialogueBuilder;
-    View popupView;
     View vNoOrders;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager manager;
     OrderItemDisplayAdapterAdmin adapterAdmin;
-    ArrayList<OrderModel> list;
-
     LoadingDialogue progressDialog;
+    private String mOrderType;
 
-    String currentStatus = OrderStatus.INITIATED;
+    MaterialTextView txvOrderType;
 
-    MaterialCardView cardInitiated, cardPacking, cardDelivering, cardDelivered, cardCancelled, cardNotReceived;
-
-
-    public OrdersFragmentAdmin() {
+    public OrdersListFragmentAdmin() {
         // Required empty public constructor
     }
 
     // TODO: Rename and change types and number of parameters
-    public static OrdersFragmentAdmin newInstance(String param1, String param2) {
+    public static OrdersListFragmentAdmin newInstance(String mOrderType) {
 
-        return new OrdersFragmentAdmin();
+        OrdersListFragmentAdmin fragment = new OrdersListFragmentAdmin();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM, mOrderType);
+        fragment.setArguments(args);
+        return fragment;
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mOrderType = getArguments().getString(ARG_PARAM);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.admin_fragment_orders, container, false);
+        return inflater.inflate(R.layout.admin_fragment_orders_list, container, false);
     }
 
 
@@ -95,72 +97,29 @@ public class OrdersFragmentAdmin extends Fragment implements OrderItemDisplayAda
 
         initialize(view);
 
-        cardInitiated.setOnClickListener(this);
-        cardPacking.setOnClickListener(this);
-        cardDelivering.setOnClickListener(this);
-        cardCancelled.setOnClickListener(this);
-        cardNotReceived.setOnClickListener(this);
-        cardDelivered.setOnClickListener(this);
+        txvOrderType.setText(mOrderType + " Orders");
 
-        onClick(cardInitiated);
+        fetchAndNotifyAllData();
 
-        /*group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
-            }
-        });*/
     }
 
 
     private void initialize(View view) {
+        txvOrderType = view.findViewById(R.id.txv_order_type_title);
         this.recyclerView = view.findViewById(R.id.recycler_order_items);
-        this.manager = new LinearLayoutManager(OrdersFragmentAdmin.this.requireActivity());
-
-        this.list = new ArrayList<>();
-
-        this.progressDialog = new LoadingDialogue(OrdersFragmentAdmin.this.requireActivity());
-
-        dialogueBuilder = new AlertDialog.Builder(this.requireActivity());
-
+        this.manager = new LinearLayoutManager(OrdersListFragmentAdmin.this.requireActivity());
+        this.progressDialog = new LoadingDialogue(OrdersListFragmentAdmin.this.requireActivity());
         vNoOrders = view.findViewById(R.id.row_for_no_orders);
 
-        dialogueBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-
-
-        dialogueBuilder.setIcon(R.mipmap.logo);
-        dialogueBuilder.setTitle("We are really sorry");
-
-
-
-        // this.popupView = this.getLayoutInflater().inflate(R.layout.admin_popup_add_categories, null, false);
-        // this.customPopupViewHolder = new CategoriesListFragmentAdmin.CustomPopupViewHolder(popupView);
-        // this.dialogueBuilder = new AlertDialog.Builder(requireActivity());
-        // this.dialogueBuilder.setView(popupView);
-        // this.itemPopupDialogueBox = dialogueBuilder.create();
-
         this.adapterAdmin = new OrderItemDisplayAdapterAdmin(
-                list,
+                new ArrayList<>(),
                 this,
-                OrdersFragmentAdmin.this.requireActivity()
+                OrdersListFragmentAdmin.this.requireActivity()
         );
 
 
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapterAdmin);
-
-        cardInitiated = view.findViewById(R.id.initiated);
-        cardPacking = view.findViewById(R.id.packing);
-        cardDelivering = view.findViewById(R.id.delivering);
-        cardDelivered = view.findViewById(R.id.delivered);
-        cardCancelled = view.findViewById(R.id.cancelled);
-        cardNotReceived = view.findViewById(R.id.notReceived);
-
 
     }
 
@@ -173,7 +132,7 @@ public class OrdersFragmentAdmin extends Fragment implements OrderItemDisplayAda
         FirebaseFirestore
                 .getInstance()
                 .collection(new FirebaseDataKeys().getOrdersRef())
-                .whereEqualTo("currentStatus", currentStatus)
+                .whereEqualTo("currentStatus", mOrderType)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -188,20 +147,15 @@ public class OrdersFragmentAdmin extends Fragment implements OrderItemDisplayAda
                                 }
 
                                 progressDialog.dismiss();
-                            }
-
-                            else {
+                            } else {
                                 progressDialog.dismiss();
 
                             }
 
                         }
 
-                        if (adapterAdmin.getLocalDataSet().size()==0){
+                        if (adapterAdmin.getLocalDataSet().size() == 0) {
                             vNoOrders.setVisibility(View.VISIBLE);
-                            /*dialogueBuilder.setMessage("There are no such Orders for \"" + currentStatus + "\" status");
-                            dialogueBuilder.show();*/
-
                         }
 
                     }
@@ -278,55 +232,12 @@ public class OrdersFragmentAdmin extends Fragment implements OrderItemDisplayAda
                 });
     }
 
-    @Override
-    public void onClick(View view) {
-
-        setAllCardsToColorWhite();
-
-        if (view.getId() == cardInitiated.getId()){
-            currentStatus = OrderStatus.INITIATED;
-            cardInitiated.setCardBackgroundColor(getResources().getColor(R.color.light_grey));
-            fetchAndNotifyAllData();
-        }
-        else if (view.getId() == cardPacking.getId()){
-
-            cardPacking.setCardBackgroundColor(getResources().getColor(R.color.light_grey));
-            currentStatus = OrderStatus.PACKING;
-            fetchAndNotifyAllData();
-        }
-        else if (view.getId() == cardDelivering.getId()){
-
-            cardDelivering.setCardBackgroundColor(getResources().getColor(R.color.light_grey));
-            currentStatus = OrderStatus.DELIVERING;
-            fetchAndNotifyAllData();
-        }
-        else if (view.getId() == cardDelivered.getId()){
-
-            cardDelivered.setCardBackgroundColor(getResources().getColor(R.color.light_grey));
-            currentStatus = OrderStatus.DELIVERED;
-            fetchAndNotifyAllData();
-        }
-        else if (view.getId() == cardCancelled.getId()){
-
-            cardCancelled.setCardBackgroundColor(getResources().getColor(R.color.light_grey));
-            currentStatus = OrderStatus.CANCELLED;
-            fetchAndNotifyAllData();
-        }
-        else if (view.getId() == cardNotReceived.getId()){
-
-            cardNotReceived.setCardBackgroundColor(getResources().getColor(R.color.light_grey));
-            currentStatus = OrderStatus.NOT_RECEIVED;
-            fetchAndNotifyAllData();
-        }
-
-    }
-
     private void setAllCardsToColorWhite() {
-        cardInitiated.setCardBackgroundColor(getResources().getColor(R.color.white));
+        /*cardInitiated.setCardBackgroundColor(getResources().getColor(R.color.white));
         cardPacking.setCardBackgroundColor(getResources().getColor(R.color.white));
         cardDelivering.setCardBackgroundColor(getResources().getColor(R.color.white));
         cardDelivered.setCardBackgroundColor(getResources().getColor(R.color.white));
         cardCancelled.setCardBackgroundColor(getResources().getColor(R.color.white));
-        cardNotReceived.setCardBackgroundColor(getResources().getColor(R.color.white));
+        cardNotReceived.setCardBackgroundColor(getResources().getColor(R.color.white));*/
     }
 }
