@@ -28,14 +28,14 @@ public class SubcategoryHorizontalAdapter extends RecyclerView.Adapter<Subcatego
     private final String parentCategoryDocID;
     private final ArrayList<SubCategoriesModel> localDataSet;
     private final OnSubcategoryItemCustomClickListener itemClickListener;
-    LoadingDialogue loadingDialogue;
+    //LoadingDialogue loadingDialogue;
 
 
     public SubcategoryHorizontalAdapter(Context mSubContext, String docID, ArrayList<SubCategoriesModel> localDataSet, OnSubcategoryItemCustomClickListener itemClickListener) {
         this.localDataSet = localDataSet;
         this.itemClickListener = itemClickListener;
         this.parentCategoryDocID = docID;
-        loadingDialogue = new LoadingDialogue(mSubContext);
+        //loadingDialogue = new LoadingDialogue(mSubContext);
     }
 
     public void addSubCategory(SubCategoriesModel model) {
@@ -75,7 +75,7 @@ public class SubcategoryHorizontalAdapter extends RecyclerView.Adapter<Subcatego
         ));
 
         if (!localDataSet.get(holder.getAdapterPosition()).getImageRef().equals("")) {
-            loadingDialogue.show("Please wait", "While Loading Images");
+            //loadingDialogue.show("Please wait", "While Loading Images");
             StorageReference imgRef = FirebaseStorage
                     .getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS)
                     .getReference()
@@ -86,10 +86,10 @@ public class SubcategoryHorizontalAdapter extends RecyclerView.Adapter<Subcatego
             final long ONE_MEGABYTE = 1024 * 1024;
             imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 holder.getImgViewSubcategoryImage().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                loadingDialogue.dismiss();
+                //loadingDialogue.dismiss();
                 //progressDialogue.dismiss();
             }).addOnFailureListener(exception -> {
-                loadingDialogue.dismiss();
+                //loadingDialogue.dismiss();
                 //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
             });
         }

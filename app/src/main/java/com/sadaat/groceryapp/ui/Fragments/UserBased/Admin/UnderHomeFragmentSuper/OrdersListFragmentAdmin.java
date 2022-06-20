@@ -1,7 +1,5 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.OrderItemDisplayAdapterAdmin;
+import com.sadaat.groceryapp.handler.LeadsActionHandler;
 import com.sadaat.groceryapp.models.orders.OrderModel;
 import com.sadaat.groceryapp.models.orders.StatusModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
@@ -44,9 +42,8 @@ public class OrdersListFragmentAdmin extends Fragment implements OrderItemDispla
     RecyclerView.LayoutManager manager;
     OrderItemDisplayAdapterAdmin adapterAdmin;
     LoadingDialogue progressDialog;
-    private String mOrderType;
-
     MaterialTextView txvOrderType;
+    private String mOrderType;
 
     public OrdersListFragmentAdmin() {
         // Required empty public constructor
@@ -81,13 +78,13 @@ public class OrdersListFragmentAdmin extends Fragment implements OrderItemDispla
     @Override
     public void onPause() {
         super.onPause();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(null);
+        ((AppCompatActivity) requireActivity()).getSupportActionBar().setSubtitle(null);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Orders");
+        ((AppCompatActivity) requireActivity()).getSupportActionBar().setSubtitle("Orders");
     }
 
 
@@ -165,20 +162,19 @@ public class OrdersListFragmentAdmin extends Fragment implements OrderItemDispla
 
     @Override
     public void onFullItemClick(OrderModel orderModel) {
-        requireActivity().
-                getSupportFragmentManager()
+        getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main_activity_admin, DetailedOrderViewFragmentGeneric.newInstance(orderModel))
-                .addToBackStack("order_list")
+                .replace(R.id.fl_orders_admin, DetailedOrderViewFragmentGeneric.newInstance(orderModel))
+                .addToBackStack("orders_list")
                 .commit();
     }
 
     @Override
     public void onAssignDeliveryBoyButtonClick(OrderModel orderModel) {
-        requireActivity().
-                getSupportFragmentManager()
+        getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main_activity_admin, DeliveryBoysListToSetForOrder.newInstance(orderModel.getOrderID(), orderModel.getRemainingPaymentToPayAtDelivery()))
+                .replace(R.id.fl_orders_admin, DeliveryBoysListToSetForOrder.newInstance(orderModel.getOrderID(), orderModel.getRemainingPaymentToPayAtDelivery()))
+                .addToBackStack("orders_list")
                 .commit();
     }
 
@@ -197,6 +193,25 @@ public class OrdersListFragmentAdmin extends Fragment implements OrderItemDispla
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+
+                        StringBuilder action = new StringBuilder();
+                        action.append("You have released the App Credits worth of Rs. ");
+                        action.append(releasingAppCredits);
+                        action.append(" against order ");
+                        action.append("(").append(orderModel.getOrderID()).append(").");
+
+                        new LeadsActionHandler() {
+                            @Override
+                            public void onSuccessCompleteAction() {
+
+                            }
+
+                            @Override
+                            public void onCancelledAction() {
+
+                            }
+                        }.addAction(action.toString());
+
                         FirebaseFirestore
                                 .getInstance()
                                 .collection(new FirebaseDataKeys().getOrdersRef())
@@ -227,6 +242,23 @@ public class OrdersListFragmentAdmin extends Fragment implements OrderItemDispla
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+
+                        StringBuilder action = new StringBuilder();
+                        action.append("You have packed the order ");
+                        action.append("(").append(orderID).append(").");
+
+                        new LeadsActionHandler() {
+                            @Override
+                            public void onSuccessCompleteAction() {
+
+                            }
+
+                            @Override
+                            public void onCancelledAction() {
+
+                            }
+                        }.addAction(action.toString());
+
                         fetchAndNotifyAllData();
                     }
                 });

@@ -2,6 +2,7 @@ package com.sadaat.groceryapp.adapters.customer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,8 +101,12 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
                 viewHolder.getiButtonPlus().setClickable(true);
                 viewHolder.getiButtonPlus().setFocusable(true);
 
+                Log.e("Current Position", ""+viewHolder.getAdapterPosition());
+                Log.e("Position", ""+position);
+                Log.e("Size Position", ""+localDataSet.size());
 
-                if (currentCount == localDataSet.get(viewHolder.getAdapterPosition()).getModel().getMaxQtyPerOrder() || currentCount >= localDataSet.get(viewHolder.getAdapterPosition()).getModel().getOtherDetails().getStock()) {
+
+                if (currentCount == localDataSet.get(position).getModel().getMaxQtyPerOrder() || currentCount >= localDataSet.get(position).getModel().getOtherDetails().getStock()) {
                     viewHolder.getiButtonPlus().setClickable(false);
                     viewHolder.getiButtonPlus().setFocusable(false);
                     progressDialogue.dismiss();
@@ -109,7 +114,7 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
                     viewHolder.getiButtonMinus().setClickable(true);
                     viewHolder.getiButtonMinus().setFocusable(true);
                     viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) + 1));
-                    handleCount(localDataSet.get(viewHolder.getAdapterPosition()).getModel(), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
+                    handleCount(localDataSet.get(position).getModel(), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
                 }
 
 
@@ -133,7 +138,7 @@ public class CartItemDisplayAdapterCustomer extends RecyclerView.Adapter<CartIte
                     viewHolder.getiButtonMinus().setClickable(true);
                     viewHolder.getiButtonMinus().setFocusable(true);
                     viewHolder.getTxvQty().setText("" + (Integer.parseInt(viewHolder.getTxvQty().getText().toString()) - 1));
-                    handleCount(localDataSet.get(viewHolder.getAdapterPosition()).getModel(), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
+                    handleCount(localDataSet.get(position).getModel(), Integer.parseInt(viewHolder.getTxvQty().getText().toString()));
                 }
             }
         });

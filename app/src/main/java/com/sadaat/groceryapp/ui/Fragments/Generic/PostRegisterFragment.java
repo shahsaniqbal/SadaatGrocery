@@ -47,6 +47,7 @@ import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -188,6 +189,7 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
                                     imagePath,
                                     address
                             ));
+                    model.setUserSignupDate(new Date());
 
                     //Update User Object
                     loadingDialogue.show("Please Wait", "Saving User Details");
@@ -254,7 +256,6 @@ public class PostRegisterFragment extends Fragment implements View.OnClickListen
                             for (DocumentSnapshot d : task.getResult().getDocuments()) {
                                 CityModel model = d.toObject(CityModel.class);
                                 cityModels.add(model);
-                                Log.e("Data", model.getId() + "...." + model.getName() + "...." + model.getAreas().size());
                                 adapterCities.add(model.toString());
                                 adapterCities.notifyDataSetChanged();
                             }

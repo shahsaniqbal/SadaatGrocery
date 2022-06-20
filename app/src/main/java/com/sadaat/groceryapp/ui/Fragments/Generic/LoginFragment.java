@@ -148,8 +148,8 @@ public class LoginFragment extends Fragment {
 
     private boolean analyzeInputsIfEmpty(Boolean shouldAnalyze) {
         if (shouldAnalyze) {
-            if (edxEmail.getText().toString().isEmpty()) {
-                edxEmail.setError("Email Field is mandatory");
+            if (edxEmail.getText().toString().isEmpty() || !edxEmail.getText().toString().contains("@")) {
+                edxEmail.setError("Email is mandatory");
                 shouldAnalyze = false;
             }
             if (edxPassword.getText().toString().isEmpty()) {

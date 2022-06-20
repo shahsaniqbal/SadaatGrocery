@@ -2,6 +2,7 @@ package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,7 +127,7 @@ public class CartFragmentCustomer extends Fragment
             long maxCredits = (long) (Long.parseLong(holder.getTxvTotalPayable().getText().toString()) / 2);
 
             if (b) {
-                Toast.makeText(CartFragmentCustomer.this.requireActivity(), "You are about to use your previous stored reward points from " + UserLive.currentLoggedInUser.getCredits().getOwningCredits() + " Credits. Max Use In this Order " + maxCredits + " Rs.", Toast.LENGTH_LONG).show();
+                Toast.makeText(CartFragmentCustomer.this.requireActivity(), "You are about to use your previous stored reward points from " + UserLive.currentLoggedInUser.getCredits().getOwningCredits() + " Credits. Max Use In this Order " + (Math.min(UserLive.currentLoggedInUser.getCredits().getOwningCredits(), maxCredits)) + " Rs.", Toast.LENGTH_LONG).show();
             }
 
             long toShowCredits;
@@ -196,6 +197,7 @@ public class CartFragmentCustomer extends Fragment
                         .replace(R.id.flFragmentCustomer, OrderGatewayFragmentCustomer.newInstance(orderModel))
                         .addToBackStack("cart")
                         .commit();
+
             }
         });
 
@@ -240,6 +242,24 @@ public class CartFragmentCustomer extends Fragment
         return new CartItemModel(item, quantity);
     }
 
+    public class MyRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(50);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void getCalled(LoadingDialogue d){
+            d.dismiss();
+            updateFragment();
+        }
+    }
+
     @Override
     public void prepareCart(CartItemModel cartItemModel, LoadingDialogue progressDialogue) {
         UserLive.currentLoggedInUser.getCart().modifyCartItem(cartItemModel);
@@ -249,21 +269,16 @@ public class CartFragmentCustomer extends Fragment
 
         cartAdapter.notifyChange();
 
+        MyRunnable runnable = new MyRunnable();
 
-        Thread runnable = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    updateFragment();
-                    Thread.sleep(800);
-                    progressDialogue.dismiss();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-        runnable.start();
+        Thread thread = new Thread(runnable);
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        runnable.getCalled(progressDialogue);
 
         //Log.e("CART", UserLive.currentLoggedInUser.getCart().toString());
     }

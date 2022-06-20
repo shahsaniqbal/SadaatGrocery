@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -72,9 +73,16 @@ public class AppCreditsReportFragmentAdmin extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle(null);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle("App Credits");
 
         dialogue = new LoadingDialogue(AppCreditsReportFragmentAdmin.this.requireActivity());
         dialogue.show("Please Wait", "While We are generating App Credits Net Report");

@@ -3,27 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:layout_gravity="center"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/customer_subcategory_parent_card"
         android:layout_width="120dp"
         android:layout_height="200dp"
+        android:layout_gravity="center"
         android:layout_margin="4dp"
         android:clickable="true"
         android:focusable="true"
         app:cardCornerRadius="8dp"
-        android:layout_gravity="center"
         app:cardElevation="2dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_margin="4dp"
             android:gravity="center"
-            android:layout_gravity="center"
             android:orientation="vertical">
 
 
@@ -53,9 +54,9 @@
                     android:id="@+id/txv_item_qtyunit_customer_items"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="1g"
                     android:textAlignment="center"
-                    android:textColor="@android:color/holo_green_light"
-                    android:text="1g" />
+                    android:textColor="@android:color/holo_green_light" />
 
             </LinearLayout>
 
@@ -78,27 +79,27 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:paddingHorizontal="16dp">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/customer_item_retail_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="11sp"
+                    android:gravity="right"
                     android:text="Rs. 1000"
                     android:textColor="@color/scarlet_red_700"
-                    android:gravity="right"/>
+                    android:textSize="11sp" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/customer_item_sale_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="11sp"
+                    android:gravity="right"
                     android:text="Rs. 1000"
                     android:textColor="@android:color/holo_green_dark"
-                    android:gravity="right"/>
+                    android:textSize="11sp" />
 
             </LinearLayout>
 
@@ -118,11 +119,12 @@
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/mcard_item_minus_customer_items"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
-                        app:cardCornerRadius="64dp">
+                        app:cardCornerRadius="128dp"
+                        app:cardElevation="4dp">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -143,9 +145,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:clickable="false"
-                        android:focusable="false"
-                        app:cardCornerRadius="64dp"
-                        app:cardElevation="8dp">
+                        android:focusable="false">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/txv_item_qty_customer_items"
@@ -167,11 +167,12 @@
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/mcard_item_plus_customer_items"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="true"
-                        app:cardCornerRadius="64dp">
+                        app:cardCornerRadius="128dp"
+                        app:cardElevation="4dp">
 
                         <ImageView
                             android:layout_width="match_parent"
@@ -192,7 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="Unavailable"/>
+                    android:text="Unavailable" />
 
             </LinearLayout>
 
@@ -201,3 +202,4 @@
     </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
+

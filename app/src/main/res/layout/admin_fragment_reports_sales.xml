@@ -226,7 +226,7 @@
                             android:fontFamily="monospace"
                             android:text="0"
                             android:textColor="@color/black"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <com.google.android.material.textview.MaterialTextView
@@ -235,6 +235,18 @@
                             android:text="%"
                             android:textSize="18sp"
                             android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="(Based on Delivered Orders)"
+                            android:layout_marginVertical="4dp"/>
 
                     </LinearLayout>
 

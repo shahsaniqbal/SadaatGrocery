@@ -3,15 +3,96 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="4dp"
+    android:background="@color/white"
     tools:context=".ui.Fragments.UserBased.Customers.HomeFragmentCustomer">
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Keep track of all of your history"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_margin="8dp"
+                android:layout_gravity="center_horizontal|center_vertical"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_view_orders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="4dp"
+
+
+                android:layout_margin="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View Orders"
+                    android:textSize="16sp"
+                    android:textColor="@color/scarlet_red_700"
+                    android:textStyle="bold"
+                    android:layout_margin="8dp"
+                    android:padding="2dp"
+                    android:layout_gravity="center_horizontal|center_vertical"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <com.github.islamkhsh.CardSliderViewPager
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/viewPager"
+            app:cardSlider_indicator="@id/indicator"
+            android:layout_marginTop="24dp"
+            app:cardSlider_smallScaleFactor="0.8"
+            app:cardSlider_otherPagesWidth="18dp"
+            app:cardSlider_pageMargin="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Sadaat Special"
+            android:textSize="16sp"
+            android:textColor="@color/royal_blue_500"
+
+            />
+
+        <com.github.islamkhsh.CardSliderIndicator
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/indicator"
+            android:layout_marginTop="4dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:foregroundGravity="center"
+            android:baselineAligned="true"/>
+
+
 
         <include layout="@layout/customer_content_home_hot_products"/>
+
+
 
     </LinearLayout>
 

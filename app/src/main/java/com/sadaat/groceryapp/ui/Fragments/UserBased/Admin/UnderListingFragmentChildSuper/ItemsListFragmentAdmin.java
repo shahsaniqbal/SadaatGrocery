@@ -208,7 +208,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
         progressDialog = new LoadingDialogue(requireActivity());
 
-        adapterAdmin = new ItemsDisplayAdapterAdmin(new ArrayList<>(), this, requireActivity());
+        adapterAdmin = new ItemsDisplayAdapterAdmin(new ArrayList<>(), this);
 
         categorySelected = 0;
         subCategorySelected = 0;
@@ -237,7 +237,6 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     private void backgroundExecutorForShowingData(View view) {
 
-        progressDialog.show("Please Wait", "Loading Items");
 
         firebaseFirestore
                 .collection(new FirebaseDataKeys().getItemsRef())
@@ -540,10 +539,9 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
 
     @Override
     public void onShowFullDetailsButtonClick(ItemModel modelToShow) {
-        requireActivity().
-                getSupportFragmentManager()
+        getChildFragmentManager()
                 .beginTransaction()
-                .replace(R.id.nav_host_fragment_content_main_activity_admin, ItemFullModalFragmentGeneric.newInstance(modelToShow))
+                .replace(R.id.items_fl, ItemFullModalFragmentGeneric.newInstance(modelToShow))
                 .addToBackStack("item_list")
                 .commit();
     }
@@ -579,7 +577,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
                                 imageFetchUri);
 
                 ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteStream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 15, byteStream);
 
                 //Setting Image Bitmap to my desired ImageView
                 viewHolder.getImageViewAddImageToItem().setImageBitmap(bitmap);

@@ -3,9 +3,13 @@ package com.sadaat.groceryapp.ui.Activities.GenericForAll;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.handler.LoginIntentHandler;
@@ -29,18 +33,19 @@ public class SplashActivity extends AppCompatActivity {
 
         Thread thread = new Thread(() -> {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
+
+                if (uid == null || uid.isEmpty()) {
+                    callToActionOnUserDataNotFound();
+                } else {
+                    performSplashOnUserdataFound(uid);
+                }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
         thread.start();
-
-        if (uid == null || uid.isEmpty()) {
-            callToActionOnUserDataNotFound();
-        } else {
-            performSplashOnUserdataFound(uid);
-        }
 
     }
 
@@ -48,14 +53,20 @@ public class SplashActivity extends AppCompatActivity {
 
         FirebaseFirestore
                 .getInstance()
-                .collection(new FirebaseDataKeys().getUsersRef())
+                .collection("Users")
                 .document(uid)
                 .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        UserLive.currentLoggedInUser = task.getResult().toObject(UserModel.class);
-                        startActivity(new LoginIntentHandler(SplashActivity.this, Objects.requireNonNull(UserLive.currentLoggedInUser).getUserType()));
-                        finish();
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            UserLive.currentLoggedInUser = task.getResult().toObject(UserModel.class);
+                            SplashActivity.this.startActivity(new LoginIntentHandler(SplashActivity.this, Objects.requireNonNull(UserLive.currentLoggedInUser).getUserType()));
+                            SplashActivity.this.finish();
+                        }
+                        else{
+                            // TODO Exception
+                        }
                     }
                 });
 

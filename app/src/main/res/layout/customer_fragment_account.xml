@@ -1,79 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context=".ui.Fragments.UserBased.Customers.AccountFragmentCustomer">
+    tools:context=".ui.Fragments.UserBased.Customers.AccountFragmentCustomer"
+    android:id="@+id/fl_customer_account"
+    android:background="@color/white">
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        app:cardElevation="8dp">
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_add_users_dp"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:clickable="false"
-                android:contextClickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                app:cardCornerRadius="80dp"
-                app:cardElevation="8dp">
-
-                <ImageView
-                    android:id="@+id/card_add_users_dp_imgv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_users" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <include layout="@layout/customer_fragment_account_card_appcredits" />
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/user_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:textColor="@color/grey"
-        android:text="House No. 40, Block Al, Main City, Sialkot" />
-
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        app:cardElevation="4dp">
+        android:orientation="vertical">
 
-        <ScrollView
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            app:cardElevation="8dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_marginHorizontal="8dp"
+                    android:id="@+id/card_add_users_dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="8dp"
+                    android:clickable="false"
+                    android:contextClickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="false"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="8dp">
+
+                    <ImageView
+                        android:id="@+id/card_add_users_dp_imgv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_users" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <include layout="@layout/customer_fragment_account_card_appcredits" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/user_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="House No. 40, Block Al, Main City, Sialkot"
+            android:textColor="@color/grey" />
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_margin="8dp"
+            app:cardElevation="4dp">
 
-            <include layout="@layout/customer_fragment_account_body" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        </ScrollView>
+                <include layout="@layout/customer_fragment_account_body" />
 
-    </com.google.android.material.card.MaterialCardView>
+            </ScrollView>
 
-</LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -5,6 +5,7 @@
     android:id="@+id/admin_listing_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.ListingFragmentAdmin">
 
 
@@ -138,7 +139,7 @@
                         android:layout_height="0dp"
                         android:layout_gravity="center"
                         android:layout_weight="3"
-                        android:src="@mipmap/groocery_items" />
+                        android:src="@mipmap/grocery_bag_icon" />
 
                     <View
                         android:layout_width="match_parent"

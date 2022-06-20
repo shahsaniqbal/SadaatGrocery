@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.CategoriesListFragmentAdmin;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.DealsListFragmentAdmin;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.SlidesListFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.ItemsListFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderListingFragmentChildSuper.LocationsListFragmentAdmin;
 
@@ -128,7 +128,7 @@ public class ListingFragmentAdmin extends Fragment implements View.OnClickListen
                 caller(CategoriesListFragmentAdmin.class);
                 break;
             case R.id.admin_card_deals:
-                caller(DealsListFragmentAdmin.class);
+                caller(SlidesListFragmentAdmin.class);
                 break;
             case R.id.admin_card_items:
                 caller(ItemsListFragmentAdmin.class);

@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,7 +53,6 @@ public class SalesReportFragmentAdmin extends Fragment {
 
     double totalRetailSale = 0.0;
     double totalDiscountedSale = 0.0;
-    ArrayList<String> paymentMethods = new ArrayList<>();
 
     MaterialTextView txvTotalSales;
     MaterialTextView txvTotalDiscounts;
@@ -85,8 +85,17 @@ public class SalesReportFragmentAdmin extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle(null);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle("Sales");
+
         final Map<String, Long>[] saleItems = new HashMap[1];
         recyclerView = view.findViewById(R.id.recycler);
 
@@ -119,11 +128,16 @@ public class SalesReportFragmentAdmin extends Fragment {
 
                                 totalRetailSale += Objects.requireNonNull(d.toObject(OrderModel.class)).getTotalOrderAmountInRetail();
                                 totalDiscountedSale += (Objects.requireNonNull(d.toObject(OrderModel.class)).getTotalOrderAmountInRetail() - Objects.requireNonNull(d.toObject(OrderModel.class)).getReleasingAppCredits());
-                                paymentMethods.add(Objects.requireNonNull(d.toObject(OrderModel.class)).getPaymentThrough().getPaymentThroughMethod());
+                                String method = Objects.requireNonNull(d.toObject(OrderModel.class)).getPaymentThrough().getPaymentThroughMethod();
+                                if (method.equalsIgnoreCase(PaymentMethods.COD)){
+                                    cashPayments++;
+                                }
+                                else{
+                                    cardPayments++;
+                                }
                             }
-
-                            updateDataToViews(saleItems[0]);
                         }
+                        updateDataToViews(saleItems[0]);
                     }
                 });
 
@@ -146,7 +160,7 @@ public class SalesReportFragmentAdmin extends Fragment {
                     }
 
                     FirebaseFirestore.getInstance()
-                            .collection("TopSelling")
+                            .collection(new FirebaseDataKeys().getTopSellingRef())
                             .document("Items")
                             .set(new ItemIDListModel(newList))
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -165,17 +179,22 @@ public class SalesReportFragmentAdmin extends Fragment {
 
     private void updateDataToViews(Map<String, Long> saleItem) {
 
-        /*Map<String, Long> newItems = saleItem.entrySet().stream()
-                .sorted(Comparator.comparingLong(Map.Entry::getValue))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (a, b) -> {
-                            throw new AssertionError();
-                        },
-                        LinkedHashMap::new
-                ));
-*/
+        txvCardPaymentsPercentage.setText(
+                new DecimalFormat("0.00").format(((double) (cardPayments * 100) / (double) (cashPayments+cardPayments)))
+        );
+
+        chart.addPieSlice(
+                new PieModel(
+                        "CASH",
+                        cashPayments,
+                        getResources().getColor(android.R.color.black)));
+        chart.addPieSlice(
+                new PieModel(
+                        "CARD",
+                        cardPayments,
+                        getResources().getColor(R.color.grey)));
+
+        chart.startAnimation();
 
         Comparator<Map.Entry<String, Long>> valueComparator = new Comparator<Map.Entry<String, Long>>() {
             @Override
@@ -235,6 +254,7 @@ public class SalesReportFragmentAdmin extends Fragment {
                 new DecimalFormat("0.00 %").format((double) ((totalRetailSale - totalDiscountedSale)) / (double) totalRetailSale)
         );
 
+        /*
         for (String payment : paymentMethods) {
             if (payment.equalsIgnoreCase(PaymentMethods.COD)) {
                 cashPayments++;
@@ -242,23 +262,7 @@ public class SalesReportFragmentAdmin extends Fragment {
                 cardPayments++;
             }
         }
-
-        txvCardPaymentsPercentage.setText(
-                new DecimalFormat("0.00").format((double) (cardPayments * 100) / (double) cashPayments)
-        );
-
-        chart.addPieSlice(
-                new PieModel(
-                        "CASH",
-                        cashPayments,
-                        getResources().getColor(android.R.color.black)));
-        chart.addPieSlice(
-                new PieModel(
-                        "CARD",
-                        cardPayments,
-                        getResources().getColor(R.color.grey)));
-
-        chart.startAnimation();
+        */
 
 
     }

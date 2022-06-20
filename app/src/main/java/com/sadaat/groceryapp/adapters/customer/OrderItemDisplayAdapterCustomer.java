@@ -2,6 +2,7 @@ package com.sadaat.groceryapp.adapters.customer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,26 +52,38 @@ public class OrderItemDisplayAdapterCustomer extends RecyclerView.Adapter<OrderI
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
+
         // Data Setters
-        viewHolder.getTxvOrderID().setText(localDataSet.get(viewHolder.getAdapterPosition()).getOrderID());
-        viewHolder.getTxvAmount().setText("" + localDataSet.get(viewHolder.getAdapterPosition()).getTotalOrderAmountInRetail() + " Rs.");
-        viewHolder.getTxvOrderStatus().setText("" + localDataSet.get(viewHolder.getAdapterPosition()).getStatusUpdates().get(localDataSet.get(viewHolder.getAdapterPosition()).getStatusUpdates().size() - 1).getStatus());
+        viewHolder.getTxvOrderID().setText(localDataSet.get(position).getOrderID());
+        viewHolder.getTxvAmount().setText("" + localDataSet.get(position).getTotalOrderAmountInRetail() + " Rs.");
+        viewHolder.getTxvOrderStatus().setText("" + localDataSet.get(position).getStatusUpdates().get(localDataSet.get(position).getStatusUpdates().size() - 1).getStatus());
 
         //Listeners
-        viewHolder.getMainView().setOnClickListener(view -> customOnClickListener.onFullItemClick(localDataSet.get(viewHolder.getAdapterPosition())));
+        viewHolder.getMainView().setOnClickListener(view -> customOnClickListener.onFullItemClick(localDataSet.get(position)));
 
-        if (localDataSet.get(viewHolder.getAdapterPosition()).getCurrentStatus().equalsIgnoreCase(OrderStatus.DELIVERED) &&
-                localDataSet.get(viewHolder.getAdapterPosition()).getReleasedAppCredits() == 0.0
-        ) {
-            viewHolder.getCardPostComplaint().setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.getCardPostComplaint().setVisibility(View.GONE);
+        if (localDataSet.get(viewHolder.getAdapterPosition()) != null) {
+
+            if (localDataSet.get(viewHolder.getAdapterPosition()).getCurrentStatus().equalsIgnoreCase(OrderStatus.DELIVERED) &&
+                    localDataSet.get(viewHolder.getAdapterPosition()).getReleasedAppCredits() == 0.0
+            ) {
+                viewHolder.getCardPostComplaint().setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.getCardPostComplaint().setVisibility(View.GONE);
+            }
+
+            viewHolder.getCardPostComplaint().setOnClickListener(v -> {
+
+                Log.e("POSITION: ", "" + position);
+                Log.e("POSITION A: ", "" + viewHolder.getAdapterPosition());
+
+                String previousComplaintID = (localDataSet.get(viewHolder.getAdapterPosition()).getComplaintID()!=null) ? localDataSet.get(viewHolder.getAdapterPosition()).getComplaintID() : "";
+
+                customOnClickListener.onComplaintButtonClick(
+                        localDataSet.get(viewHolder.getAdapterPosition()).getOrderID(),
+                        !previousComplaintID.isEmpty(),
+                        position);
+            });
         }
-
-        viewHolder.getCardPostComplaint().setOnClickListener(v -> customOnClickListener.onComplaintButtonClick(
-                localDataSet.get(viewHolder.getAdapterPosition()).getOrderID(),
-                !localDataSet.get(viewHolder.getAdapterPosition()).getComplaintID().equalsIgnoreCase(""),
-                viewHolder.getAdapterPosition()));
     }
 
     @Override

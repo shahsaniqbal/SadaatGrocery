@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:weightSum="10"
+    android:background="@color/white"
     android:id="@+id/customer_cart_layout_nonempty">
 
     <ScrollView
@@ -23,7 +24,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_cart_items"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="4dp"/>
 
             <include layout="@layout/customer_content_cart_footer"

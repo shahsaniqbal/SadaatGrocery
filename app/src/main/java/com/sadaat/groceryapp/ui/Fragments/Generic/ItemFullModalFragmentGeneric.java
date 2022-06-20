@@ -16,18 +16,24 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
+import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.models.categories.CategoriesModel;
 import com.sadaat.groceryapp.models.Items.ItemModel;
+import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
+
+import java.text.MessageFormat;
+import java.util.Objects;
 
 public class ItemFullModalFragmentGeneric extends Fragment {
 
@@ -51,13 +57,14 @@ public class ItemFullModalFragmentGeneric extends Fragment {
     private boolean shouldShowQtyInCart;
     private LoadingDialogue loadingDialogue;
 
+    MaterialCardView cardAddToCart;
+
     public ItemFullModalFragmentGeneric() {
         // Required empty public constructor
     }
 
     public ItemFullModalFragmentGeneric(ItemModel itemModel) {
         this.itemModel = itemModel;
-        this.alternateQty = alternateQty;
     }
 
     public static ItemFullModalFragmentGeneric newInstance(ItemModel itemModel) {
@@ -88,26 +95,40 @@ public class ItemFullModalFragmentGeneric extends Fragment {
         txvUnit.setText(itemModel.getQty().toString());
         txvSKU.setText(itemModel.getID());
 
-        txvRetail.setText("" + itemModel.getPrices().getRetailPrice());
-        txvSale.setText("" + itemModel.getPrices().getSalePrice());
-        txvCardDisc.setText("" + itemModel.getOtherDetails().getSpecialDiscountForCardHolder());
-        txvCOD_SC.setText("" + itemModel.getOtherDetails().getSecurityCharges());
+        txvRetail.setText(MessageFormat.format("{0}", itemModel.getPrices().getRetailPrice()));
+        txvSale.setText(MessageFormat.format("{0}", itemModel.getPrices().getSalePrice()));
+        txvCardDisc.setText(MessageFormat.format("{0}", itemModel.getOtherDetails().getSpecialDiscountForCardHolder()));
+        txvCOD_SC.setText(MessageFormat.format("{0}", itemModel.getOtherDetails().getSecurityCharges()));
+
+
+        if (UserLive.currentLoggedInUser.getUserType().equalsIgnoreCase(UserTypes.Admin)){
+            cardAddToCart.setVisibility(View.GONE);
+        }
+
+        if (shouldShowQtyInCart) {
+
+            updateCartItemCountDataForCustomer();
+
+
+        } else {
+            alternateQty = itemModel.getOtherDetails().getStock();
+            txvAlternate.setText(MessageFormat.format("{0} in Stock", alternateQty));
+        }
+
+        cardAddToCart.setOnClickListener(v->{
+            UserLive.currentLoggedInUser.getCart().modifyCartItem(new CartItemModel(itemModel, 1));
+
+            CustomerCartSynchronizer.synchronize(UserLive.currentLoggedInUser.getUID(),
+                    UserLive.currentLoggedInUser.getCart());
+
+            updateCartItemCountDataForCustomer();
+        });
 
         if (itemModel.getMaxQtyPerOrder() != -1) {
-            txvMaxQty.setText("" + itemModel.getMaxQtyPerOrder());
+            txvMaxQty.setText(MessageFormat.format("{0}", itemModel.getMaxQtyPerOrder()));
         } else txvMaxQty.setText("-");
 
 
-        if (shouldShowQtyInCart) {
-            if (UserLive.currentLoggedInUser.getCart().getCartItems().get(itemModel.getID()) != null) {
-                alternateQty = UserLive.currentLoggedInUser.getCart().getCartItems().get(itemModel.getID()).getQty();
-            } else alternateQty = 0;
-
-            txvAlternate.setText("" + alternateQty + " in Cart");
-        } else {
-            alternateQty = itemModel.getOtherDetails().getStock();
-            txvAlternate.setText("" + alternateQty + " in Stock");
-        }
 
         if (!itemModel
                 .getOtherDetails()
@@ -122,13 +143,10 @@ public class ItemFullModalFragmentGeneric extends Fragment {
 
             final long ONE_MEGABYTE = 1024 * 1024;
 
-            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    imgItemView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                    hasTriedLoadingPicture = true;
-                    dismissDialogue();
-                }
+            imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                imgItemView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                hasTriedLoadingPicture = true;
+                dismissDialogue();
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
@@ -152,17 +170,21 @@ public class ItemFullModalFragmentGeneric extends Fragment {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             CategoriesModel categoriesModel = task.getResult().toObject(CategoriesModel.class);
-                            txvMainCategory.setText(categoriesModel.getTitle());
+                            if (categoriesModel != null) {
+                                txvMainCategory.setText(categoriesModel.getTitle());
+                            }
 
-                            for (int i = 0; i < categoriesModel.getSubCategories().size(); i++) {
-                                if (categoriesModel.getSubCategories().get(i).getDocID().equalsIgnoreCase(itemModel.getCategoryBinding().getSubCategoryID())) {
-                                    txvSubCategory.setText(categoriesModel.getSubCategories().get(i).getTitle());
-                                    break;
+                            if (categoriesModel != null) {
+                                for (int i = 0; i < categoriesModel.getSubCategories().size(); i++) {
+                                    if (categoriesModel.getSubCategories().get(i).getDocID().equalsIgnoreCase(itemModel.getCategoryBinding().getSubCategoryID())) {
+                                        txvSubCategory.setText(categoriesModel.getSubCategories().get(i).getTitle());
+                                        break;
+                                    }
                                 }
                             }
                         } else {
-                            txvMainCategory.setText("Uncategorized");
-                            txvSubCategory.setText("Uncategorized");
+                            txvMainCategory.setText(R.string.Uncategorized);
+                            txvSubCategory.setText(R.string.Uncategorized);
 
                         }
 
@@ -172,6 +194,20 @@ public class ItemFullModalFragmentGeneric extends Fragment {
                 });
 
 
+    }
+
+    private void updateCartItemCountDataForCustomer() {
+        if (UserLive.currentLoggedInUser.getCart().getCartItems().get(itemModel.getID()) != null) {
+            alternateQty = Objects.requireNonNull(UserLive.currentLoggedInUser.getCart().getCartItems().get(itemModel.getID())).getQty();
+
+            cardAddToCart.setVisibility(View.GONE);
+
+        } else {
+            alternateQty = 0;
+            cardAddToCart.setVisibility(View.VISIBLE);
+        }
+
+        txvAlternate.setText("" + alternateQty + " in Cart");
     }
 
     private void init_(View v) {
@@ -188,6 +224,8 @@ public class ItemFullModalFragmentGeneric extends Fragment {
         txvCardDisc = v.findViewById(R.id.txv_detailed_item_card_ed); //DONE
         txvMaxQty = v.findViewById(R.id.txv_detailed_item_max_qty_per_order); //DONE
         imgItemView = v.findViewById(R.id.imgv_detailed_item); //DONE
+
+        cardAddToCart = v.findViewById(R.id.card_add_to_cart);
 
         loadingDialogue = new LoadingDialogue(ItemFullModalFragmentGeneric.this.requireActivity());
         shouldShowQtyInCart = UserLive.currentLoggedInUser.getUserType().equals(UserTypes.Customer);

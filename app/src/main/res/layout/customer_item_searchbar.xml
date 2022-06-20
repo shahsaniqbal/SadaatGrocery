@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="4dp"
+    app:cardElevation="1dp"
+    android:clickable="true"
+    android:background="@color/white"
+    android:focusable="true"
+    android:id="@+id/customer_search_item_mainView"
+    app:cardCornerRadius="0dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:gravity="center">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/item_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Item Name"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="1dp"
+            android:gravity="center_vertical"/>
+
+
+<!--
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/item_qty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Item Qty"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="1dp"
+            android:gravity="center_vertical"/>
+
+-->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/item_instock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="4dp"
+            android:text="Item In Stock"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_green_light"/>
+
+    </LinearLayout>
+
+
+
+
+</com.google.android.material.card.MaterialCardView>

@@ -50,11 +50,13 @@
                 android:elevation="10dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="5dp"
+                    android:background="#00FFFFFF"
+                    tools:ignore="NestedWeights">
 
                     <EditText
                         android:id="@+id/edx_login_email"
@@ -71,10 +73,10 @@
                         android:id="@+id/edx_login_pass"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:layout_marginTop="16dp"
                         android:background="@drawable/main_fade_view_bg"
                         android:hint="Password"
+                        android:maxLength="16"
                         android:inputType="textPassword"
                         android:paddingHorizontal="4dp"
                         android:paddingVertical="8dp" />

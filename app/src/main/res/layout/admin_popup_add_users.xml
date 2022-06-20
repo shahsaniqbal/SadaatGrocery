@@ -65,6 +65,7 @@
             android:drawablePadding="8dp"
             android:hint="Full Name"
             android:padding="12dp"
+            android:maxLength="20"
             android:textColor="@color/black"
             android:textStyle="bold"
             />
@@ -77,6 +78,7 @@
             android:drawableLeft="@android:drawable/stat_sys_phone_call_on_hold"
             android:drawablePadding="8dp"
             android:hint="Mobile Number"
+            android:maxLength="11"
             android:padding="12dp"
             android:textColor="@color/black"
             android:textStyle="bold" />
@@ -117,6 +119,7 @@
             android:drawablePadding="8dp"
             android:hint="Password"
             android:padding="12dp"
+            android:maxLength="16"
             android:textColor="@color/black"
             android:textStyle="bold" />
 

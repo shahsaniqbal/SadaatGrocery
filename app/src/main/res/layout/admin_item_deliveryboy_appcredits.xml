@@ -10,7 +10,8 @@
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="1dp"
-    app:cardElevation="1dp">
+    app:cardElevation="1dp"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"

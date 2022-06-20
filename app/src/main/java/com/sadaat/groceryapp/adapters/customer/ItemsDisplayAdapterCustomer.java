@@ -30,14 +30,14 @@ import java.util.Objects;
 public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDisplayAdapterCustomer.ViewHolder> {
 
     private final ArrayList<ItemModel> localDataSet;
-    private final LoadingDialogue progressDialogue;
+    //private final LoadingDialogue progressDialogue;
     public ItemClickListeners customOnClickListener;
 
 
     public ItemsDisplayAdapterCustomer(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener, Context mContext) {
         this.localDataSet = localDataSet;
         this.customOnClickListener = customOnClickListener;
-        this.progressDialogue = new LoadingDialogue(mContext);
+        //this.progressDialogue = new LoadingDialogue(mContext);
     }
 
     @NonNull
@@ -111,7 +111,7 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
             });
         }
 
-        progressDialogue.show("Please Wait", "Loading Item Images.");
+        //progressDialogue.show("Please Wait", "Loading Item Images.");
         if (!localDataSet
                 .get(position)
                 .getOtherDetails()
@@ -129,12 +129,12 @@ public class ItemsDisplayAdapterCustomer extends RecyclerView.Adapter<ItemsDispl
 
             imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 viewHolder.getImageDisplayItemImage().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                progressDialogue.dismiss();
+                //progressDialogue.dismiss();
             }).addOnFailureListener(exception -> {
                 //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
             });
         } else {
-            progressDialogue.dismiss();
+            //progressDialogue.dismiss();
         }
 
         viewHolder.getMainView().setOnClickListener(view -> customOnClickListener.onClick(localDataSet.get(viewHolder.getAdapterPosition())));

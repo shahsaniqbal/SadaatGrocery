@@ -10,6 +10,7 @@
     android:clickable="true"
     android:focusable="true"
     android:layout_margin="4dp"
+    android:background="@color/white"
     app:cardCornerRadius="1dp">
 
     <LinearLayout

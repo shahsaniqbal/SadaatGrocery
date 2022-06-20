@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -208,6 +209,39 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/call_to_customer_support"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/call_to_customer_support"
+                        android:textAlignment="center"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:drawablePadding="10dp"
+                        app:drawableLeftCompat="@mipmap/call_to_customer" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+<!--
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/customer_account_card_help"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -243,15 +277,15 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <!--<ImageView
+                    &lt;!&ndash;<ImageView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.75"
                         android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
-                        android:contentDescription="@string/left_border_img" />-->
+                        android:contentDescription="@string/left_border_img" />&ndash;&gt;
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>-->
         </LinearLayout>
 
         <LinearLayout
@@ -259,7 +293,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
             android:orientation="vertical">
-
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/customer_account_card_settings"
                 android:layout_width="match_parent"
@@ -353,38 +386,6 @@
 
         </LinearLayout>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/call_to_customer_support"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardElevation="8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/call_to_customer_support"
-                    android:textAlignment="center"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:drawablePadding="10dp"
-                    app:drawableLeftCompat="@mipmap/call_to_customer" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 

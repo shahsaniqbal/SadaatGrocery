@@ -1,12 +1,14 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,16 +29,17 @@ import org.eazegraph.lib.models.PieModel;
 
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.util.Objects;
 
 public class OCRFragmentAdmin extends Fragment {
 
     LoadingDialogue dialogue;
-    int initiatedOrders = 0;
-    int packingOrders = 0;
-    int deliveringOrders = 0;
-    int deliveredOrders = 0;
-    int cancelledOrders = 0;
-    int didNotReceiveOrders = 0;
+    int initiatedOrders;
+    int packingOrders;
+    int deliveringOrders;
+    int deliveredOrders;
+    int cancelledOrders;
+    int didNotReceiveOrders;
 
     PieChart chart;
     MaterialTextView txvInitiated;
@@ -67,8 +70,18 @@ public class OCRFragmentAdmin extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle(null);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle("Order Cancellation Rate");
+
+        ini_ordersCountToZero();
 
         dialogue = new LoadingDialogue(this.requireActivity());
         dialogue.show("Please Wait", "While We are fetching Order Details");
@@ -90,12 +103,16 @@ public class OCRFragmentAdmin extends Fragment {
 
         co.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                ini_ordersCountToZero();
                 for (QueryDocumentSnapshot d :
                         task.getResult()) {
 
                     OrderModel m = d.toObject(OrderModel.class);
+                    if (m.getCurrentStatus().equals(OrderStatus.NOT_RECEIVED)) {
+                        didNotReceiveOrders += 1;
+                    }
 
-                    if (m.getCurrentStatus().equalsIgnoreCase(OrderStatus.INITIATED))
+                    else if (m.getCurrentStatus().equalsIgnoreCase(OrderStatus.INITIATED))
                         ++initiatedOrders;
                     else if (m.getCurrentStatus().equalsIgnoreCase(OrderStatus.PACKING))
                         ++packingOrders;
@@ -105,19 +122,28 @@ public class OCRFragmentAdmin extends Fragment {
                         ++deliveredOrders;
                     else if (m.getCurrentStatus().equalsIgnoreCase(OrderStatus.CANCELLED))
                         ++cancelledOrders;
-                    else if (m.getCurrentStatus().equalsIgnoreCase(OrderStatus.NOT_RECEIVED))
-                        ++didNotReceiveOrders;
                 }
-
                 dialogue.dismiss();
                 updateDataIntoViews();
             }
+
         });
 
     }
 
+    private void ini_ordersCountToZero() {
+        initiatedOrders = 0;
+        packingOrders= 0 ;
+        deliveringOrders = 0;
+        deliveredOrders = 0;
+        cancelledOrders = 0;
+        didNotReceiveOrders = 0;
+    }
+
     private void updateDataIntoViews() {
         chart.clearChart();
+
+
 
         txvInitiated.setText(MessageFormat.format("{0}", initiatedOrders));
         txvPacking.setText(MessageFormat.format("{0}", packingOrders));
@@ -125,6 +151,7 @@ public class OCRFragmentAdmin extends Fragment {
         txvDelivered.setText(MessageFormat.format("{0}", deliveredOrders));
         txvCancelled.setText(MessageFormat.format("{0}", cancelledOrders));
         txvNotReceived.setText(MessageFormat.format("{0}", didNotReceiveOrders));
+
 
         chart.addPieSlice(
                 new PieModel(
@@ -137,33 +164,10 @@ public class OCRFragmentAdmin extends Fragment {
                         (cancelledOrders + didNotReceiveOrders),
                         getResources().getColor(R.color.scarlet_red_500)));
 
-        double percentage = ((double) (cancelledOrders + didNotReceiveOrders) / (double) (initiatedOrders + packingOrders + deliveredOrders + deliveringOrders));
+        double percentage = ((double) (cancelledOrders + didNotReceiveOrders) / (double) (initiatedOrders + packingOrders + deliveredOrders + deliveringOrders+ cancelledOrders + didNotReceiveOrders )) * 100;
 
-        txvNotReceived.setText(new DecimalFormat("##.##").format(percentage));
+        txvOCRPercentage.setText(new DecimalFormat("00.00").format(percentage));
         chart.startAnimation();
     }
-/*
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        requireActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .remove(this)
-                .commit();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        requireActivity()
-                .getSupportFragmentManager()
-                .beginTransaction()
-                .remove(this)
-                .commit();
-    }
-*/
 
 }

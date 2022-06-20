@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@color/white"
     android:id="@+id/customer_cart_layout_empty">
 
     <ImageView

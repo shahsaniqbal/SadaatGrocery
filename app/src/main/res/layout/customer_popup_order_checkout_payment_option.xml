@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="@color/white">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -83,7 +84,7 @@
         </com.google.android.material.textview.MaterialTextView>
 
         <com.google.android.material.textview.MaterialTextView
-            android:text="Credits"
+            android:text="@string/crs."
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"
@@ -174,7 +175,8 @@
         </com.google.android.material.textview.MaterialTextView>
 
         <com.google.android.material.textview.MaterialTextView
-            android:text="Credits"
+
+            android:text="@string/crs."
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"
@@ -216,7 +218,7 @@
         </com.google.android.material.textview.MaterialTextView>
 
         <com.google.android.material.textview.MaterialTextView
-            android:text="Credits"
+            android:text="@string/crs."
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"

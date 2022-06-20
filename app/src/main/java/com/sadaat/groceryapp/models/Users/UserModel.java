@@ -7,11 +7,12 @@ import com.sadaat.groceryapp.models.cart.CartModel;
 import com.sadaat.groceryapp.models.orders.OrderModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class UserModel {
 
     private String UID;
-    private String UserType;
+    private String userType;
     private String fullName;
     private String emailAddress;
     private String mobileNumber;
@@ -20,7 +21,9 @@ public class UserModel {
     private AppCredits credits;
     private String currentActiveOrder;
     private ArrayList<String> orders;
-    private ArrayList<SuggestionModel> suggestions;
+    private ArrayList<String> suggestions;
+    private ArrayList<String> complaints;
+    private Date userSignupDate;
 
 
     public UserModel() {
@@ -29,12 +32,12 @@ public class UserModel {
         this.orders = new ArrayList<>();
         this.credits = new AppCredits();
         this.suggestions = new ArrayList<>();
+        this.complaints = new ArrayList<>();
     }
 
-
-    public UserModel(String UID, String userType, String fullName, String emailAddress, String mobileNumber, UserOtherDetailsModel details, CartModel cart, AppCredits credits, String currentActiveOrder, ArrayList<String> orders, ArrayList<SuggestionModel> suggestions) {
+    public UserModel(String UID, String userType, String fullName, String emailAddress, String mobileNumber, UserOtherDetailsModel details, CartModel cart, AppCredits credits, String currentActiveOrder, ArrayList<String> orders, ArrayList<String> suggestions, ArrayList<String> complaints, Date userSignupDate) {
         this.UID = UID;
-        UserType = userType;
+        this.userType = userType;
         this.fullName = fullName;
         this.emailAddress = emailAddress;
         this.mobileNumber = mobileNumber;
@@ -44,6 +47,8 @@ public class UserModel {
         this.currentActiveOrder = currentActiveOrder;
         this.orders = orders;
         this.suggestions = suggestions;
+        this.complaints = complaints;
+        this.userSignupDate = userSignupDate;
     }
 
     public String getUID() {
@@ -52,6 +57,14 @@ public class UserModel {
 
     public void setUID(String UID) {
         this.UID = UID;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getFullName() {
@@ -70,28 +83,20 @@ public class UserModel {
         this.emailAddress = emailAddress;
     }
 
-    public UserOtherDetailsModel getDetails() {
-        return details;
-    }
-
-    public void setDetails(UserOtherDetailsModel details) {
-        this.details = details;
-    }
-
-    public String getUserType() {
-        return UserType;
-    }
-
-    public void setUserType(String userType) {
-        UserType = userType;
-    }
-
     public String getMobileNumber() {
         return mobileNumber;
     }
 
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
+    }
+
+    public UserOtherDetailsModel getDetails() {
+        return details;
+    }
+
+    public void setDetails(UserOtherDetailsModel details) {
+        this.details = details;
     }
 
     public CartModel getCart() {
@@ -110,14 +115,6 @@ public class UserModel {
         this.credits = credits;
     }
 
-    public ArrayList<SuggestionModel> getSuggestions() {
-        return suggestions;
-    }
-
-    public void setSuggestions(ArrayList<SuggestionModel> suggestions) {
-        this.suggestions = suggestions;
-    }
-
     public String getCurrentActiveOrder() {
         return currentActiveOrder;
     }
@@ -134,12 +131,35 @@ public class UserModel {
         this.orders = orders;
     }
 
+    public ArrayList<String> getSuggestions() {
+        return suggestions;
+    }
+
+    public void setSuggestions(ArrayList<String> suggestions) {
+        this.suggestions = suggestions;
+    }
+
+    public ArrayList<String> getComplaints() {
+        return complaints;
+    }
+
+    public void setComplaints(ArrayList<String> complaints) {
+        this.complaints = complaints;
+    }
+
+    public Date getUserSignupDate() {
+        return userSignupDate;
+    }
+
+    public void setUserSignupDate(Date userSignupDate) {
+        this.userSignupDate = userSignupDate;
+    }
 
     @Override
     public String toString() {
         return "UserModel{" +
                 "UID='" + UID + '\'' +
-                ", UserType='" + UserType + '\'' +
+                ", userType='" + userType + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", emailAddress='" + emailAddress + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
@@ -149,6 +169,7 @@ public class UserModel {
                 ", currentActiveOrder='" + currentActiveOrder + '\'' +
                 ", orders=" + orders +
                 ", suggestions=" + suggestions +
+                ", complaints=" + complaints +
                 '}';
     }
 }

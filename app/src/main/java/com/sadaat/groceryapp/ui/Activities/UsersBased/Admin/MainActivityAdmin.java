@@ -25,16 +25,22 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.databinding.AdminActivityMainBinding;
+import com.sadaat.groceryapp.models.LeadsHolder;
+import com.sadaat.groceryapp.models.LeadsModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Activities.GenericForAll.LoginNavigatorActivity;
+import com.sadaat.groceryapp.ui.Activities.UsersBased.Customers.MainActivityCustomer;
 import com.sadaat.groceryapp.ui.Activities.UsersBased.DeliveryBoy.MainActivityDelivery;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.AccountFragmentCustomer;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
+
+import java.util.ArrayList;
 
 public class MainActivityAdmin extends AppCompatActivity {
 
@@ -65,6 +71,7 @@ public class MainActivityAdmin extends AppCompatActivity {
 
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.admin_header_name_txv)).setText(UserLive.currentLoggedInUser.getFullName());
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.admin_header_title_txv)).setText(TYPE);
+
 
         if (!UserLive.currentLoggedInUser.getDetails()
                 .getImageReference().isEmpty()) {
@@ -133,7 +140,9 @@ public class MainActivityAdmin extends AppCompatActivity {
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            FirebaseAuth.getInstance().signOut();
+                            FirebaseAuth
+                                    .getInstance()
+                                    .signOut();
                             startActivity(new Intent(MainActivityAdmin.this, LoginNavigatorActivity.class));
                             UserLive.currentLoggedInUser = null;
                             finish();
@@ -153,4 +162,17 @@ public class MainActivityAdmin extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            //backButton.setVisibility(View.VISIBLE);
+            //findViewById(R.id.logo_sadaat).setVisibility(View.GONE);
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 }

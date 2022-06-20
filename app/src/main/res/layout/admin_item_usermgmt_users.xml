@@ -7,7 +7,7 @@
     android:layout_margin="4dp"
     android:background="@color/white"
     app:cardCornerRadius="16dp"
-    app:cardElevation="16dp">
+    app:cardElevation="8dp">
 
 
     <RelativeLayout
@@ -18,9 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.25"
-            android:background="@mipmap/bg"
-            android:contentDescription="DP"
-            android:src="@color/grey" />
+            android:contentDescription="DP" />
 
 
         <LinearLayout
@@ -84,10 +82,10 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/txv_email_admin_show_users"
-
+                        android:textColor="@color/black"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp" />
+                        android:textSize="13sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -182,7 +180,6 @@
                     <LinearLayout
                         android:id="@+id/row_for_user_detail_buttons"
                         android:layout_width="match_parent"
-                        android:visibility="gone"
 
                         android:layout_height="wrap_content">
 
@@ -192,9 +189,9 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="2dp"
                             android:layout_weight="1"
-                            android:backgroundTint="@color/scarlet_red_700"
                             android:clickable="true"
-                            android:focusable="true">
+                            android:focusable="true"
+                            app:cardBackgroundColor="@color/light_grey">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -202,7 +199,6 @@
                                 android:layout_margin="4dp"
                                 android:text="Full Details"
                                 android:textAlignment="center"
-                                android:textColor="@color/white"
                                 android:textStyle="bold" />
                         </com.google.android.material.card.MaterialCardView>
 
@@ -214,7 +210,8 @@
                             android:layout_weight="1"
                             android:backgroundTint="@color/scarlet_red_700"
                             android:clickable="true"
-                            android:focusable="true">
+                            android:focusable="true"
+                            android:visibility="gone">
 
                             <TextView
                                 android:layout_width="match_parent"

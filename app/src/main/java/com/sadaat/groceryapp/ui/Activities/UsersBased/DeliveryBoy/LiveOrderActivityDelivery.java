@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.deliveryboy.LiveOrderDisplayAdapterDeliveryBoy;
+import com.sadaat.groceryapp.handler.LeadsActionHandler;
 import com.sadaat.groceryapp.handler.OrderHandler;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.models.orders.OrderModel;
@@ -108,6 +109,28 @@ public class LiveOrderActivityDelivery extends AppCompatActivity implements Live
     public void onReceivedButtonClick(String orderID, StatusModel newStatusModel, String uid, double creditsToAddToUserMainWallet) {
         // Credits Related Work will be done in Admin Release Button
 
+
+        StringBuilder action = new StringBuilder();
+        action.append("Delivery Boy ");
+        action.append("(").append(UserLive.currentLoggedInUser.getFullName()).append(") ");
+        action.append("delivered the Order ");
+        action.append("(").append(orderID).append(") ");
+        action.append("and he has just received Rs. ");
+        action.append(creditsToAddToUserMainWallet);
+
+
+        new LeadsActionHandler() {
+            @Override
+            public void onSuccessCompleteAction() {
+
+            }
+
+            @Override
+            public void onCancelledAction() {
+
+            }
+        }.addAction(action.toString());
+
         FirebaseFirestore
                 .getInstance()
                 .collection(new FirebaseDataKeys().getUsersRef())
@@ -142,6 +165,26 @@ public class LiveOrderActivityDelivery extends AppCompatActivity implements Live
     public void onDidNotReceiveButtonClick(String orderID, StatusModel newStatus, String uid, double creditsToARemoveFromUserPending, HashMap<String, CartItemModel> itemsToRestock) {
         LoadingDialogue dialogue = new LoadingDialogue(LiveOrderActivityDelivery.this);
         dialogue.show("Please Wait", "We are cancelling and restocking items");
+
+        StringBuilder action = new StringBuilder();
+        action.append("Delivery Boy ");
+        action.append("(").append(UserLive.currentLoggedInUser.getFullName()).append(") ");
+        action.append("delivered the Order ");
+        action.append("(").append(orderID).append(") ");
+        action.append("but the customer didn't receive it. Restocking items again.");
+
+
+        new LeadsActionHandler() {
+            @Override
+            public void onSuccessCompleteAction() {
+
+            }
+
+            @Override
+            public void onCancelledAction() {
+
+            }
+        }.addAction(action.toString());
 
         new OrderHandler().restock(itemsToRestock, newStatus.getTimeStamp());
         FirebaseFirestore.getInstance()

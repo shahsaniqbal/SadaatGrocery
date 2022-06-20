@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +26,7 @@ import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Stocks Report ->
@@ -64,8 +66,16 @@ public class StocksReportFragmentAdmin extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle(null);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle("Stocks");
 
         recyclerView = view.findViewById(R.id.recycler);
         txvTotalRetail = view.findViewById(R.id.total_retail);

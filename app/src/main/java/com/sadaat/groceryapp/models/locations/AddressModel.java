@@ -64,13 +64,13 @@ public class AddressModel {
 
         if (addressLine2.isEmpty()){
             return addressLine1 + ", "+
-                    area + ", " + city + ", Pakistan";
+                    area + ", " + city + ", PK";
         }
 
         else {
             return addressLine1 + ", " +
                     addressLine2 + ", " +
-                    area + ", " + city + ", Pakistan";
+                    area + ", " + city + ", PK";
         }
     }
 }

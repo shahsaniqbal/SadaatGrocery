@@ -73,7 +73,7 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
         if (localDataSet.get(viewHolder.getAdapterPosition()).getDetails() != null) {
             if (!localDataSet.get(viewHolder.getAdapterPosition()).getDetails().getImageReference().isEmpty()) {
 
-                dialogue.show("Showing", "User Display Image");
+                //dialogue.show("Showing", "User Display Image");
 
                 FirebaseStorage
                         .getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS)
@@ -83,7 +83,7 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
                     viewHolder.getImgvDisplayPicture().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
                 }).addOnFailureListener(Throwable::printStackTrace);
 
-                dialogue.dismiss();
+                //dialogue.dismiss();
 
             }
         }
@@ -125,7 +125,7 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
 
         viewHolder.getBtnProfileAndCredits().setOnClickListener(v -> customOnClickListener.onUserProfileAndCreditsButtonClick(v, viewHolder.getAdapterPosition()));
 
-        viewHolder.getBtnShowFullDetailsDialogue().setOnClickListener(v -> customOnClickListener.onShowFullDetailsButtonClick(v, viewHolder.getAdapterPosition()));
+        viewHolder.getBtnShowFullDetailsDialogue().setOnClickListener(v -> customOnClickListener.onShowFullDetailsButtonClick(v, viewHolder.getAdapterPosition(), localDataSet.get(viewHolder.getAdapterPosition()).getUID()));
 
         viewHolder.getImgbCallToPhoneNumber().setOnClickListener(v -> customOnClickListener.onCallToPhoneNumberViaSimButtonClick(
                 v,
@@ -172,7 +172,7 @@ public class UsersItemAdapterAdmin extends RecyclerView.Adapter<UsersItemAdapter
 
     private interface UserItemClickListeners {
 
-        void onShowFullDetailsButtonClick(View v, int position);
+        void onShowFullDetailsButtonClick(View v, int position, String uid);
 
         void onUserProfileAndCreditsButtonClick(View v, int position);
 

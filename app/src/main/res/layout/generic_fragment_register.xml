@@ -78,7 +78,7 @@
                             android:id="@+id/edx_register_mobile"
                             android:layout_width="match_parent"
                             android:background="@drawable/main_fade_view_bg"
-
+                            android:maxLength="11"
                             android:paddingVertical="8dp"
                             android:paddingHorizontal="4dp"
                             android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                             android:id="@+id/edx_register_full_name"
                             android:layout_width="match_parent"
                             android:background="@drawable/main_fade_view_bg"
-
+                            android:maxLength="18"
                             android:paddingVertical="8dp"
                             android:paddingHorizontal="4dp"
                             android:layout_height="wrap_content"
@@ -108,6 +108,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:hint="Password"
+                            android:maxLength="16"
                             android:inputType="textPassword"/>
 
                         <EditText
@@ -119,6 +120,7 @@
                             android:paddingHorizontal="4dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
+                            android:maxLength="16"
                             android:hint="Confirm Password" />
 
 

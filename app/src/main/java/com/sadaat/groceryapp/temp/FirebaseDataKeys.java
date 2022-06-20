@@ -1,41 +1,34 @@
 package com.sadaat.groceryapp.temp;
 
 public class FirebaseDataKeys {
-    final String CATEGORIES = "Menu";
-    final String USERS = "Users";
-    final String ITEMS = "Items";
-    final String LOCATIONS = "CityAreasForDelivery";
     final static public String STORAGE_BUCKET_ADDRESS = "gs://sadaat-grocery-store.appspot.com";
 
     public String getMenuRef(){
-        return CATEGORIES;
+        return "Categories";
     }
     public String getUsersRef(){
-        return USERS;
+        return "Users";
     }
-    public String getItemsRef() { return ITEMS; }
-
+    public String getItemsRef() { return "Items"; }
     public String getLocationsRef() {
-        return LOCATIONS;
+        return "Locations";
     }
-
     public String getOrdersRef() {
         return "Orders";
     }
-
     public String getComplaintsRef() {
-        return "Order_Complaints";
+        return "OrderComplaints";
     }
-
     public String getSuggestionsRef() {
         return "Suggestions";
     }
-
     public String getTopSellingRef() {
-        return "TopSelling";
+        return "TopSellingItems";
     }
-
-
-
-
+    public String getSlidesRef() {
+        return "Slides";
+    }
+    public String getLeadsRef() {
+        return "Leads";
+    }
 }

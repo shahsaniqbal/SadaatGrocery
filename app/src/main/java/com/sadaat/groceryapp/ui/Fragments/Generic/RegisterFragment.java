@@ -114,7 +114,9 @@ public class RegisterFragment extends Fragment {
                             new AppCredits(),
                             "",
                             new ArrayList<>(),
-                            new ArrayList<>()
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            null
                     );
 
                     getActivity()
@@ -133,7 +135,7 @@ public class RegisterFragment extends Fragment {
 
                 }
                 else{
-                    Toast.makeText(requireActivity(), "Issue Analyzing Inputs", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(requireActivity(), "Issue Analyzing Inputs", Toast.LENGTH_SHORT).show();
                     loadingDialogue.dismiss();
                 }
             }
@@ -151,7 +153,7 @@ public class RegisterFragment extends Fragment {
 
     private boolean analyzeInputsIfEmpty(Boolean shouldAnalyze) {
         if (shouldAnalyze) {
-            if (edxEmail.getText().toString().isEmpty()) {
+            if (edxEmail.getText().toString().isEmpty() || !edxEmail.getText().toString().contains("@")) {
                 edxEmail.setError("Email Field is mandatory");
                 shouldAnalyze = false;
             }

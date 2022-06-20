@@ -13,10 +13,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sadaat.groceryapp.R;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.LeadsFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.ListingFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.OrderMenuFragmentAdmin;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.OrdersListFragmentAdmin;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderHomeFragmentSuper.TrackingFragmentAdmin;
 
 public class HomeFragment extends Fragment {
 
@@ -58,7 +57,7 @@ public class HomeFragment extends Fragment {
                     case R.id.nav_admin_home_tracking:
                         getChildFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragmentChild, TrackingFragmentAdmin.class, null)
+                                .replace(R.id.flFragmentChild, LeadsFragmentAdmin.class, null)
                                 .commit();
                         return true;
 

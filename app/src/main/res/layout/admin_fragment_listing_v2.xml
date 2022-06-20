@@ -152,7 +152,7 @@
                                 android:layout_height="0dp"
                                 android:layout_gravity="center"
                                 android:layout_weight="2.75"
-                                android:src="@mipmap/groocery_items" />
+                                android:src="@mipmap/grocery_bag_icon" />
 
                             <View
                                 android:layout_width="match_parent"
@@ -173,54 +173,6 @@
                         </LinearLayout>
 
                     </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-
-                        android:id="@+id/admin_card_deals"
-                        android:layout_width="@dimen/listing_top_card_width"
-                        android:layout_height="@dimen/listing_top_card_height"
-                        android:layout_margin="@dimen/listing_top_card_margin"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:cardCornerRadius="@dimen/listing_top_card_radius"
-                        app:cardElevation="@dimen/listing_top_card_elev">
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="8dp"
-                            android:gravity="bottom"
-                            android:orientation="vertical"
-                            android:weightSum="4">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="0dp"
-                                android:layout_gravity="center"
-                                android:layout_weight="2.75"
-                                android:src="@mipmap/grocery_deals" />
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="0.25" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="0dp"
-                                android:layout_gravity="bottom|center"
-                                android:layout_weight="1"
-                                android:gravity="bottom|center"
-                                android:text="Deals"
-                                android:textColor="@color/scarlet_red_700"
-                                android:textSize="@dimen/listing_top_card_textSize"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                    </com.google.android.material.card.MaterialCardView>
-
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/admin_card_location"
@@ -261,6 +213,53 @@
                                 android:layout_weight="1"
                                 android:gravity="bottom|center"
                                 android:text="Locations"
+                                android:textColor="@color/scarlet_red_700"
+                                android:textSize="@dimen/listing_top_card_textSize"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+
+                        android:id="@+id/admin_card_deals"
+                        android:layout_width="@dimen/listing_top_card_width"
+                        android:layout_height="@dimen/listing_top_card_height"
+                        android:layout_margin="@dimen/listing_top_card_margin"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="@dimen/listing_top_card_radius"
+                        app:cardElevation="@dimen/listing_top_card_elev">
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="8dp"
+                            android:gravity="bottom"
+                            android:orientation="vertical"
+                            android:weightSum="4">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_gravity="center"
+                                android:layout_weight="2.75"
+                                android:src="@drawable/ic_twotone_slideshow_24" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="0.25" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:layout_gravity="bottom|center"
+                                android:layout_weight="1"
+                                android:gravity="bottom|center"
+                                android:text="Slider"
                                 android:textColor="@color/scarlet_red_700"
                                 android:textSize="@dimen/listing_top_card_textSize"
                                 android:textStyle="bold" />

@@ -28,14 +28,12 @@ import java.util.ArrayList;
 public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayAdapterAdmin.ViewHolder> {
 
     private final ArrayList<ItemModel> localDataSet;
-    private final LoadingDialogue progressDialogue;
     public ItemClickListeners customOnClickListener;
 
 
-    public ItemsDisplayAdapterAdmin(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener, Context mContext) {
+    public ItemsDisplayAdapterAdmin(ArrayList<ItemModel> localDataSet, ItemClickListeners customOnClickListener) {
         this.localDataSet = localDataSet;
         this.customOnClickListener = customOnClickListener;
-        this.progressDialogue = new LoadingDialogue(mContext);
     }
 
     @NonNull
@@ -80,9 +78,6 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
         });
 
 
-        progressDialogue.show("Please Wait", "Loading Item Images");
-
-
         if (localDataSet.get(viewHolder.getAdapterPosition()).isHot()) {
             viewHolder.getiButtonIsHot().setImageResource(R.drawable.ic_fire_filled);
         } else viewHolder.getiButtonIsHot().setImageResource(R.drawable.ic_fire_outlined);
@@ -105,12 +100,10 @@ public class ItemsDisplayAdapterAdmin extends RecyclerView.Adapter<ItemsDisplayA
 
             imgRef.getBytes(10 * ONE_MEGABYTE).addOnSuccessListener(bytes -> {
                 viewHolder.getImageDisplayItemImage().setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                progressDialogue.dismiss();
             }).addOnFailureListener(exception -> {
                 //Toast.makeText(mContext, "Image Load Failed, \n Leave it or use a new one", Toast.LENGTH_SHORT).show();
             });
         } else {
-            progressDialogue.dismiss();
         }
 
     }

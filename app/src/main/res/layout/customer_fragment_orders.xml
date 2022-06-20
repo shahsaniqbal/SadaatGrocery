@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    tools:context=".ui.Fragments.UserBased.Customers.passive.OrdersFragmentCustomer">
+    tools:context=".ui.Fragments.UserBased.Customers.UnderAccountFragment.OrdersFragmentCustomer">
 
     <LinearLayout
         android:id="@+id/layout_for_live_order"

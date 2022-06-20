@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:background="@color/white"
     android:elevation="4dp">
 
     <ScrollView
@@ -153,7 +154,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            android:drawableLeft="@mipmap/call"
+                            android:drawableLeft="@mipmap/call_red"
                             android:drawablePadding="8dp"
                             android:gravity="center"
                             android:text="Call to Customer"

@@ -2,6 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:scrollbars="none">
 
     <LinearLayout
@@ -10,6 +12,10 @@
         android:orientation="vertical"
         android:gravity="center">
 
+
+
+
+<!--
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,13 +50,14 @@
             android:gravity="center|end"
             />
 
+        -->
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:drawableLeft="@drawable/ic_fire_filled"
             android:drawablePadding="8dp"
-            android:text="Hot Products"
+            android:text="Hot Items"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -68,7 +75,7 @@
             android:layout_marginTop="16dp"
             android:drawableLeft="@drawable/ic_return"
             android:drawablePadding="8dp"
-            android:text="Most Selling Products"
+            android:text="Most Selling Items"
             android:textSize="22sp"
             android:textStyle="bold" />
 

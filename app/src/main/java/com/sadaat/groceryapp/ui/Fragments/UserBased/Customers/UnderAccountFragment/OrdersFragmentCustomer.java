@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive;
+package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderAccountFragment;
 
 import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.OrderItemDisplayAdapterCustomer;
+import com.sadaat.groceryapp.handler.LeadsActionHandler;
 import com.sadaat.groceryapp.models.ComplaintsModel;
 import com.sadaat.groceryapp.models.StockEntry;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
@@ -102,6 +103,8 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
 
         initializeViews(view);
 
+        view.findViewById(R.id.card_report_problem).setVisibility(View.INVISIBLE);
+
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
 
@@ -159,6 +162,26 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
 
             dialogue.show("Please Wait", "Cancelling Order");
 
+            StringBuilder action = new StringBuilder();
+            action.append("Customer ");
+            action.append("(").append(UserLive.currentLoggedInUser.getFullName()).append(") ");
+            action.append("Cancelled the Order ");
+            action.append("(").append(currentLiveOrder.getOrderID()).append(") ");
+            action.append("of Rs. ");
+            action.append("").append(currentLiveOrder.getTotalOrderAmountInRetail()).append("");
+
+            new LeadsActionHandler() {
+                @Override
+                public void onSuccessCompleteAction() {
+
+                }
+
+                @Override
+                public void onCancelledAction() {
+
+                }
+            }.addAction(action.toString());
+
             UserLive.currentLoggedInUser.getCredits().setPendingCredits((long) UserLive.currentLoggedInUser.getCredits().getPendingCredits() - (long) currentLiveOrder.getReleasingAppCredits());
             UserLive.currentLoggedInUser.setCurrentActiveOrder("");
 
@@ -203,6 +226,7 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
                                                                     ))
                                                             .addOnCompleteListener(task1 -> {
                                                                 if (task1.isSuccessful()) {
+
                                                                     dialogue.dismiss();
                                                                 }
                                                             });
@@ -323,10 +347,10 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
             viewHolderForComplaints.getBtnPost().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (viewHolderForComplaints.getEdxComplaintTitle().getText().toString().isEmpty()){
+                    if (Objects.requireNonNull(viewHolderForComplaints.getEdxComplaintTitle().getText()).toString().isEmpty()){
                         viewHolderForComplaints.getEdxComplaintTitle().setError("Title Cannot be Empty");
                     }
-                    else if (viewHolderForComplaints.getEdxComplaintMessage().getText().toString().isEmpty()){
+                    else if (Objects.requireNonNull(viewHolderForComplaints.getEdxComplaintMessage().getText()).toString().isEmpty()){
                         viewHolderForComplaints.getEdxComplaintMessage().setError("Please Type your Complaint Message");
                     }
                     else{
@@ -348,6 +372,26 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){
 
+                                            StringBuilder action = new StringBuilder();
+                                            action.append("Customer ");
+                                            action.append("(").append(UserLive.currentLoggedInUser.getFullName()).append(") ");
+                                            action.append("posted a complaint ");
+                                            action.append("(").append(model.getComplaintID()).append(") ");
+                                            action.append("regarding ");
+                                            action.append("(").append(model.getComplaintTitle()).append(") ");
+
+                                            new LeadsActionHandler() {
+                                                @Override
+                                                public void onSuccessCompleteAction() {
+
+                                                }
+
+                                                @Override
+                                                public void onCancelledAction() {
+
+                                                }
+                                            }.addAction(action.toString());
+
                                             FirebaseFirestore
                                                     .getInstance()
                                                     .collection(new FirebaseDataKeys().getOrdersRef())
@@ -360,6 +404,11 @@ public class OrdersFragmentCustomer extends Fragment implements OrderItemDisplay
                                                                 adapter.getLocalDataSet().get(position).setComplaintID(model.getComplaintID());
                                                                 adapter.notifyItemChanged(position);
                                                                 complaintPopupDialogueBox.dismiss();
+
+                                                                FirebaseFirestore.getInstance()
+                                                                        .collection(new FirebaseDataKeys().getUsersRef())
+                                                                        .document(UserLive.currentLoggedInUser.getUID())
+                                                                        .update("complaints", FieldValue.arrayUnion(model.getComplaintID()));
                                                             }
                                                         }
                                                     });

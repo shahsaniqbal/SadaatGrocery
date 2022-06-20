@@ -3,12 +3,421 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     tools:context=".ui.Fragments.Generic.DetailedUserViewFragmentGeneric">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                android:layout_margin="4dp"
+                android:padding="4dp">
+
+                <ImageView
+
+                    android:id="@+id/iUserImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="4dp"
+                android:layout_margin="4dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/txv_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:text="Name"
+                    android:textColor="@color/black"
+                    android:fontFamily="serif"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/txv_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Email"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:padding="2dp"
+                    android:fontFamily="serif" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/txv_mobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="serif"
+                    android:gravity="center"
+                    android:text="Contact Number"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:padding="2dp" />
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="4dp"
+                android:layout_margin="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="4dp"
+                        android:layout_margin="4dp"
+                        android:background="@color/browser_actions_bg_grey">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="2.5"
+                            android:paddingHorizontal="4dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textStyle="bold"
+                                android:gravity="right"
+                                android:text="Pending Credits"
+                                android:fontFamily="serif"
+                                android:layout_marginHorizontal="4dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/txv_pCredits"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:text="0.00"
+                                android:layout_marginHorizontal="4dp"
+                                android:fontFamily="serif"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="2.5"
+                            android:paddingHorizontal="4dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textStyle="bold"
+                                android:text="Owning Credits"
+                                android:textColor="@color/black"
+                                android:gravity="right"
+                                android:fontFamily="serif"
+                                android:layout_marginHorizontal="4dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/txv_oCredits"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:text="0.00"
+                                android:layout_marginHorizontal="4dp"
+                                android:textColor="@color/black"
+                                android:fontFamily="serif"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="4dp"
+                        android:layout_margin="4dp"
+                        android:background="@color/browser_actions_bg_grey">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="2.5"
+                            android:paddingHorizontal="4dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textStyle="bold"
+                                android:gravity="right"
+                                android:text="Total Suggestions"
+                                android:fontFamily="serif"
+                                android:layout_marginHorizontal="4dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/txv_tSuggestions"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:text="0"
+                                android:layout_marginHorizontal="4dp"
+                                android:fontFamily="serif"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="2.5"
+                            android:paddingHorizontal="4dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textStyle="bold"
+                                android:text="Total Complaints"
+                                android:textColor="@color/black"
+                                android:gravity="right"
+                                android:fontFamily="serif"
+                                android:layout_marginHorizontal="4dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/txv_tComplaints"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:text="0"
+                                android:layout_marginHorizontal="4dp"
+                                android:textColor="@color/black"
+                                android:fontFamily="serif"/>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="4dp"
+                        android:layout_margin="4dp"
+                        android:background="@color/browser_actions_bg_grey">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="2.5"
+                            android:paddingHorizontal="4dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textStyle="bold"
+                                android:gravity="right"
+                                android:text="Total Orders"
+                                android:fontFamily="serif"
+                                android:layout_marginHorizontal="4dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/txv_tOrders"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:text="0"
+                                android:layout_marginHorizontal="4dp"
+                                android:fontFamily="serif"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="2.5"
+                            android:paddingHorizontal="4dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textStyle="bold"
+                                android:text="Delivered Orders"
+                                android:textColor="@color/black"
+                                android:gravity="right"
+                                android:fontFamily="serif"
+                                android:layout_marginHorizontal="4dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/txv_dOrders"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:text="0"
+                                android:layout_marginHorizontal="4dp"
+                                android:textColor="@color/black"
+                                android:fontFamily="serif"/>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="8dp">
+
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Member Since"
+                    android:textColor="@color/black"
+                    android:padding="2dp"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/txv_mDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Date"
+                    android:padding="2dp"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="4dp"
+                android:layout_margin="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="4dp"
+                        android:layout_margin="4dp"
+                        android:background="@color/browser_actions_bg_grey">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="2.5"
+                            android:paddingHorizontal="4dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textStyle="bold"
+                                android:gravity="right"
+                                android:text="Total Amount Ordered"
+                                android:fontFamily="serif"
+                                android:layout_marginHorizontal="4dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/txv_amountOrdered"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:text="0.00"
+                                android:layout_marginHorizontal="4dp"
+                                android:fontFamily="serif"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="2.5"
+                            android:paddingHorizontal="4dp">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="0dp"
+                                android:layout_weight="1.5"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:textStyle="bold"
+                                android:text="Customer Maturity Index\n(CMI)"
+                                android:textColor="@color/black"
+                                android:gravity="right"
+                                android:fontFamily="serif"
+                                android:layout_marginHorizontal="4dp"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/txv_cmi"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:padding="2dp"
+                                android:text="0.00"
+                                android:layout_marginHorizontal="4dp"
+                                android:textColor="@color/black"
+                                android:fontFamily="serif"/>
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+    </ScrollView>
 
 </FrameLayout>

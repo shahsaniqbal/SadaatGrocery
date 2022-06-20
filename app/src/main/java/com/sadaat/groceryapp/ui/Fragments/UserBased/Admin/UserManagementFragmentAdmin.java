@@ -2,6 +2,7 @@ package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,21 +19,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.UsersItemAdapterAdmin;
+import com.sadaat.groceryapp.handler.LeadsActionHandler;
 import com.sadaat.groceryapp.models.AppCredits;
 import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.models.Users.UserOtherDetailsModel;
@@ -41,6 +44,7 @@ import com.sadaat.groceryapp.models.locations.AddressModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserTypes;
 import com.sadaat.groceryapp.ui.Activities.GenericForAll.LoginNavigatorActivity;
+import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedUserViewFragmentGeneric;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.io.ByteArrayOutputStream;
@@ -55,18 +59,18 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
     FloatingActionButton addUsersButton;
     CustomPopupViewHolder viewHolder;
 
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+    //FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     RecyclerView recyclerView;
-    RecyclerView.LayoutManager manager;
+    //RecyclerView.LayoutManager manager;
     UsersItemAdapterAdmin adapterAdmin;
     LoadingDialogue progressDialog;
-    ArrayList<UserModel> allUsers;
+    //ArrayList<UserModel> allUsers;
 
     AlertDialog.Builder dialogueBuilder;
     AlertDialog userPopupDialogueBox;
     View popupView;
     String imageRef = "";
-    private StorageReference storageReference;
+    //private StorageReference storageReference;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -80,12 +84,20 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
 
         initializer(view);
 
-        recyclerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(UserManagementFragmentAdmin.this.requireActivity()));
         recyclerView.setAdapter(adapterAdmin);
 
         backgroundExecutorForShowingData(view);
 
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle(null);
+
         addUsersButton.setOnClickListener(v -> handlePopup(view));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setSubtitle(null);
     }
 
     private void handlePopup(View parent) {
@@ -99,38 +111,65 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
 
                 FirebaseAuth
                         .getInstance()
-                        .createUserWithEmailAndPassword(Objects.requireNonNull(viewHolder.getTxvEmail().getText()).toString(), viewHolder.getTxvPassword().getText().toString())
+                        .createUserWithEmailAndPassword(Objects.requireNonNull(viewHolder.getTxvEmail().getText()).toString(), Objects.requireNonNull(viewHolder.getTxvPassword().getText()).toString())
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
 
                                 UserModel newUser = new UserModel(
                                         Objects.requireNonNull(task.getResult().getUser()).getUid(),
                                         UserTypes.DeliveryBoy,
-                                        viewHolder.getTxvName().getText().toString(),
+                                        Objects.requireNonNull(viewHolder.getTxvName().getText()).toString(),
                                         viewHolder.getTxvEmail().getText().toString(),
-                                        viewHolder.getTxvMobile().getText().toString(),
+                                        Objects.requireNonNull(viewHolder.getTxvMobile().getText()).toString(),
                                         new UserOtherDetailsModel(imageRef, new AddressModel()),
                                         new CartModel(),
                                         new AppCredits(),
                                         null,
                                         new ArrayList<>(),
-                                        new ArrayList<>());
+                                        new ArrayList<>(),
+                                        new ArrayList<>(),
+                                        null);
 
-                                firebaseFirestore
+                                FirebaseFirestore.getInstance()
                                         .collection(new FirebaseDataKeys().getUsersRef())
                                         .document(Objects.requireNonNull(task.getResult().getUser()).getUid())
                                         .set(newUser)
                                         .addOnCompleteListener(task1 -> {
 
+                                            StringBuilder action = new StringBuilder();
+                                            action.append("You have registered a new delivery boy.\n");
+                                            action.append("Name: ");
+                                            action.append("(").append(newUser.getFullName()).append(")\n");
+                                            action.append("Email: ");
+                                            action.append("(").append(newUser.getEmailAddress()).append(")\n");
+                                            action.append("Mobile: ");
+                                            action.append("(").append(newUser.getMobileNumber()).append(")\n");
+                                            action.append("Password: ");
+                                            action.append("(").append(viewHolder.getTxvPassword().getText().toString()).append(")\n");
+
+                                            new LeadsActionHandler() {
+                                                @Override
+                                                public void onSuccessCompleteAction() {
+
+                                                }
+
+                                                @Override
+                                                public void onCancelledAction() {
+
+                                                }
+                                            }.addAction(action.toString());
+
                                             parent.setVisibility(View.VISIBLE);
 
                                             if (task1.isSuccessful()) {
-                                                adapterAdmin.addUser(newUser);
+                                                /*adapterAdmin.addUser(newUser);
                                                 viewHolder.setEmptyContentToViews();
                                                 progressDialog.dismiss();
 
                                                 userPopupDialogueBox.setCancelable(true);
+                                                */
                                                 userPopupDialogueBox.dismiss();
+
 
                                                 Toast.makeText(UserManagementFragmentAdmin.this.requireActivity(), "For Security Purposes, Please Signin again", Toast.LENGTH_LONG).show();
                                                 FirebaseAuth.getInstance().signOut();
@@ -156,11 +195,12 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
 
     }
 
+    @SuppressLint("InflateParams")
     private void initializer(View view) {
-        allUsers = new ArrayList<>();
+        //allUsers = new ArrayList<>();
         addUsersButton = view.findViewById(R.id.btn_admin_add_user);
         recyclerView = view.findViewById(R.id.recycler_users_on_admin_screen);
-        manager = new LinearLayoutManager(UserManagementFragmentAdmin.this.requireActivity());
+        //manager = new LinearLayoutManager(UserManagementFragmentAdmin.this.requireActivity());
 
         dialogueBuilder = new AlertDialog.Builder(requireActivity());
 
@@ -171,23 +211,24 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
 
         progressDialog = new LoadingDialogue(requireActivity());
 
-        adapterAdmin = new UsersItemAdapterAdmin(UserManagementFragmentAdmin.this.requireActivity(), allUsers, false, this);
+        adapterAdmin = new UsersItemAdapterAdmin(UserManagementFragmentAdmin.this.requireActivity(), new ArrayList<>(), false, this);
 
-        storageReference = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS).getReference();
+        //storageReference = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS).getReference();
     }
 
     private void backgroundExecutorForShowingData(View view) {
 
         progressDialog.show("", "Loading Users");
 
-        firebaseFirestore
+        FirebaseFirestore.getInstance()
                 .collection(new FirebaseDataKeys().getUsersRef())
+                .orderBy("userType", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(task -> {
 
                     if (task.isSuccessful()) {
 
-                        allUsers.clear();
+                        adapterAdmin.deleteAll();
                         for (DocumentSnapshot d : task.getResult().getDocuments()) {
                             adapterAdmin.addUser(d.toObject(UserModel.class));
                         }
@@ -201,8 +242,12 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
     }
 
     @Override
-    public void onShowFullDetailsButtonClick(View v, int position) {
-
+    public void onShowFullDetailsButtonClick(View v, int position, String uid) {
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_UM, DetailedUserViewFragmentGeneric.newInstance(uid))
+                .addToBackStack("umgmt")
+                .commit();
     }
 
     @Override
@@ -260,7 +305,7 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
             // Defining the child of storageReference
             imageRef = "f/images/users/" + UUID.randomUUID().toString();
 
-            StorageReference ref = storageReference.child(imageRef);
+            StorageReference ref = FirebaseStorage.getInstance(FirebaseDataKeys.STORAGE_BUCKET_ADDRESS).getReference().child(imageRef);
 
             ref.putBytes(toByteArray)
                     .addOnSuccessListener(
@@ -293,14 +338,14 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
         }
     }
 
-    private class CustomPopupViewHolder {
+    private static class CustomPopupViewHolder {
 
         private final TextInputEditText txvName;
         private final TextInputEditText txvMobile;
         private final TextInputEditText txvEmail;
         private final TextInputEditText txvPassword;
         private final MaterialButton btnAdd;
-        private final MaterialCardView displayPictureCard;
+        //private final MaterialCardView displayPictureCard;
         private final ImageView displayPictureImageView;
 
         public CustomPopupViewHolder(View popupView) {
@@ -309,7 +354,7 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
             txvEmail = popupView.findViewById(R.id.edx_add_users_email);
             txvPassword = popupView.findViewById(R.id.edx_add_users_password);
             btnAdd = popupView.findViewById(R.id.addUser);
-            displayPictureCard = popupView.findViewById(R.id.card_add_users_dp);
+            //displayPictureCard = popupView.findViewById(R.id.card_add_users_dp);
             displayPictureImageView = popupView.findViewById(R.id.card_add_users_dp_imgv);
 
         }
@@ -333,10 +378,11 @@ public class UserManagementFragmentAdmin extends Fragment implements UsersItemAd
         public MaterialButton getBtnAdd() {
             return btnAdd;
         }
-
+        /*
         public MaterialCardView getDisplayPictureCard() {
             return displayPictureCard;
         }
+        */
 
         public ImageView getDisplayPictureImageView() {
             return displayPictureImageView;

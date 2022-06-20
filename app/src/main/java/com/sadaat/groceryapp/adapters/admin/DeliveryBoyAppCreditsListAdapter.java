@@ -53,9 +53,9 @@ public class DeliveryBoyAppCreditsListAdapter extends RecyclerView.Adapter<Deliv
         viewHolder.getCardReceipt().setOnLongClickListener(view -> {
             listener.onReceiptButtonClick(
                     viewHolder.getAdapterPosition(),
-                    localDataSet.get(viewHolder.getAdapterPosition()).getUID(),
-                    localDataSet.get(viewHolder.getAdapterPosition()).getCredits().getOwningCredits(),
-                    localDataSet.get(viewHolder.getAdapterPosition()).getFullName());
+                    localDataSet.get(position).getUID(),
+                    localDataSet.get(position).getCredits().getOwningCredits(),
+                    localDataSet.get(position).getFullName());
             return true;
         });
 

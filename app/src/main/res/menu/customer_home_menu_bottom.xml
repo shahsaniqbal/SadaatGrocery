@@ -10,7 +10,7 @@
         android:title="Categories" />
 
     <item android:id="@+id/nav_customer_cart"
-        android:icon="@mipmap/groocery_items"
+        android:icon="@mipmap/grocery_bag_icon"
         android:title="Cart" />
 
     <item android:id="@+id/nav_customer_search"

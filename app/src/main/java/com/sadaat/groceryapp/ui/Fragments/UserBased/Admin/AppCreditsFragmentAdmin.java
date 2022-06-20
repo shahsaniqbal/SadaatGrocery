@@ -24,9 +24,11 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.DeliveryBoyAppCreditsListAdapter;
+import com.sadaat.groceryapp.handler.LeadsActionHandler;
 import com.sadaat.groceryapp.models.SuggestionModel;
 import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
+import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.temp.UserTypes;
 
 import java.util.ArrayList;
@@ -94,6 +96,28 @@ public class AppCreditsFragmentAdmin extends Fragment implements DeliveryBoyAppC
                 .getInstance()
                 .collection(new FirebaseDataKeys().getUsersRef())
                 .document(deliveryBoyUID)
-                .update("credits.owningCredits", FieldValue.increment(((-1) * appCredits)));
+                .update("credits.owningCredits", FieldValue.increment(((-1) * appCredits)))
+                .addOnCompleteListener(t->{
+                    StringBuilder action = new StringBuilder();
+                    action.append("You received Rs. ");
+                    action.append(appCredits);
+                    action.append(" from Delivery Boy ");
+                    action.append("(").append(name).append(") ");
+                    action.append("and released his wallet.");
+
+
+                    new LeadsActionHandler() {
+                        @Override
+                        public void onSuccessCompleteAction() {
+
+                        }
+
+                        @Override
+                        public void onCancelledAction() {
+
+                        }
+                    }.addAction(action.toString());
+
+                });
     }
 }

@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.admin.DeliveryBoyListAdapter;
+import com.sadaat.groceryapp.handler.LeadsActionHandler;
 import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.models.orders.StatusModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
@@ -119,6 +120,26 @@ public class DeliveryBoysListToSetForOrder extends Fragment implements DeliveryB
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> t) {
+
+                        StringBuilder action = new StringBuilder();
+                        action.append("You have assigned delivery boy ");
+                        action.append("(").append(deliveryBoyUID).append(") ");
+                        action.append("for the order ");
+                        action.append("(").append(mOrderID).append(") ");
+
+
+                        new LeadsActionHandler() {
+                            @Override
+                            public void onSuccessCompleteAction() {
+
+                            }
+
+                            @Override
+                            public void onCancelledAction() {
+
+                            }
+                        }.addAction(action.toString());
+
                         FirebaseFirestore
                                 .getInstance()
                                 .collection(new FirebaseDataKeys().getOrdersRef())
@@ -132,10 +153,9 @@ public class DeliveryBoysListToSetForOrder extends Fragment implements DeliveryB
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            requireActivity().
-                                                    getSupportFragmentManager()
+                                            getParentFragmentManager()
                                                     .beginTransaction()
-                                                    .replace(R.id.nav_host_fragment_content_main_activity_admin, OrdersListFragmentAdmin.newInstance(OrderStatus.DELIVERING))
+                                                    .replace(R.id.fl_orders_admin, OrdersListFragmentAdmin.newInstance(OrderStatus.DELIVERING))
                                                     .commit();
                                         }
                                     }

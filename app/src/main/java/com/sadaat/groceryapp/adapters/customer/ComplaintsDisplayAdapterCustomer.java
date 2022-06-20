@@ -19,8 +19,8 @@ import java.util.Date;
 
 public class ComplaintsDisplayAdapterCustomer extends RecyclerView.Adapter<ComplaintsDisplayAdapterCustomer.ViewHolder> {
 
-    private ArrayList<ComplaintsModel> localDataSet;
-    private OnClickListener clickListeners;
+    private final ArrayList<ComplaintsModel> localDataSet;
+    private final OnClickListener clickListeners;
 
     public ComplaintsDisplayAdapterCustomer(ArrayList<ComplaintsModel> localDataSet, OnClickListener clickListeners) {
         this.localDataSet = localDataSet;
@@ -48,17 +48,15 @@ public class ComplaintsDisplayAdapterCustomer extends RecyclerView.Adapter<Compl
         holder.getTxvComplaintTitle().setText(localDataSet.get(holder.getAdapterPosition()).getComplaintTitle());
         holder.getTxvComplaintMessage().setText(localDataSet.get(holder.getAdapterPosition()).getComplaintMessage());
         holder.getTxvComplaintResponse().setText(localDataSet.get(holder.getAdapterPosition()).getReplyMessage());
-        holder.getTxvPostedTime().setText("Posted at: " + localDataSet.get(holder.getAdapterPosition()).getComplaintIssueDate().toString());
+        holder.getTxvPostedTime().setText(MessageFormat.format("Posted at: {0}", localDataSet.get(holder.getAdapterPosition()).getComplaintIssueDate().toString()));
 
         if (localDataSet.get(holder.getAdapterPosition()).getReplyResolvedDate()!=null){
-            holder.getTxvReplyTime().setText("Replied at: " + localDataSet.get(holder.getAdapterPosition()).getReplyResolvedDate().toString());
+            holder.getTxvReplyTime().setText(MessageFormat.format("Replied at: {0}", localDataSet.get(holder.getAdapterPosition()).getReplyResolvedDate().toString()));
         }
 
-        holder.getCardSeeOrderDetails().setOnClickListener(v -> {
-            clickListeners.onShowFullOrderDetailsButtonClick(holder.getAdapterPosition(),
-                    localDataSet.get(holder.getAdapterPosition()).getOrderID()
-            );
-        });
+        holder.getCardSeeOrderDetails().setOnClickListener(v -> clickListeners.onShowFullOrderDetailsButtonClick(holder.getAdapterPosition(),
+                localDataSet.get(holder.getAdapterPosition()).getOrderID()
+        ));
 
     }
 

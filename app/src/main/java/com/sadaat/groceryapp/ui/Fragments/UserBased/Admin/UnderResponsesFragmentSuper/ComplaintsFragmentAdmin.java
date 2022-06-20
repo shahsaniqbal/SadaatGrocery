@@ -104,10 +104,9 @@ public class ComplaintsFragmentAdmin extends Fragment implements ComplaintsDispl
 
     @Override
     public void onShowFullUserDetailsButtonClick(int position, String thatUID) {
-        requireActivity()
-                .getSupportFragmentManager()
+        getChildFragmentManager()
                 .beginTransaction()
-                .replace(R.id.flFragmentChild, DetailedUserViewFragmentGeneric.newInstance(thatUID))
+                .replace(R.id.complaints_fl, DetailedUserViewFragmentGeneric.newInstance(thatUID))
                 .addToBackStack("complaints")
                 .commit();
     }
@@ -121,12 +120,9 @@ public class ComplaintsFragmentAdmin extends Fragment implements ComplaintsDispl
                 .get()
                 .addOnCompleteListener(t -> {
                     if (t.isSuccessful()) {
-                        ComplaintsFragmentAdmin
-                                .this
-                                .requireActivity()
-                                .getSupportFragmentManager()
+                        getChildFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.flFragmentChild, DetailedOrderViewFragmentGeneric.newInstance(t.getResult().toObject(OrderModel.class)))
+                                .replace(R.id.complaints_fl, DetailedOrderViewFragmentGeneric.newInstance(t.getResult().toObject(OrderModel.class)))
                                 .addToBackStack("complaints")
                                 .commit();
                     }

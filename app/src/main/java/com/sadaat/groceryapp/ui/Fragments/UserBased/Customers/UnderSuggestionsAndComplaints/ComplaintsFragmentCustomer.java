@@ -1,6 +1,7 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderSuggestionsAndComplaints;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +12,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.ComplaintsDisplayAdapterCustomer;
 import com.sadaat.groceryapp.models.ComplaintsModel;
 import com.sadaat.groceryapp.models.orders.OrderModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
+import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedOrderViewFragmentGeneric;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ import java.util.ArrayList;
 public class ComplaintsFragmentCustomer extends Fragment implements ComplaintsDisplayAdapterCustomer.OnClickListener {
 
     private RecyclerView recyclerView;
-    private LinearLayoutManager manager;
+    //private LinearLayoutManager manager;
     private ComplaintsDisplayAdapterCustomer adapter;
 
     public ComplaintsFragmentCustomer() {
@@ -63,25 +62,31 @@ public class ComplaintsFragmentCustomer extends Fragment implements ComplaintsDi
 
         recyclerView = view.findViewById(R.id.recycler);
         adapter = new ComplaintsDisplayAdapterCustomer(new ArrayList<>(), this);
-        manager = new LinearLayoutManager(this.requireActivity());
+        //manager = new LinearLayoutManager(this.requireActivity());
 
-        recyclerView.setLayoutManager(manager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.requireActivity()));
         recyclerView.setAdapter(adapter);
 
         FirebaseFirestore
                 .getInstance()
                 .collection(new FirebaseDataKeys().getComplaintsRef())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot q :
-                                    task.getResult()) {
+                .whereEqualTo("uid", UserLive.currentLoggedInUser.getUID())
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.w("TAG", "Listen failed.", error);
+                        return;
+                    }
 
-                                adapter.addItem(q.toObject(ComplaintsModel.class));
-                            }
+                    if (value != null && value.getDocuments().size() > 0) {
+
+                        adapter.deleteAll();
+                        for (DocumentSnapshot d :
+                                value.getDocuments()) {
+                            adapter.addItem(d.toObject(ComplaintsModel.class));
                         }
+
+                    } else {
+                        Log.d("TAG", "source file SuggestionFragmentCustomer" + " data: null");
                     }
                 });
 

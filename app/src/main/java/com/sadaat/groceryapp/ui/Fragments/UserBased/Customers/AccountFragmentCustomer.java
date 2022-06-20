@@ -2,9 +2,8 @@ package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +20,17 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.models.Users.UserModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Activities.GenericForAll.LoginNavigatorActivity;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.OrdersFragmentCustomer;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.SuggestionsAndComplaintsHostFragmentCustomer;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.WalletFragmentCustomer;
+import com.sadaat.groceryapp.ui.Activities.UsersBased.Customers.MainActivityCustomer;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive.AddressFragmentCustomer;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderAccountFragment.OrdersFragmentCustomer;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderAccountFragment.SettingsHostFragmentCustomer;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderAccountFragment.SuggestionsAndComplaintsHostFragmentCustomer;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderAccountFragment.WalletFragmentCustomer;
 
 import java.text.MessageFormat;
 
@@ -47,7 +47,7 @@ public class AccountFragmentCustomer extends Fragment {
     MaterialCardView cardWallet; //
     MaterialCardView cardAddress;
     MaterialCardView cardSuggestionsAndComplaints;
-    MaterialCardView cardHelpAndSupport;
+//    MaterialCardView cardHelpAndSupport;
     MaterialCardView cardSettings;
     MaterialCardView cardSignOut; //
     MaterialCardView cardCallToCustomerSupport;
@@ -75,11 +75,6 @@ public class AccountFragmentCustomer extends Fragment {
                     public void onComplete(@NonNull Task<DocumentSnapshot> t) {
                         if (t.isSuccessful()) {
                             UserLive.currentLoggedInUser = t.getResult().toObject(UserModel.class);
-                            assert UserLive.currentLoggedInUser != null;
-                            Log.e("USER", UserLive.currentLoggedInUser.toString());
-
-
-
                         }
                     }
                 });
@@ -145,6 +140,31 @@ public class AccountFragmentCustomer extends Fragment {
                     .addToBackStack("account")
                     .commit();
         });
+
+        cardAddress.setOnClickListener(v -> {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragmentCustomer, AddressFragmentCustomer.newInstance())
+                    .addToBackStack("account")
+                    .commit();
+        });
+
+        cardSettings.setOnClickListener(v -> {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragmentCustomer, SettingsHostFragmentCustomer.newInstance())
+                    .addToBackStack("account")
+                    .commit();
+        });
+
+        cardCallToCustomerSupport.setOnClickListener(v->{
+            String mobileNumber = "03054899269";
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + mobileNumber));
+            startActivity(intent);
+        });
     }
 
     private void setUserAddress() {
@@ -154,6 +174,17 @@ public class AccountFragmentCustomer extends Fragment {
     }
 
     private void setImageToUser() {
+
+        if (MainActivityCustomer.userImage!=null){
+            accountDP.setImageBitmap(MainActivityCustomer.userImage);
+        }
+        else{
+
+        }
+
+/*
+
+        // Old Algorithm Renewed by AHSAN IQBAL // Loaded Image at MainLevel Activity rather than in fragments
 
         if (!UserLive.currentLoggedInUser
                 .getDetails()
@@ -173,6 +204,7 @@ public class AccountFragmentCustomer extends Fragment {
             });
         }
 
+*/
     }
 
     void initialize(View v) {
@@ -187,7 +219,7 @@ public class AccountFragmentCustomer extends Fragment {
 
         cardAddress = v.findViewById(R.id.customer_account_card_address);
         cardSuggestionsAndComplaints = v.findViewById(R.id.customer_account_card_suggestions);
-        cardHelpAndSupport = v.findViewById(R.id.customer_account_card_help);
+//        cardHelpAndSupport = v.findViewById(R.id.customer_account_card_help);
         cardSettings = v.findViewById(R.id.customer_account_card_settings);
         cardSignOut = v.findViewById(R.id.customer_account_card_logout);
         cardCallToCustomerSupport = v.findViewById(R.id.call_to_customer_support);

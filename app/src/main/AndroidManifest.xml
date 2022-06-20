@@ -12,37 +12,49 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.SadaatGroceryStore">
+
+        <meta-data android:name="android.webkit.WebView.EnableSafeBrowsing"
+            android:value="false" />
+
         <activity
             android:name=".ui.Activities.UsersBased.DeliveryBoy.LiveOrderActivityDelivery"
             android:exported="false" />
+
         <activity
             android:name=".ui.Activities.UsersBased.DeliveryBoy.OrdersActivityDelivery"
             android:exported="false" />
+
         <activity
             android:name=".ui.Activities.UsersBased.DeliveryBoy.ProfileActivityDelivery"
             android:exported="false" />
+
         <activity
             android:name=".ui.Activities.UsersBased.DeliveryBoy.MainActivityDelivery"
             android:exported="false" />
+
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".ui.Activities.UsersBased.Customers.MainActivityCustomer"
             android:exported="false" />
+
         <activity
             android:name=".ui.Activities.UsersBased.Admin.MainActivityAdmin"
             android:exported="true"
             android:theme="@style/Theme.SadaatGroceryStore.NoActionBar" />
+
         <activity
             android:name=".ui.Activities.GenericForAll.LoginNavigatorActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.Activities.GenericForAll.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

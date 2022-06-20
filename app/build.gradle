@@ -69,7 +69,9 @@ dependencies {
     implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'
     implementation 'com.nineoldandroids:library:2.4.0'
 
+    implementation 'com.github.IslamKhSh:CardSlider:1.0.1'
+
     implementation 'org.apache.httpcomponents:httpclient:4.2.5'
     implementation 'com.google.code.gson:gson:2.2.3'
-    implementation files('./2checkout-java.jar')
+
 }

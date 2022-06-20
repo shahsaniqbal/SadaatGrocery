@@ -179,4 +179,8 @@ public class ItemModel {
                 ", hot=" + hot +
                 '}';
     }
+
+    public String toFullString(){
+        return name + " - " + qty.getQty() + " " + qty.getUnit();
+    }
 }

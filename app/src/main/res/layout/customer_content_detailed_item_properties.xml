@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:padding="8dp">
 
     <LinearLayout
@@ -25,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.1"
             android:fontFamily="monospace"
-            android:text="ABC-EFGH-IJKL-MN"
             android:textColor="@color/scarlet_red_700"
             android:paddingHorizontal="4dp"
             android:gravity="center_vertical|right"/>
@@ -62,7 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:fontFamily="monospace"
-            android:text="10000.00"
             android:paddingHorizontal="4dp"
             android:gravity="center_vertical|right"/>
 
@@ -97,7 +96,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:fontFamily="monospace"
-            android:text="10000.00"
             android:paddingHorizontal="4dp"
             android:gravity="center_vertical|right"/>
 
@@ -133,7 +131,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:fontFamily="monospace"
-            android:text="10000.00"
             android:paddingHorizontal="4dp"
             android:gravity="center_vertical|right"/>
 
@@ -169,7 +166,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:fontFamily="monospace"
-            android:text="10000.00"
             android:paddingHorizontal="4dp"
             android:gravity="center_vertical|right"/>
 
@@ -197,7 +193,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
             android:fontFamily="monospace"
-            android:text="25"
             android:paddingHorizontal="4dp"
             android:gravity="center_vertical|right"/>
 

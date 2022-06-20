@@ -13,22 +13,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.islamkhsh.CardSliderViewPager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.ItemsDisplayAdapterCustomer;
+import com.sadaat.groceryapp.adapters.generic.SliderAdapter;
 import com.sadaat.groceryapp.models.ItemIDListModel;
 import com.sadaat.groceryapp.models.Items.ItemModel;
+import com.sadaat.groceryapp.models.SliderModel;
 import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderAccountFragment.OrdersFragmentCustomer;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
@@ -46,6 +50,12 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
     private ItemsDisplayAdapterCustomer displayAdapterMostSelling;
 
     private LoadingDialogue progressDialogue;
+
+    private MaterialCardView cardOpenOrders;
+
+    ArrayList<SliderModel> movies;
+    CardSliderViewPager cardSliderViewPager;
+    SliderAdapter adapter;
 
     public HomeFragmentCustomer() {
         // Required empty public constructor
@@ -73,10 +83,49 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
         super.onViewCreated(view, savedInstanceState);
 
         initializations(view);
+        cardSliderViewPager.setAdapter(adapter);
+        Log.e("WIDTH: ",""+cardSliderViewPager.getOtherPagesWidth());
+        Log.e("WIDTH: ",""+cardSliderViewPager.getWidth());
+
+        cardSliderViewPager.setAutoSlideTime(8);
 
         showHotProducts(view);
+
+        FirebaseFirestore
+                .getInstance()
+                .collection(new FirebaseDataKeys().getSlidesRef())
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.w("TAG", "Listen failed.", error);
+                        return;
+                    }
+
+                    if (value != null && value.getDocuments().size()>0) {
+
+                        adapter.deleteAll();
+                        for (DocumentSnapshot d :
+                                value.getDocuments()) {
+                            adapter.addSlide(d.toObject(SliderModel.class));
+                        }
+
+                    } else {
+                        Log.d("TAG", "source file HomeFragmentCustomer" + " data: null");
+                    }
+                });
+
         showMostSelling();
 
+        cardOpenOrders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragmentCustomer, OrdersFragmentCustomer.newInstance())
+                        .addToBackStack("home")
+                        .commit();
+            }
+        });
 
     }
 
@@ -88,9 +137,10 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
 
         progressDialogue.show("Please Wait", "Loading Most Selling Items");
 
+
         FirebaseFirestore
                 .getInstance()
-                .collection("TopSelling")
+                .collection(new FirebaseDataKeys().getTopSellingRef())
                 .document("Items")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -100,20 +150,22 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
 
                             ItemIDListModel list = task.getResult().toObject(ItemIDListModel.class);
 
-                            for (String s : list.getItems()) {
+                            if (list != null) {
+                                for (String s : list.getItems()) {
 
-                                ITEMS_COLLECTION_REF
-                                        .document(s)
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                if (task.isSuccessful()){
-                                                    displayAdapterMostSelling.addItem(task.getResult().toObject(ItemModel.class));
+                                    ITEMS_COLLECTION_REF
+                                            .document(s)
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()){
+                                                        displayAdapterMostSelling.addItem(task.getResult().toObject(ItemModel.class));
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
 
+                                }
                             }
 
                         }
@@ -160,6 +212,9 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
         recyclerViewMostSelling = vParent.findViewById(R.id.recycler_customer_items_most_selling);
         layoutManagerForMostSelling = new LinearLayoutManager(HomeFragmentCustomer.this.requireActivity(), LinearLayoutManager.HORIZONTAL, false);
         displayAdapterMostSelling = new ItemsDisplayAdapterCustomer(new ArrayList<>(), this, HomeFragmentCustomer.this.requireActivity());
+        cardOpenOrders = vParent.findViewById(R.id.card_view_orders);
+        cardSliderViewPager = (CardSliderViewPager) vParent.findViewById(R.id.viewPager);
+        adapter = new SliderAdapter(new ArrayList<>());
 
     }
 

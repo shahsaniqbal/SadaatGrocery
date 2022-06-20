@@ -5,34 +5,30 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
+    android:background="@color/white"
+    android:padding="4dp"
     tools:context=".ui.Fragments.UserBased.Customers.SearchFragmentCustomer">
 
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="4dp"
         android:layout_margin="4dp">
 
-        <LinearLayout
+        <AutoCompleteTextView
+            android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        <SearchView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
             android:hint="Item Name"
-            android:voiceIcon="@android:drawable/stat_notify_voicemail"/>
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:imeOptions="actionSearch"
+            android:drawablePadding="8dp"
+            android:inputType="textAutoComplete" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"/>
-
-        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

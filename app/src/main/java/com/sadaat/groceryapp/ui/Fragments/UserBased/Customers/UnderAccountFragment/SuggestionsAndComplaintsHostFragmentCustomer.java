@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.passive;
+package com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderAccountFragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -19,12 +19,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.adapters.customer.SuggestionsDisplayAdapterCustomer;
+import com.sadaat.groceryapp.handler.LeadsActionHandler;
 import com.sadaat.groceryapp.models.SuggestionModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
@@ -86,25 +85,22 @@ public class SuggestionsFragmentCustomer extends Fragment {
                 .getInstance()
                 .collection(new FirebaseDataKeys().getSuggestionsRef())
                 .whereEqualTo("uid", UserLive.currentLoggedInUser.getUID())
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Log.w("TAG", "Listen failed.", error);
-                            return;
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.w("TAG", "Listen failed.", error);
+                        return;
+                    }
+
+                    if (value != null && value.getDocuments().size() > 0) {
+
+                        adapter.deleteAll();
+                        for (DocumentSnapshot d :
+                                value.getDocuments()) {
+                            adapter.addItem(d.toObject(SuggestionModel.class));
                         }
 
-                        if (value != null && value.getDocuments().size()>0) {
-
-                            adapter.deleteAll();
-                            for (DocumentSnapshot d :
-                                    value.getDocuments()) {
-                                adapter.addItem(d.toObject(SuggestionModel.class));
-                            }
-
-                        } else {
-                            Log.d("TAG", "source file SuggestionFragmentCustomer" + " data: null");
-                        }
+                    } else {
+                        Log.d("TAG", "source file SuggestionFragmentCustomer" + " data: null");
                     }
                 });
 
@@ -112,30 +108,64 @@ public class SuggestionsFragmentCustomer extends Fragment {
             dialogueBox.show();
         });
         viewHolder.getBtnPostSuggestion().setOnClickListener(v -> {
-            if (viewHolder.analyzeInputs(true)){
+            if (viewHolder.analyzeInputs(true)) {
 
-                String new_id = "S_"+ UserLive.currentLoggedInUser.getUID().substring(0,5)+"_"+new Date().getDate()+"_"+new Date().getTime();
+                String new_id = "S_" + UserLive.currentLoggedInUser.getUID().substring(0, 5) + "_" + new Date().getDate() + "_" + new Date().getTime();
+
+                SuggestionModel s = new SuggestionModel(
+                        new_id,
+                        UserLive.currentLoggedInUser.getUID(),
+                        UserLive.currentLoggedInUser.getFullName(),
+                        UserLive.currentLoggedInUser.getMobileNumber(),
+                        UserLive.currentLoggedInUser.getEmailAddress(),
+                        Objects.requireNonNull(viewHolder.getTxvTitle().getText()).toString(),
+                        Objects.requireNonNull(viewHolder.getTxvDescription().getText()).toString(),
+                        new Date(),
+                        viewHolder.getRatingBar().getRating(),
+                        "",
+                        null
+                );
+
                 FirebaseFirestore.getInstance()
                         .collection(new FirebaseDataKeys().getSuggestionsRef())
                         .document(new_id)
-                        .set(new SuggestionModel(
-                                new_id,
-                                UserLive.currentLoggedInUser.getUID(),
-                                UserLive.currentLoggedInUser.getFullName(),
-                                UserLive.currentLoggedInUser.getMobileNumber(),
-                                UserLive.currentLoggedInUser.getEmailAddress(),
-                                Objects.requireNonNull(viewHolder.getTxvTitle().getText()).toString(),
-                                Objects.requireNonNull(viewHolder.getTxvDescription().getText()).toString(),
-                                new Date(),
-                                (double) viewHolder.getRatingBar().getRating(),
-                                "",
-                                null
-                        ))
-                        .addOnCompleteListener(t->{
-                            if (t.isSuccessful()){
-                                dialogueBox.dismiss();
-                            }
-                            else if (t.isCanceled()){
+                        .set(s)
+                        .addOnCompleteListener(t -> {
+                            if (t.isSuccessful()) {
+
+                                FirebaseFirestore.getInstance()
+                                        .collection(new FirebaseDataKeys().getUsersRef())
+                                        .document(UserLive.currentLoggedInUser.getUID())
+                                        .update("suggestions", FieldValue.arrayUnion(new_id))
+                                        .addOnSuccessListener(doc -> {
+
+
+                                            StringBuilder action = new StringBuilder();
+                                            action.append("Customer ");
+                                            action.append("(").append(UserLive.currentLoggedInUser.getFullName()).append(") ");
+                                            action.append("gave a suggestion ");
+                                            action.append("(").append(s.getSuggestionTitle().substring(0, s.getSuggestionTitle().length()/2)).append("...) ");
+                                            action.append("with rating ");
+                                            action.append("(").append(s.getFeedback()).append("stars) ");
+
+
+                                            new LeadsActionHandler() {
+                                                @Override
+                                                public void onSuccessCompleteAction() {
+
+                                                }
+
+                                                @Override
+                                                public void onCancelledAction() {
+
+                                                }
+                                            }.addAction(action.toString());
+
+
+                                            dialogueBox.dismiss();
+                                        });
+
+                            } else if (t.isCanceled()) {
                                 Toast.makeText(SuggestionsFragmentCustomer.this.requireActivity(), "Suggestion/Feedback POST Error", Toast.LENGTH_SHORT).show();
                                 dialogueBox.dismiss();
                             }
@@ -188,17 +218,13 @@ public class SuggestionsFragmentCustomer extends Fragment {
         }
 
         public boolean analyzeInputs(boolean b) {
-            if (txvTitle.getText().toString().isEmpty()){
+            if (Objects.requireNonNull(txvTitle.getText()).toString().isEmpty()) {
                 txvTitle.setError("Title can't be Empty");
                 return false;
-            }
-
-            else if (txvDescription.getText().toString().isEmpty()){
+            } else if (Objects.requireNonNull(txvDescription.getText()).toString().isEmpty()) {
                 txvDescription.setError("Description can't be Empty");
                 return false;
-            }
-
-            else{
+            } else {
                 txvTitle.setError(null);
                 txvDescription.setError(null);
                 return true;

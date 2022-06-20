@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@color/white"
     android:id="@+id/customer_cart_layout_nonempty">
 
     <ImageView
@@ -50,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.75"
-            android:text="Last Modified"
+            android:text="Last Sync"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:paddingHorizontal="4dp"
