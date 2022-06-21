@@ -51,7 +51,7 @@ import com.sadaat.groceryapp.models.Items.QtyUnitModel;
 import com.sadaat.groceryapp.models.StockEntry;
 import com.sadaat.groceryapp.models.categories.SubCategoriesModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
-import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
+import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedItemFragmentGeneric;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.io.ByteArrayOutputStream;
@@ -541,7 +541,7 @@ public class ItemsListFragmentAdmin extends Fragment implements ItemsDisplayAdap
     public void onShowFullDetailsButtonClick(ItemModel modelToShow) {
         getChildFragmentManager()
                 .beginTransaction()
-                .replace(R.id.items_fl, ItemFullModalFragmentGeneric.newInstance(modelToShow))
+                .replace(R.id.items_fl, DetailedItemFragmentGeneric.newInstance(modelToShow))
                 .addToBackStack("item_list")
                 .commit();
     }

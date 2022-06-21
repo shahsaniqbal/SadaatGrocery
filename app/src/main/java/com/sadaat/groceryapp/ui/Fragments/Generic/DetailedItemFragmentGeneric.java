@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
@@ -35,7 +34,7 @@ import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 import java.text.MessageFormat;
 import java.util.Objects;
 
-public class ItemFullModalFragmentGeneric extends Fragment {
+public class DetailedItemFragmentGeneric extends Fragment {
 
     MaterialTextView txvMainCategory;
     MaterialTextView txvSubCategory;
@@ -59,16 +58,16 @@ public class ItemFullModalFragmentGeneric extends Fragment {
 
     MaterialCardView cardAddToCart;
 
-    public ItemFullModalFragmentGeneric() {
+    public DetailedItemFragmentGeneric() {
         // Required empty public constructor
     }
 
-    public ItemFullModalFragmentGeneric(ItemModel itemModel) {
+    public DetailedItemFragmentGeneric(ItemModel itemModel) {
         this.itemModel = itemModel;
     }
 
-    public static ItemFullModalFragmentGeneric newInstance(ItemModel itemModel) {
-        ItemFullModalFragmentGeneric fragment = new ItemFullModalFragmentGeneric(itemModel);
+    public static DetailedItemFragmentGeneric newInstance(ItemModel itemModel) {
+        DetailedItemFragmentGeneric fragment = new DetailedItemFragmentGeneric(itemModel);
         return fragment;
     }
 
@@ -158,7 +157,7 @@ public class ItemFullModalFragmentGeneric extends Fragment {
         } else {
             hasTriedLoadingPicture = true;
             dismissDialogue();
-            Toast.makeText(ItemFullModalFragmentGeneric.this.requireActivity(), "No Image Found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DetailedItemFragmentGeneric.this.requireActivity(), "No Image Found", Toast.LENGTH_SHORT).show();
         }
 
         FirebaseFirestore.getInstance()
@@ -227,7 +226,7 @@ public class ItemFullModalFragmentGeneric extends Fragment {
 
         cardAddToCart = v.findViewById(R.id.card_add_to_cart);
 
-        loadingDialogue = new LoadingDialogue(ItemFullModalFragmentGeneric.this.requireActivity());
+        loadingDialogue = new LoadingDialogue(DetailedItemFragmentGeneric.this.requireActivity());
         shouldShowQtyInCart = UserLive.currentLoggedInUser.getUserType().equals(UserTypes.Customer);
     }
 

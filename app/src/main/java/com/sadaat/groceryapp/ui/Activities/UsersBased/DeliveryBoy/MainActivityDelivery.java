@@ -21,6 +21,7 @@ import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
 import com.sadaat.groceryapp.ui.Activities.GenericForAll.LoginNavigatorActivity;
+import com.sadaat.groceryapp.ui.Activities.UsersBased.Customers.MainActivityCustomer;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.Objects;
@@ -106,5 +107,25 @@ public class MainActivityDelivery extends AppCompatActivity {
                 .setIcon(R.mipmap.logo)
                 .show();
     }
+
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(MainActivityDelivery.this)
+                .setTitle("Exit")
+                .setMessage("Are you sure you want to exit the app?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    super.onBackPressed();
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss())
+                .setIcon(R.mipmap.logo)
+                .show();
+    }
+
 
 }

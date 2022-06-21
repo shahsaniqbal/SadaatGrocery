@@ -46,8 +46,6 @@ public class ParentImageHandler {
     }
 
     private void downloadLoadLinkImage(String imageReference, int maxBytesToLoad, ImageView loadImageView) {
-        //TODO Load Link Image
-
         getLoadingDialogue().dismiss();
         //for testing I am setting the method also to firebase
         downloadLoadFirebaseImage(imageReference, maxBytesToLoad, loadImageView);

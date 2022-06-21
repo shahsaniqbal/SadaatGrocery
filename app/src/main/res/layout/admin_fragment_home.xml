@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".ui.SuperFragments.Admin.HomeFragment">
+    tools:context=".ui.Fragments.UserBased.Admin.host.HomeFragment">
 
     <FrameLayout
         android:id="@+id/flFragmentChild"

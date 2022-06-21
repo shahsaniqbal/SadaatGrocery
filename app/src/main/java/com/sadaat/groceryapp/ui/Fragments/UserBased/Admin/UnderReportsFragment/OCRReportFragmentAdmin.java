@@ -1,7 +1,6 @@
 package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.models.orders.OrderModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
@@ -31,7 +27,7 @@ import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Objects;
 
-public class OCRFragmentAdmin extends Fragment {
+public class OCRReportFragmentAdmin extends Fragment {
 
     LoadingDialogue dialogue;
     int initiatedOrders;
@@ -50,12 +46,12 @@ public class OCRFragmentAdmin extends Fragment {
     MaterialTextView txvNotReceived;
     MaterialTextView txvOCRPercentage;
 
-    public OCRFragmentAdmin() {
+    public OCRReportFragmentAdmin() {
         // Required empty public constructor
     }
 
-    public static OCRFragmentAdmin newInstance() {
-        return new OCRFragmentAdmin();
+    public static OCRReportFragmentAdmin newInstance() {
+        return new OCRReportFragmentAdmin();
     }
 
     @Override
@@ -66,7 +62,7 @@ public class OCRFragmentAdmin extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.admin_fragment_reports_o_c_r, container, false);
+        return inflater.inflate(R.layout.admin_fragment_reports_ocr, container, false);
     }
 
     @Override

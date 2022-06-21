@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.sadaat.groceryapp.R;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.AppCreditsReportFragmentAdmin;
-import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.OCRFragmentAdmin;
+import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.OCRReportFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.SalesReportFragmentAdmin;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.UnderReportsFragment.StocksReportFragmentAdmin;
 
@@ -88,7 +88,7 @@ public class ReportsFragmentAdmin extends Fragment implements View.OnClickListen
         if (view.getId() == R.id.admin_report_ocr) {
             getChildFragmentManager()
                      .beginTransaction()
-                     .replace(R.id.fl_reports, OCRFragmentAdmin.newInstance())
+                     .replace(R.id.fl_reports, OCRReportFragmentAdmin.newInstance())
                      .addToBackStack("reports")
                      .commit();
         }

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:padding="4dp"
     android:background="@color/white"
-    tools:context=".ui.Fragments.UserBased.Admin.UnderReportsFragment.OCRFragmentAdmin">
+    tools:context=".ui.Fragments.UserBased.Admin.UnderReportsFragment.OCRReportFragmentAdmin">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"

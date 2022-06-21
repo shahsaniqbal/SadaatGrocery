@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.sadaat.groceryapp.ui.SuperFragments.Admin.HomeFragment"
+        android:name="com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.host.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/admin_fragment_home" />
 
@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/nav_responses"
-        android:name="com.sadaat.groceryapp.ui.SuperFragments.Admin.ResponsesFragmentAdmin"
+        android:name="com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.host.ResponsesFragmentAdmin"
         android:label="Responses"
         tools:layout="@layout/admin_fragment_responses" />
 

@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.ui.SuperFragments.Admin;
+package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.host;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

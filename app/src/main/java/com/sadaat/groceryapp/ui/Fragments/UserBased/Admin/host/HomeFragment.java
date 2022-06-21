@@ -1,4 +1,4 @@
-package com.sadaat.groceryapp.ui.SuperFragments.Admin;
+package com.sadaat.groceryapp.ui.Fragments.UserBased.Admin.host;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

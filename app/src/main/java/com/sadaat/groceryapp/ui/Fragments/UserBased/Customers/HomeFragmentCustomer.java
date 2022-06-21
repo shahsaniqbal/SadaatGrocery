@@ -31,7 +31,7 @@ import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
-import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
+import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedItemFragmentGeneric;
 import com.sadaat.groceryapp.ui.Fragments.UserBased.Customers.UnderAccountFragment.OrdersFragmentCustomer;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
@@ -242,7 +242,7 @@ public class HomeFragmentCustomer extends Fragment implements ItemsDisplayAdapte
     public void onClick(ItemModel model) {
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.flFragmentCustomer, ItemFullModalFragmentGeneric.newInstance(model))
+                .replace(R.id.flFragmentCustomer, DetailedItemFragmentGeneric.newInstance(model))
                 .addToBackStack("home")
                 .commit();
     }

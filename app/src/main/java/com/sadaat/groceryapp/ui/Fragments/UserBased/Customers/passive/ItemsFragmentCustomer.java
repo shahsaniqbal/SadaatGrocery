@@ -28,7 +28,7 @@ import com.sadaat.groceryapp.models.cart.CartItemModel;
 import com.sadaat.groceryapp.syncronizer.CustomerCartSynchronizer;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
 import com.sadaat.groceryapp.temp.UserLive;
-import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
+import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedItemFragmentGeneric;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
@@ -172,7 +172,7 @@ public class ItemsFragmentCustomer extends Fragment implements ItemsDisplayAdapt
     public void onClick(ItemModel model) {
         getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.flFragmentCustomer, ItemFullModalFragmentGeneric.newInstance(model))
+                .replace(R.id.flFragmentCustomer, DetailedItemFragmentGeneric.newInstance(model))
                 .addToBackStack("items")
                 .commit();
     }

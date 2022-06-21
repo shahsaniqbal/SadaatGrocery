@@ -9,6 +9,8 @@
     android:background="@color/white"
     tools:openDrawer="start">
 
+
+
     <include
         android:id="@+id/app_bar_main_activity_admin"
         layout="@layout/admin_app_bar_main_activity"

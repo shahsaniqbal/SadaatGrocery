@@ -17,10 +17,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.sadaat.groceryapp.R;
-import com.sadaat.groceryapp.adapters.SearchAdapter;
+import com.sadaat.groceryapp.adapters.customer.SearchAdapter;
 import com.sadaat.groceryapp.models.Items.ItemModel;
 import com.sadaat.groceryapp.temp.FirebaseDataKeys;
-import com.sadaat.groceryapp.ui.Fragments.Generic.ItemFullModalFragmentGeneric;
+import com.sadaat.groceryapp.ui.Fragments.Generic.DetailedItemFragmentGeneric;
 import com.sadaat.groceryapp.ui.Loaders.LoadingDialogue;
 
 import java.util.ArrayList;
@@ -104,7 +104,7 @@ public class SearchFragmentCustomer extends Fragment implements SearchAdapter.On
                 .getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack("search")
-                .replace(R.id.flFragmentCustomer, ItemFullModalFragmentGeneric.newInstance(m), null)
+                .replace(R.id.flFragmentCustomer, DetailedItemFragmentGeneric.newInstance(m), null)
                 .commit();
     }
 }
